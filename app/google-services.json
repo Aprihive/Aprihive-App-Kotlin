@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "615414296417",
+    "project_id": "aprihive-app",
+    "storage_bucket": "aprihive-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615414296417:android:5e6d17d77853a21904df20",
+        "android_client_info": {
+          "package_name": "com.erlite.aprihive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615414296417-43qt0kg4b96ubc8jm9mkar5f4oecpbea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpFs-Xh4Hysvsv9996wkkArPzdYQtnD8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615414296417-43qt0kg4b96ubc8jm9mkar5f4oecpbea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

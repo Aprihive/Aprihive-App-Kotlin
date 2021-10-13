@@ -1,0 +1,14 @@
+<!-- Copyright (c) Jesulonimii 2021. -->
+<!-- Copyright (c) Erlite 2021. -->
+<!-- Copyright (c) Aprihive 2021. -->
+<!-- All Rights Reserved -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="195.791"
+    android:viewportHeight="195.792">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M97.248,31.061a4.616,4.616 0,0 0,-3.12 1.319l-67.84,66.515a4.616,4.616 0,0 0,3.231 7.912h29.305v49.082a4.616,4.616 0,0 0,4.617 4.618h67.84a4.616,4.616 0,0 0,4.617 -4.618v-49.082h29.305a4.616,4.616 0,0 0,3.23 -7.912L100.592,32.38a4.616,4.616 0,0 0,-3.343 -1.319zM97.361,42.139 L153.9,97.575h-22.62a4.616,4.616 0,0 0,-4.614 4.615v49.084h-58.61v-49.084a4.616,4.616 0,0 0,-4.615 -4.615h-22.62zM97.361,37.893 L32.021,101.954h32.67v51.719h65.34v-51.719h32.669z"/>
+</vector>

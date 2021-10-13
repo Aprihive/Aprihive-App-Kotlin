@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/myProfile"
+        android:title="My Profile"
+        android:icon="@drawable/ic_account"/>
+
+
+    <item android:id="@+id/infoActions"
+        android:title="Info and Actions"
+        android:icon="@drawable/ic_info"/>
+
+    <item android:id="@+id/promotions"
+        android:title="Ads and Promotions"
+        android:icon="@drawable/ic_label_outline" />
+
+    <!--<item android:id="@+id/signOut"
+        android:title="Sign Out"
+        android:icon="@drawable/ic_logout" />-->
+
+
+
+</menu>

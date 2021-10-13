@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notificationItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_color"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingHorizontal="20dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/notification_typeIconBg"
+        android:layout_width="70dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:elevation="0dp"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="100dp"
+        app:cardBackgroundColor="@color/color_chip_blue_050"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/notification_typeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_notifications_active"
+        android:tint="@color/color_chip_blue_300"
+        app:layout_constraintBottom_toBottomOf="@+id/notification_typeIconBg"
+        app:layout_constraintEnd_toEndOf="@+id/notification_typeIconBg"
+        app:layout_constraintStart_toStartOf="@+id/notification_typeIconBg"
+        app:layout_constraintTop_toTopOf="@+id/notification_typeIconBg" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/notification_typeIconBg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/notification_typeIconBg"
+        app:layout_constraintTop_toTopOf="@+id/notification_typeIconBg">
+
+        <TextView
+            android:id="@+id/notificationTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/gilroy_bold"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/color_text_blue_500"
+            android:textFontWeight="200"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/notificationSubTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/black_text_color"
+            android:textFontWeight="50"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/notificationTitle"
+            app:layout_constraintTop_toBottomOf="@+id/notificationTitle" />
+
+        <TextView
+            android:id="@+id/notificationDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/grey_color_100"
+            android:textFontWeight="50"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/notificationSubTitle"
+            app:layout_constraintTop_toBottomOf="@+id/notificationSubTitle" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notification_typeIconBg" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

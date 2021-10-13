@@ -1,0 +1,86 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="drawerArrowStyle">@style/DrawerHamburgerStyle</item>
+        <item name="android:textColorSecondary">@color/color_text_blue_500</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
+
+
+        <!--<item name="fontFamily">@font/font</item-->
+        <!-- Customize bottom sheets in app -->
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <item name="android:datePickerDialogTheme">@style/MyDatePickerDialogTheme</item>
+    </style>
+
+    <!-- customise datepicker style -->
+    <style name="MyDatePickerDialogTheme" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:datePickerStyle">@style/MyDatePickerStyle</item>
+        <item name="colorAccent">@color/color_text_blue_500</item>
+    </style>
+
+    <style name="MyDatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
+        <item name="android:headerBackground">@color/color_text_blue_500</item>
+        <item name="background">@drawable/layout_bg_rounded</item>
+    </style>
+
+    <!-- customise toolbar text style -->
+    <style name="expandedBarTextStyle" parent="AppTheme">
+        <item name="android:textSize">0sp</item>
+        <item name="expandedTitleGravity">center_horizontal</item>
+        <item name="collapsedTitleGravity">center_horizontal</item>
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
+
+    <style name="collapsedBarTextStyle" parent="AppTheme">
+        <item name="android:textSize">0sp</item>
+        <item name="expandedTitleGravity">center_horizontal</item>
+        <item name="collapsedTitleGravity">center_horizontal</item>
+        <item name="android:textColor">@color/color_text_blue_500</item>
+    </style>
+
+
+
+    <!-- customise bottom sheet shape -->
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize|stateVisible</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/layout_curved_edges</item>
+    </style>
+
+    <!--**** customise bottom sheet shape end**** -->
+
+
+    <style name="CustomToolbarStyle"
+        parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:contentInsetStart">0dp</item>
+        <item name="android:textColor">@color/color_text_blue_500</item>
+        <item name="android:textSize">20sp</item>
+        <item name="fontWeight">200</item>
+    </style>
+
+
+    <!-- customise toolbar icon color -->
+    <style name="DrawerHamburgerStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/color_text_blue_500</item>
+    </style>
+
+    <style name="BarArrowStyle" parent="@style/Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="color">@color/color_text_blue_500</item>
+    </style>
+
+    <!--*** customise toolbar icon color end*** -->
+
+
+</resources>

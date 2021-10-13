@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/userItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_color"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingHorizontal="20dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/find_profileImage"
+        android:layout_width="70dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/user_image_placeholder"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/userDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/find_profileImage"
+        app:layout_constraintEnd_toStartOf="@+id/connectButton"
+        app:layout_constraintStart_toEndOf="@+id/find_profileImage"
+        app:layout_constraintTop_toTopOf="@+id/find_profileImage">
+
+        <TextView
+            android:id="@+id/find_fullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="14dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/gilroy_bold"
+            android:maxLength="18"
+            android:maxLines="1"
+            android:text="Jesulonimi William"
+            android:textColor="@color/color_text_blue_500"
+            android:textFontWeight="200"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toStartOf="@+id/find_verifiedIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/find_verifiedIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="2.2dp"
+            android:contentDescription="verification icon"
+            android:src="@drawable/ic_verified"
+            android:tint="@color/verifiedIconColor"
+            app:layout_constraintBottom_toBottomOf="@+id/find_fullName"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintStart_toEndOf="@+id/find_fullName"
+            app:layout_constraintTop_toTopOf="@+id/find_fullName" />
+
+        <TextView
+            android:id="@+id/find_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="\@jesulonimii"
+            android:textColor="@color/grey_color_100"
+            android:textFontWeight="50"
+            android:maxLines="1"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/find_fullName"
+            app:layout_constraintTop_toBottomOf="@+id/find_fullName" />
+
+        <!--<ImageView
+            android:id="@+id/find_verifiedIcon2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:tint="@color/verifiedIconColor"
+            app:layout_constraintBottom_toBottomOf="@+id/find_username"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintStart_toEndOf="@+id/find_username"
+            app:layout_constraintTop_toTopOf="@+id/find_username"
+            app:srcCompat="@drawable/ic_verified" />-->
+
+        <TextView
+            android:id="@+id/find_bio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="Freelance Developer, Graphic designer"
+            android:textColor="@color/black_text_color"
+            android:textFontWeight="50"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/find_username"
+            app:layout_constraintTop_toBottomOf="@+id/find_username" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/connectButton"
+        style="@style/TextAppearance.AppCompat.Widget.Button"
+        android:layout_width="100dp"
+        android:layout_height="25dp"
+        android:background="@drawable/connect_default_button"
+        android:gravity="center"
+        android:shadowColor="@null"
+        android:text="Follow"
+        android:textAllCaps="false"
+        android:textColor="@color/color_theme_blue"
+        android:textFontWeight="50"
+        android:textSize="10sp"
+        app:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/userDetails"
+        app:layout_constraintDimensionRatio="3:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/userDetails"
+        app:layout_constraintTop_toTopOf="@+id/userDetails" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/find_profileImage" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

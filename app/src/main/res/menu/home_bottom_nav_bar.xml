@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/home"
+        android:title="Discover"
+        android:icon="@drawable/ic_home"
+        android:iconTint="@color/black_text_color"
+        app:showAsAction="ifRoom"/>
+
+
+    <item android:id="@+id/find"
+        android:title="Find"
+        android:icon="@drawable/ic_crosshair"
+        android:iconTint="@color/black_text_color"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/requests"
+        android:title="Requests"
+        android:icon="@drawable/ic_notifications"
+        android:iconTint="@color/black_text_color"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/messages"
+        android:title="Messages"
+        android:icon="@drawable/ic_messages"
+        android:iconTint="@color/black_text_color"
+        app:showAsAction="ifRoom"/>
+
+
+
+</menu>
