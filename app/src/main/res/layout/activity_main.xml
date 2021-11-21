@@ -7,7 +7,7 @@
     android:background="@color/bg_color"
     android:fitsSystemWindows="true"
     android:fillViewport="true"
-    tools:context=".MainActivity">
+    tools:context="com.aprihive.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,6 +16,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -59,15 +60,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
-            <Button
+            <TextView
                 android:id="@+id/create"
                 style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/blue_button"
+                android:background="@drawable/green_button"
                 android:elevation="0dp"
+                android:gravity="center"
                 android:text="Create Account with Email"
                 android:textColor="@color/white_color"
                 app:layout_constraintDimensionRatio="1:0.12"
@@ -75,15 +77,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-            <Button
+            <TextView
                 android:id="@+id/googleBtn"
                 style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/green_button"
+                android:background="@drawable/blue_button"
                 android:elevation="0dp"
+                android:gravity="center"
                 android:text="Continue with Google"
                 android:textColor="@color/white_color"
                 app:layout_constraintDimensionRatio="1:0.12"
@@ -107,9 +110,37 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/googleBtn" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/progressTab"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#CC000000"
+                android:clickable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:focusable="true">
+
+                <ProgressBar
+                    android:layout_width="50dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
     </LinearLayout>
+
 
 </androidx.core.widget.NestedScrollView>

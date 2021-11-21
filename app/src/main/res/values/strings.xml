@@ -10,7 +10,7 @@
     <string name="close">close</string>
     <string name="notification_channel_id">fcm_default_channel</string>
     <string name="notification_channel_name">Info</string>
-    <string name="app_version">v1.0 beta</string>
-    <string name="version">1.0</string>
+    <string name="app_version">v1.1</string>
+    <string name="version">1.1</string>
 
 </resources>

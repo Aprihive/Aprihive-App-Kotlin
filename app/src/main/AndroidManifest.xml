@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.erlite.aprihive">
+    package="com.aprihive">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,11 +14,34 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:debuggable="false"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        tools:ignore="HardcodedDebugMode">
-        <activity android:name=".ImageViewActivity"></activity>
+        android:usesCleartextTraffic="true">
+        <activity android:name=".OnboardingActivity"></activity>
+        <activity android:name=".FetchDetails">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="aprihive.jesulonimii.me"
+                    android:pathPrefix="/user"
+                    android:scheme="https" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="aprihive.jesulonimii.me"
+                    android:pathPrefix="/user"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ImageViewActivity" />
         <activity android:name=".RequestDetails" />
         <activity android:name=".Splash">
             <intent-filter>
@@ -41,13 +64,57 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".UserProfileActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="user"
+                    android:scheme="aprihive" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".EnterDetails"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Home"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="home"
+                    android:scheme="aprihive" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="aprihive.jesulonimii.me"
+                    android:pathPrefix="/home"
+                    android:scheme="https" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="aprihive.jesulonimii.me"
+                    android:pathPrefix="/home"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".auth.SetUsername"
             android:windowSoftInputMode="adjustResize" />
@@ -59,10 +126,78 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".auth.SignUp"
-            android:windowSoftInputMode="adjustResize" />
+            android:label="Sign Up"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="signup"
+                    android:scheme="aprihive" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="aprihive.jesulonimii.me"
+                    android:pathPrefix="/signup"
+                    android:scheme="https" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="aprihive.jesulonimii.me"
+                    android:pathPrefix="/signup"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".auth.Login"
-            android:windowSoftInputMode="adjustResize" />
+            android:label="Login"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="login"
+                    android:scheme="aprihive" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="aprihive.jesulonimii.me"
+                    android:pathPrefix="/login"
+                    android:scheme="https" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "aprihive://” -->
+                <data
+                    android:host="aprihive.jesulonimii.me"
+                    android:pathPrefix="/login"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

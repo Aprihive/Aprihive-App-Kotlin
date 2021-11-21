@@ -9,7 +9,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RequestDetails"
+    tools:context="com.aprihive.RequestDetails"
     android:background="@color/bg_color_fade">
 
     <androidx.appcompat.widget.Toolbar
@@ -226,7 +226,6 @@
         android:id="@+id/constraintLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp"
         android:paddingTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -235,7 +234,7 @@
 
         <TextView
             android:id="@+id/actionButton"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/color_theme_blue"
             android:gravity="center"

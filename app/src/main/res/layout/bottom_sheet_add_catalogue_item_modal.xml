@@ -22,7 +22,7 @@
         style="@style/AppBottomSheetDialogTheme"
         android:background="@drawable/layout_curved_edges"
         app:layout_behavior="@string/bottom_sheet_behavior"
-        tools:context=".fragments.AddPostModal">
+        tools:context="com.aprihive.fragments.AddPostModal">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout

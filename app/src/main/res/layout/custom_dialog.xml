@@ -75,7 +75,7 @@
                 android:id="@+id/positiveButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="@color/color_theme_blue_500"
+                android:background="@color/color_error_red_200"
                 android:gravity="center"
                 android:text="Yes, Delete."
                 android:clickable="true"
@@ -83,25 +83,26 @@
                 android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:textColor="@color/white_color"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/negativeButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/negativeButton"
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
             <TextView
                 android:id="@+id/negativeButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="@color/color_error_red_200"
                 android:gravity="center"
                 android:text="No, Cancel."
+                android:background="@color/color_theme_blue_500"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:textColor="@color/white_color"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/positiveButton"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintEnd_toStartOf="@+id/positiveButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

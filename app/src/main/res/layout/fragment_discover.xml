@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color"
-    tools:context=".pages.Discover"
+    tools:context="com.aprihive.pages.Discover"
     android:id="@+id/find_swipeRefresh"
     android:fillViewport="true">
 

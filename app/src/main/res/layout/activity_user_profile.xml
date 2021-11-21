@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color"
-    tools:context=".UserProfileActivity">
+    android:id="@+id/page"
+    tools:context="com.aprihive.UserProfileActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -168,7 +169,7 @@
                         android:layout_marginHorizontal="50dp"
                         android:maxLines="4"
                         android:text=""
-                        android:textColor="@color/grey_color_200"
+                        android:textColor="@color/grey_color_300"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -196,7 +197,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:contentInsetStart="0dp"
-                app:titleMarginEnd="65dp"
+                app:titleMarginEnd="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

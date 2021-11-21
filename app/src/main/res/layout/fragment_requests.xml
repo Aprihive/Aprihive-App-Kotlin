@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_color"
-    tools:context=".pages.Requests"
+    tools:context="com.aprihive.pages.Requests"
     android:id="@+id/notification_swipeRefresh"
     android:fillViewport="true">
 
