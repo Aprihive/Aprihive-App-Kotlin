@@ -1,18 +1,64 @@
 {
   "project_info": {
     "project_number": "615414296417",
+    "firebase_url": "https://aprihive-app-default-rtdb.firebaseio.com",
     "project_id": "aprihive-app",
     "storage_bucket": "aprihive-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:615414296417:android:5e6d17d77853a21904df20",
+        "mobilesdk_app_id": "1:615414296417:android:0c84b6329b09a4b504df20",
         "android_client_info": {
           "package_name": "com.aprihive"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "615414296417-feiqj92s91ei6ldva74tf1o8e3odjeih.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aprihive",
+            "certificate_hash": "d049ebd41582cecb8ba97ccb69ee1ea9fb3f6ae9"
+          }
+        },
+        {
+          "client_id": "615414296417-43qt0kg4b96ubc8jm9mkar5f4oecpbea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpFs-Xh4Hysvsv9996wkkArPzdYQtnD8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615414296417-43qt0kg4b96ubc8jm9mkar5f4oecpbea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615414296417:android:e3dc4f227509477d04df20",
+        "android_client_info": {
+          "package_name": "com.erlite.aprihive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615414296417-aaf8h2v965uaqg08g85gdk05f75g0pcj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.erlite.aprihive",
+            "certificate_hash": "383a0f354c5825871c01421d01af87c815241dfd"
+          }
+        },
         {
           "client_id": "615414296417-43qt0kg4b96ubc8jm9mkar5f4oecpbea.apps.googleusercontent.com",
           "client_type": 3
