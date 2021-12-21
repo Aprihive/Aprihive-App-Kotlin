@@ -61,6 +61,8 @@ public class RequestDetails extends AppCompatActivity {
     private Bundle bundle;
     private String getTwitterName;
     private String getInstagramName;
+    private ImageView threatIcon;
+    private Boolean getThreat;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -117,6 +119,7 @@ public class RequestDetails extends AppCompatActivity {
         requestText = findViewById(R.id.requestText);
         deadline = findViewById(R.id.deadline);
         verificationIcon = findViewById(R.id.sender_verifiedIcon);
+        threatIcon = findViewById(R.id.sender_warningIcon);
         actionButton = findViewById(R.id.actionButton);
         requestedDate = findViewById(R.id.sentOn);
 
@@ -243,6 +246,7 @@ public class RequestDetails extends AppCompatActivity {
                 getUsername = value.getString("username");
                 getProfilePic = value.getString("profileImageLink");
                 getVerified = value.getBoolean("verified");
+                getThreat = value.getBoolean("threat");
                 getTwitterName = value.getString("twitter");
                 getInstagramName = value.getString("instagram");
 
@@ -259,6 +263,11 @@ public class RequestDetails extends AppCompatActivity {
                     verificationIcon.setVisibility(View.VISIBLE);
                 } else {
                     verificationIcon.setVisibility(View.GONE);
+                }
+                if (getThreat){
+                    threatIcon.setVisibility(View.VISIBLE);
+                } else {
+                    threatIcon.setVisibility(View.GONE);
                 }
 
                 Glide.with(getApplicationContext())

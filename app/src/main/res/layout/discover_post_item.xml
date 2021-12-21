@@ -76,6 +76,20 @@
                 app:layout_constraintStart_toEndOf="@+id/post_fullName"
                 app:layout_constraintTop_toTopOf="@+id/post_fullName" />
 
+            <ImageView
+                android:id="@+id/post_warningIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2.2dp"
+                android:src="@drawable/ic_danger_icon"
+                android:tint="@color/warningIconColor"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/post_fullName"
+                app:layout_constraintDimensionRatio="1"
+                app:layout_constraintStart_toEndOf="@+id/post_fullName"
+                app:layout_constraintTop_toTopOf="@+id/post_fullName" />
+
             <TextView
                 android:id="@+id/dot"
                 android:layout_width="wrap_content"
@@ -119,11 +133,11 @@
                 android:id="@+id/optionsIcon"
                 android:layout_width="30dp"
                 android:layout_height="0dp"
-                app:cardBackgroundColor="@color/bg_color"
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:cardElevation="0dp"
+                app:cardBackgroundColor="@color/bg_color"
                 app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
                 app:layout_constraintBottom_toBottomOf="@+id/post_profileImage"
                 app:layout_constraintDimensionRatio="1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -151,17 +165,17 @@
 
             <ImageView
                 android:id="@+id/optionsIcon1"
-                android:visibility="gone"
                 android:layout_width="?actionBarSize"
                 android:layout_height="0dp"
-                android:src="@drawable/ic_more"
-                android:tint="@color/grey_color_100"
-                app:layout_constraintDimensionRatio="1:1"
                 android:clickable="true"
                 android:focusable="true"
-                android:paddingStart="30dp"
                 android:paddingVertical="17dp"
+                android:paddingStart="30dp"
+                android:src="@drawable/ic_more"
+                android:tint="@color/grey_color_100"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/post_profileImage"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/post_profileImage" />
 
@@ -170,17 +184,131 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:ellipsize="end"
-                android:maxLines="3"
+                android:autoLink="web"
                 android:clickable="true"
+                android:ellipsize="end"
                 android:focusable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:linksClickable="true"
+                android:maxLines="3"
                 android:text="@string/dummy_text"
                 android:textColor="@color/black_text_color"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/post_profileImage" />
 
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linkPreviewBar"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:theme="@style/Theme.MaterialComponents.Bridge"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/linkPreviewCard"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                app:cardCornerRadius="10dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardBackgroundColor="@color/card_bg_color2"
+                app:strokeColor="@color/grey_color_050"
+                app:strokeWidth="0.5dp"
+                app:cardElevation="0dp"
+                android:clickable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:focusable="true">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                    <ImageView
+                        android:id="@+id/linkImage"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_success_green_100"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="3:2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayout6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/linkImage"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/linkTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/gilroy_bold"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingHorizontal="10dp"
+                            android:text="Loading..."
+                            android:textColor="@color/color_text_blue_500"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/linkDescription"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="2"
+                            android:paddingHorizontal="10dp"
+                            android:text=""
+                            android:textColor="@color/grey_color_100"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/linkTitle"
+                            app:layout_constraintTop_toBottomOf="@+id/linkTitle" />
+
+                        <TextView
+                            android:id="@+id/linkUrl"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:paddingHorizontal="10dp"
+                            android:text=""
+                            android:textColor="@color/black_text_color"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/linkTitle"
+                            app:layout_constraintTop_toBottomOf="@id/linkDescription" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -193,7 +321,7 @@
             android:paddingHorizontal="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+            app:layout_constraintTop_toBottomOf="@+id/linkPreviewBar">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/upvoteIconContainer"

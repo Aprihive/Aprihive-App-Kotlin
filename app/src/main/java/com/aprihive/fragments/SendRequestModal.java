@@ -22,8 +22,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aprihive.R;
+import com.aprihive.backend.RetrofitInterface;
 import com.aprihive.methods.MySnackBar;
 import com.aprihive.methods.NetworkListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,11 +40,26 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageReference;
 
+import java.security.cert.CertificateException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class SendRequestModal extends BottomSheetDialogFragment {
@@ -86,6 +103,11 @@ public class SendRequestModal extends BottomSheetDialogFragment {
     private String deadlineText;
     private View homeView;
 
+    private Retrofit retrofit;
+    private RetrofitInterface retrofitInterface;
+
+
+
 
     public SendRequestModal() {
        //required constructor
@@ -101,6 +123,12 @@ public class SendRequestModal extends BottomSheetDialogFragment {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(getResources().getString(R.string.API_URL))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        retrofitInterface = retrofit.create(RetrofitInterface.class);
 
         context = getActivity().getApplicationContext();
         homeView = getActivity().getWindow().getDecorView().findViewById(R.id.page);
@@ -216,6 +244,7 @@ public class SendRequestModal extends BottomSheetDialogFragment {
             public void onSuccess(Void aVoid) {
 
                 createPersonalRequestInstance();
+                sendEmailNotification();
                 Log.d("debug", "test 2");
 
 
@@ -233,6 +262,43 @@ public class SendRequestModal extends BottomSheetDialogFragment {
         });
 
 
+
+    }
+
+    private void sendEmailNotification() {
+        HashMap<String, String> map = new HashMap<>();
+
+        map.put("senderEmail", user.getEmail());
+        map.put("receiverEmail", getArguments().getString("postAuthorEmail"));
+        map.put("senderUsername", user.getDisplayName());
+        map.put("receiverUsername", sendTo);
+        map.put("postId", postId);
+        map.put("postText", getArguments().getString("postText"));
+        map.put("deadline", deadlineText);
+
+        Call<Void> call = retrofitInterface.executeRequestNotification(map);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.code() == 200){
+                    Log.d("email-status", "email sent");
+                }
+                else if (response.code() == 400){
+                    Log.d("email-status", "failure: email not sent");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(context, "Failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+                Log.e("error", t.getMessage());
+                Log.e("error", t.getLocalizedMessage());
+
+            }
+        });
 
     }
 
@@ -261,6 +327,8 @@ public class SendRequestModal extends BottomSheetDialogFragment {
             @Override
             public void onSuccess(Void aVoid) {
 
+
+
                 MySnackBar snackBar = new MySnackBar(getActivity().getApplicationContext(), homeView, "Request sent to " + sendTo + " successfully", R.color.color_theme_blue, Snackbar.LENGTH_LONG);
                 dismiss();
 
@@ -268,6 +336,7 @@ public class SendRequestModal extends BottomSheetDialogFragment {
         });
 
     }
+
 
 
 }

@@ -78,6 +78,20 @@
                     app:layout_constraintStart_toEndOf="@+id/sender_fullName"
                     app:layout_constraintTop_toTopOf="@+id/sender_fullName" />
 
+                <ImageView
+                    android:id="@+id/sender_warningIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="2.2dp"
+                    android:src="@drawable/ic_danger_icon"
+                    android:tint="@color/warningIconColor"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/sender_fullName"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintStart_toEndOf="@+id/sender_fullName"
+                    app:layout_constraintTop_toTopOf="@+id/sender_fullName" />
+
                 <TextView
                     android:id="@+id/sender_username"
                     android:layout_width="wrap_content"

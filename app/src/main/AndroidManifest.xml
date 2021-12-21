@@ -25,7 +25,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="aprihive.jesulonimii.me"
+                    android:host="aprihive.com"
                     android:pathPrefix="/user"
                     android:scheme="https" />
             </intent-filter>
@@ -36,7 +36,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="aprihive.jesulonimii.me"
+                    android:host="aprihive.com"
                     android:pathPrefix="/user"
                     android:scheme="http" />
             </intent-filter>
@@ -99,7 +99,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "aprihive://” -->
                 <data
-                    android:host="aprihive.jesulonimii.me"
+                    android:host="aprihive.com"
                     android:pathPrefix="/home"
                     android:scheme="https" />
             </intent-filter>
@@ -110,7 +110,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "aprihive://” -->
                 <data
-                    android:host="aprihive.jesulonimii.me"
+                    android:host="aprihive.com"
                     android:pathPrefix="/home"
                     android:scheme="http" />
             </intent-filter>
@@ -145,7 +145,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "aprihive://” -->
                 <data
-                    android:host="aprihive.jesulonimii.me"
+                    android:host="aprihive.com"
                     android:pathPrefix="/signup"
                     android:scheme="https" />
             </intent-filter>
@@ -156,7 +156,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "aprihive://” -->
                 <data
-                    android:host="aprihive.jesulonimii.me"
+                    android:host="aprihive.com"
                     android:pathPrefix="/signup"
                     android:scheme="http" />
             </intent-filter>
@@ -182,7 +182,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "aprihive://” -->
                 <data
-                    android:host="aprihive.jesulonimii.me"
+                    android:host="aprihive.com"
                     android:pathPrefix="/login"
                     android:scheme="https" />
             </intent-filter>
@@ -193,7 +193,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!-- Accepts URIs that begin with "aprihive://” -->
                 <data
-                    android:host="aprihive.jesulonimii.me"
+                    android:host="aprihive.com"
                     android:pathPrefix="/login"
                     android:scheme="http" />
             </intent-filter>

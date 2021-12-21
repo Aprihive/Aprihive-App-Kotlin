@@ -5,14 +5,17 @@
 
 package com.aprihive.models;
 
+import java.util.HashMap;
+
 public class DiscoverPostsModel {
 
     private String fullname, username, postText, postId, postImageLink,  postTags, location, timePosted, authorEmail;
+    private HashMap<String, String> linkData;
     private Boolean verified;
 
     public DiscoverPostsModel(){}
 
-    public DiscoverPostsModel(String fullname, String username, String postText, String postId, String postImageLink, String postTags, String location, String timePosted, String authorEmail, Boolean verified) {
+    public DiscoverPostsModel(String fullname, String username, String postText, String postId, String postImageLink, String postTags, String location, String timePosted, String authorEmail, HashMap<String, String> linkData, Boolean verified) {
         this.fullname = fullname;
         this.username = username;
         this.postText = postText;
@@ -22,6 +25,7 @@ public class DiscoverPostsModel {
         this.location = location;
         this.timePosted = timePosted;
         this.authorEmail = authorEmail;
+        this.linkData = linkData;
         this.verified = verified;
     }
 
@@ -105,5 +109,11 @@ public class DiscoverPostsModel {
         this.verified = verified;
     }
 
+    public HashMap<String, String> getLinkData() {
+        return linkData;
+    }
 
+    public void setLinkData(HashMap<String, String> linkData) {
+        this.linkData = linkData;
+    }
 }

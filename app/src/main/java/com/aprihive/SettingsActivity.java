@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 
 import com.aprihive.R;
@@ -23,7 +24,7 @@ import com.aprihive.methods.SharedPrefs;
 public class SettingsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private ConstraintLayout aboutClick, themeSelect, shareApp, reportBug, termsPolicies, support;
+    private ConstraintLayout aboutClick, themeSelect, shareApp, reportBug, termsPolicies, support, versionName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
         reportBug = findViewById(R.id.reportBug);
         termsPolicies = findViewById(R.id.termsPolicies);
         support = findViewById(R.id.supportClick);
+        versionName = findViewById(R.id.versionName);
 
 
         setSupportActionBar(toolbar);
@@ -82,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        "Hey check out Aprihive, the app I use for marketing my services and products easily at: https://aprihive.jesulonimii.me/download");
+                        "Hey check out Aprihive, the app I use for marketing my services and products easily at: https://aprihive.com/download");
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
             }
@@ -104,7 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
         termsPolicies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.jesulonimii.me/tc"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/eula"));
                 startActivity(intent);
             }
         });
@@ -112,8 +114,20 @@ public class SettingsActivity extends AppCompatActivity {
         support.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.jesulonimii.me/support"));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/support"));
                 startActivity(intent);
+            }
+        });
+
+        versionName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivity(intent);
+
             }
         });
 

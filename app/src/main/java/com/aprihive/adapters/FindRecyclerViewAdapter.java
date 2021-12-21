@@ -48,6 +48,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
     private ListenerRegistration likeRegisterQuery;
     private String getUserEmail;
     private MyClickListener listener;
+    private Boolean getThreat;
 
 
     public FindRecyclerViewAdapter(Context context, List<FindModel> userList, MyClickListener listener) {
@@ -80,6 +81,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
                     Intent intent = new Intent(context, UserProfileActivity.class);
                     intent.putExtra("getEmail", userList.get(viewHolder.getAbsoluteAdapterPosition()).getEmail());
                     intent.putExtra("getVerified", userList.get(viewHolder.getAbsoluteAdapterPosition()).getVerified());
+                    intent.putExtra("getThreat", userList.get(viewHolder.getAbsoluteAdapterPosition()).getThreat());
                     intent.putExtra("getPhone", userList.get(viewHolder.getAbsoluteAdapterPosition()).getPhone());
                     intent.putExtra("getTwitter", userList.get(viewHolder.getAbsoluteAdapterPosition()).getTwitter());
                     intent.putExtra("getInstagram", userList.get(viewHolder.getAbsoluteAdapterPosition()).getInstagram());
@@ -119,6 +121,8 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
         getProfileImageUrl = userList.get(position).getProfileImageUrl();
         getBio = userList.get(position).getBio();
         getVerified = userList.get(position).getVerified();
+        getThreat = userList.get(position).getThreat();
+
 
         holder.findFullName.setText(getFullname);
         holder.findBio.setText(getBio);
@@ -145,6 +149,11 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
             holder.verifiedIcon.setVisibility(View.GONE);
         }
 
+        if (getThreat){
+            holder.threatIcon.setVisibility(View.VISIBLE);
+        } else {
+            holder.threatIcon.setVisibility(View.GONE);
+        }
 
     }
 
@@ -155,7 +164,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView profileImage, verifiedIcon;
+        ImageView profileImage, verifiedIcon, threatIcon;
         TextView findFullName, findUsername, findBio, followButton;
         ConstraintLayout userItem;
 
@@ -164,6 +173,7 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
             profileImage = itemView.findViewById(R.id.find_profileImage);
             verifiedIcon = itemView.findViewById(R.id.find_verifiedIcon);
+            threatIcon = itemView.findViewById(R.id.find_warningIcon);
             followButton = itemView.findViewById(R.id.connectButton);
             findFullName = itemView.findViewById(R.id.find_fullName);
             findUsername = itemView.findViewById(R.id.find_username);

@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.ClipData;
@@ -79,6 +80,9 @@ public class UserProfileActivity extends AppCompatActivity  {
     private boolean getVerified;
     private String getUsernameData;
     private ProfileViewPagerAdapter adapter;
+    private ImageView threatIcon;
+    private Boolean getThreat;
+    private ConstraintLayout warningBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +107,11 @@ public class UserProfileActivity extends AppCompatActivity  {
         connectButton = findViewById(R.id.connectButton);
         callButton = findViewById(R.id.callButton);
         tabLayout =  findViewById(R.id.tabLayout);
+        warningBar = findViewById(R.id.warningBar);
 
         verifiedIcon =  findViewById(R.id.verifiedIcon);
+        threatIcon =  findViewById(R.id.warningIcon);
+
         profilePic = findViewById(R.id.user_profileImage);
         fullname = findViewById(R.id.fullName);
         username = findViewById(R.id.username);
@@ -220,7 +227,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         switch (item.getItemId()) {
             case R.id.profileLink:
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("profile-link", "https://aprihive.jesulonimii.me/user/"+getUsername);
+                ClipData clip = ClipData.newPlainText("profile-link", "https://aprihive.com/user/"+getUsername);
                 clipboard.setPrimaryClip(clip);
 
                 MySnackBar snackBar = new MySnackBar(this, getWindow().getDecorView().findViewById(R.id.page), "Copied to clipboard!", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
@@ -281,6 +288,14 @@ public class UserProfileActivity extends AppCompatActivity  {
             verifiedIcon.setVisibility(View.GONE);
         }
 
+        if (getThreat){
+            threatIcon.setVisibility(View.VISIBLE);
+            warningBar.setVisibility(View.VISIBLE);
+        } else {
+            threatIcon.setVisibility(View.GONE);
+            warningBar.setVisibility(View.GONE);
+        }
+
         assert getProfileImageUrl != null;
         if (!getProfileImageUrl.equals("")){
             profilePic.setOnClickListener(new View.OnClickListener() {
@@ -314,6 +329,8 @@ public class UserProfileActivity extends AppCompatActivity  {
                 getPhone = documentSnapshot.getString("phone");
                 getUsername = documentSnapshot.getString("username");
                 getVerified = documentSnapshot.getBoolean("verified");
+                getThreat = documentSnapshot.getBoolean("threat");
+
                 getBio = documentSnapshot.getString("bio");
                 getSchool = documentSnapshot.getString("school");
                 getProfileImageUrl = documentSnapshot.getString("profileImageLink");

@@ -7,6 +7,7 @@
     <color name="bg_color">#fff</color>
     <color name="bg_color_fade">#EDEDED</color>
     <color name="card_bg_color">#fff</color>
+    <color name="card_bg_color2">#6DEDEDED</color>
     <color name="color_theme_blue">#3ea2fa</color>
     <color name="color_theme_blue_600">#003453</color>
     <color name="color_theme_blue_500">#0f2233</color>
@@ -33,6 +34,7 @@
 
     <!--<color name="verifiedIconColor">#FF3C8A</color>-->
     <color name="verifiedIconColor">#3C9AE4</color>
+    <color name="warningIconColor">#D32C2C</color>
     <color name="indicatorUnselected">#808080</color>
     <color name="color_pink">#FF3C8A</color>
     <color name="color_yellow">#FFC53C</color>

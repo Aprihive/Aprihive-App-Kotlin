@@ -121,7 +121,7 @@ public class MyActionDialog {
         actionImage.setImageResource(image);
 
         positiveBtn.setText(btnText);
-        //positiveBtn.setBackgroundColor(btnColor);
+        positiveBtn.setBackgroundColor(context.getResources().getColor(R.color.color_text_blue_500));
         negativeBtn.setVisibility(View.GONE);
 
         positiveBtn.setOnClickListener(new View.OnClickListener() {

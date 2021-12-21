@@ -2,11 +2,14 @@ package com.aprihive.adapters;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,9 +18,14 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.aprihive.R;
 import com.aprihive.models.DiscoverPostsModel;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -26,10 +34,17 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.leocardz.link.preview.library.LinkPreviewCallback;
+import com.leocardz.link.preview.library.SourceContent;
+import com.leocardz.link.preview.library.TextCrawler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecyclerAdapter.ViewHolder> {
 
@@ -60,6 +75,11 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
     private String getPostTags;
     private String getPostTime;
     private String getLocation;
+    private TextCrawler textCrawler;
+    private HashMap<String, String> getLinkData;
+    private String stripHttp;
+    private String stripPaths;
+    private Boolean getThreat;
 
 
     public DiscoverRecyclerAdapter(Context context, List<DiscoverPostsModel> postList, MyClickListener listener) {
@@ -132,6 +152,13 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         });
 
 
+        viewHolder.linkPreviewCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onLinkOpen(viewHolder.getAbsoluteAdapterPosition(), postList.get(viewHolder.getAbsoluteAdapterPosition()).getLinkData().get("url"));
+            }
+        });
+
 
 
 
@@ -147,12 +174,13 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
 
 
         getAuthorEmail = postList.get(position).getAuthorEmail();
-        getPostText = postList.get(position).getPostText();
+        getPostText = postList.get(position).getPostText().replace("   ", "\n");
         getLocation = postList.get(position).getLocation();
         getPostTime = postList.get(position).getTimePosted();
         getPostId = postList.get(position).getPostId();
         getPostImageLink = postList.get(position).getPostImageLink();
         getPostTags = postList.get(position).getPostTags();
+        getLinkData = postList.get(position).getLinkData();
 
         reference = db.collection("users").document(getAuthorEmail);
         registerQuery = reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -165,6 +193,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                     getFullname = value.getString("name");
                     getUsername = value.getString("username");
                     getVerified = value.getBoolean("verified");
+                    getThreat = value.getBoolean("threat");
                     getProfileImageUrl = value.getString("profileImageLink");
 
                     holder.postFullName.setText(getFullname);
@@ -198,13 +227,19 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                     //nothing
                 }
 
+                //threat icon
+                try {
+                    if (getThreat){
+                        holder.threatIcon.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.threatIcon.setVisibility(View.GONE);
+                    }
+                } catch (Exception e){
+                    //nothing
+                }
+
             }
         });
-
-
-
-        //additions
-
 
 
         likeRef = db.collection("upvotes").document(getPostId);
@@ -260,15 +295,6 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         });
 
 
-
-
-
-
-        //end
-
-
-
-
         holder.postText.setText(getPostText);
         holder.postTime.setText(getPostTime + " ");
 
@@ -286,6 +312,53 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         }
 
 
+        if (!getLinkData.get("title").equals("")){
+            holder.linkTitle.setText(getLinkData.get("title"));
+            holder.linkDescription.setText(getLinkData.get("description"));
+            Glide.with(context)
+                    .load(getLinkData.get("image"))
+                    .centerCrop()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            holder.linkImage.setVisibility(View.GONE);
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            holder.linkImage.setVisibility(View.VISIBLE);
+                            return false;
+                        }
+                    })
+                    .into(holder.linkImage);
+
+            if (getLinkData.get("url").toLowerCase().contains("https://")){
+                stripHttp = getLinkData.get("url").replaceFirst("https://","");
+            }
+            else if (getLinkData.get("url").toLowerCase().contains("http://")){
+                stripHttp = getLinkData.get("url").replaceFirst("http://","");
+            }
+
+            if (stripHttp.contains("/")){
+                stripPaths = stripHttp.split("/")[0];
+            }
+            else {
+                stripPaths = stripHttp;
+            }
+
+
+            holder.linkUrl.setText(stripPaths);
+            holder.linkPreviewBar.setVisibility(View.VISIBLE);
+        }
+
+
+
+
+        if (getLinkData.get("title").equals("")){
+            holder.linkPreviewBar.setVisibility(View.GONE);
+        }
 
     }
 
@@ -297,10 +370,11 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
     public class ViewHolder extends RecyclerView.ViewHolder {
 
 
-        private ImageView profileImage, verifiedIcon, postImage, upvoteIcon;
+        private ImageView profileImage, verifiedIcon, threatIcon, postImage, upvoteIcon, linkImage;
         private CardView optionsIcon;
-        private TextView postFullName, postUsername, postText,trustedByText, requestButton, postTime;
-        private ConstraintLayout postItem;
+        private TextView postFullName, postUsername, postText,trustedByText, requestButton, postTime, linkTitle, linkDescription, linkUrl;
+        private ConstraintLayout postItem, linkPreviewBar;
+        private MaterialCardView linkPreviewCard;
 
         public ViewHolder(@NonNull View itemView, MyClickListener listener) {
             super(itemView);
@@ -308,6 +382,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
 
             profileImage = itemView.findViewById(R.id.post_profileImage);
             verifiedIcon = itemView.findViewById(R.id.post_verifiedIcon);
+            threatIcon = itemView.findViewById(R.id.post_warningIcon);
             postFullName = itemView.findViewById(R.id.post_fullName);
             postUsername = itemView.findViewById(R.id.post_username);
             postText = itemView.findViewById(R.id.post_text);
@@ -318,6 +393,13 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
             trustedByText = itemView.findViewById(R.id.trustedBy);
             requestButton = itemView.findViewById(R.id.requestButton);
             upvoteIcon = itemView.findViewById(R.id.upvoteIcon);
+
+            linkTitle = itemView.findViewById(R.id.linkTitle);
+            linkDescription = itemView.findViewById(R.id.linkDescription);
+            linkUrl = itemView.findViewById(R.id.linkUrl);
+            linkImage =  itemView.findViewById(R.id.linkImage);
+            linkPreviewBar = itemView.findViewById(R.id.linkPreviewBar);
+            linkPreviewCard = itemView.findViewById(R.id.linkPreviewCard);
 
 
 
@@ -333,6 +415,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         void onTextExpandClick(int position, TextView textView);
         void onProfileOpen(int position, String postAuthor);
         void onImageClick(int position, String postimage);
+        void onLinkOpen(int position, String link);
 
     }
 
@@ -348,6 +431,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         super.onDetachedFromRecyclerView(recyclerView);
         try {
             likeRegisterQuery.remove();
+            textCrawler.cancel();
         } catch (Exception e) {
             e.printStackTrace();
         }

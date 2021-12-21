@@ -213,6 +213,7 @@ public class SignUp extends AppCompatActivity {
                 details.put("phone", "");
                 details.put("profileImageLink", "-");
                 details.put("verified", false);
+                details.put("threat", false);
                 details.put("registered on", new Timestamp(new Date()));
 
 

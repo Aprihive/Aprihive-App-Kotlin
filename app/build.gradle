@@ -11,7 +11,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 2
-        versionName "1.1"
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -77,6 +77,14 @@ dependencies {
 
     implementation 'com.cottacush:CurrencyEditText:0.0.7'
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    //downloader library
+    implementation 'com.mindorks.android:prdownloader:0.6.0'
+
+    implementation 'com.github.jesulonimii:Android-Link-Preview:1.0'
 
 
     // dependencies {

@@ -3,13 +3,13 @@ package com.aprihive.models;
 public class FindModel {
 
     private String fullname, username, bio, schoolName, profileImageUrl, email, phone, twitter, instagram;
-    private Boolean verified;
+    private Boolean verified, threat;
 
       public FindModel(){
 
     }
 
-    public FindModel(String fullname, String username, String bio, String schoolName, String profileImageUrl, String email, String phone, String twitter, String instagram, Boolean verified) {
+    public FindModel(String fullname, String username, String bio, String schoolName, String profileImageUrl, String email, String phone, String twitter, String instagram, Boolean verified, Boolean threat) {
         this.fullname = fullname;
         this.username = username;
         this.bio = bio;
@@ -20,6 +20,7 @@ public class FindModel {
         this.twitter = twitter;
         this.instagram = instagram;
         this.verified = verified;
+        this.threat = threat;
     }
 
     public String getFullname() {
@@ -100,5 +101,13 @@ public class FindModel {
 
     public void setInstagram(String instagram) {
         this.instagram = instagram;
+    }
+
+    public Boolean getThreat() {
+        return threat;
+    }
+
+    public void setThreat(Boolean threat) {
+        this.threat = threat;
     }
 }

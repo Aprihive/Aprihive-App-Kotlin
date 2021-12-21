@@ -59,6 +59,19 @@
                 app:layout_constraintTop_toTopOf="@+id/nav_profile_name"
                 app:srcCompat="@drawable/ic_verified" />
 
+            <ImageView
+                android:id="@+id/warningIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:tint="@color/white_color"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/nav_profile_name"
+                app:layout_constraintStart_toEndOf="@+id/nav_profile_name"
+                app:layout_constraintTop_toTopOf="@+id/nav_profile_name"
+                app:srcCompat="@drawable/ic_danger_icon" />
+
             <TextView
                 android:id="@+id/nav_profile_username"
                 android:layout_width="wrap_content"

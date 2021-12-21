@@ -13,12 +13,15 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aprihive.R;
+import com.aprihive.backend.RetrofitInterface;
 import com.aprihive.methods.MyActionDialog;
 import com.aprihive.methods.MySnackBar;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,6 +38,12 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class PostOptionsModal extends BottomSheetDialogFragment {
 
     private final Runnable postsRefresh;
@@ -50,6 +59,8 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
     private String fetchPostImage;
     private Runnable action;
     private Runnable removeImageAction;
+    private RetrofitInterface retrofitInterface;
+    private Retrofit retrofit;
 
     public PostOptionsModal(Runnable postsRefresh) {
         this.postsRefresh = postsRefresh;
@@ -69,6 +80,12 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
         user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(getResources().getString(R.string.API_URL))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        retrofitInterface = retrofit.create(RetrofitInterface.class);
 
 
         final Activity activity = getActivity();
@@ -182,6 +199,11 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
             fileRef.delete();
         }
 
+        if (getArguments().getBoolean("isAdmin")){
+           sendDeleteNotification();
+        }
+
+
         //delete post upvotes document
         DocumentReference postLikesReference = db.collection("upvotes").document(fetchPostId);
         postLikesReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -194,6 +216,38 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
             }
         });
 
+    }
+
+    private void sendDeleteNotification() {
+        HashMap<String, String> map = new HashMap<>();
+
+        map.put("receiverEmail", getArguments().getString("postAuthorEmail"));
+        map.put("postId", fetchPostId);
+        map.put("postText", getArguments().getString("postText"));
+
+        Call<Void> call = retrofitInterface.executePostRemovalNotification(map);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.code() == 200){
+                    Log.d("email-status", "email sent");
+                }
+                else if (response.code() == 400){
+                    Log.d("email-status", "failure: email not sent");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(context, "Failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+                Log.e("error", t.getMessage());
+                Log.e("error", t.getLocalizedMessage());
+
+            }
+        });
     }
 
     private void confirmImageRemove() {

@@ -3,6 +3,7 @@ package com.aprihive.pages;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +48,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 
 
 public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickListener {
@@ -79,6 +83,8 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
     private String profileEmail;
     private String getTags;
     private Timestamp getTime;
+    private String fetchLink;
+    private HashMap<String, String> getLinkData;
 
     public Feed() {
 
@@ -185,7 +191,7 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
                         getPostImageLink = value.getString("imageLink");
                         getPostUserEmail = value.getString("userEmail");
                         getPostId = value.getString("postId");
-
+                        getLinkData = (HashMap<String, String>) value.get("linkPreviewData");
 
                         discoverModel = new DiscoverPostsModel();
                         discoverModel.setAuthorEmail(getPostUserEmail);
@@ -198,12 +204,16 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
                         discoverModel.setPostText(getPostText);
                         discoverModel.setPostImageLink(getPostImageLink);
                         discoverModel.setPostId(getPostId);
+                        discoverModel.setLinkData(getLinkData);
+
+
                         try {
                             getTags = value.getString("tags");
                             discoverModel.setPostTags(getTags);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
                         postList.add(discoverModel);
 
 
@@ -331,6 +341,12 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
         Intent i = new Intent(context, ImageViewActivity.class);
         i.putExtra("imageUri", postImage);
         startActivity(i);
+    }
+
+    @Override
+    public void onLinkOpen(int position, String link){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        startActivity(intent);
     }
 
     private void filter(String text){

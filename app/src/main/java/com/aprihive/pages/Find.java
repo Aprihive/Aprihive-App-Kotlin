@@ -64,6 +64,7 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
     private ConstraintLayout nothingImage;
     private String getTwitter;
     private String getInstagram;
+    private Boolean getThreat;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -152,6 +153,8 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
                         getTwitter = value.getString("twitter");
                         getInstagram = value.getString("instagram");
                         getVerified = value.getBoolean("verified");
+                        getThreat = value.getBoolean("threat");
+
                         getBio = value.getString("bio");
                         getUsername = value.getString("username");
                         getSchoolName = value.getString("school");
@@ -170,6 +173,7 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
                         findModel.setPhone(getPhone);
                         findModel.setTwitter(getTwitter);
                         findModel.setInstagram(getInstagram);
+                        findModel.setThreat(getThreat);
 
 
 

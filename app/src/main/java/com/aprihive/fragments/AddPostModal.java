@@ -8,13 +8,16 @@ package com.aprihive.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +28,16 @@ import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
+import com.aprihive.backend.RetrofitInterface;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.aprihive.R;
 import com.aprihive.methods.MySnackBar;
 import com.aprihive.methods.NetworkListener;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -43,15 +51,26 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.leocardz.link.preview.library.LinkPreviewCallback;
+import com.leocardz.link.preview.library.SourceContent;
+import com.leocardz.link.preview.library.TextCrawler;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class AddPostModal extends BottomSheetDialogFragment {
+
+
 
     private final Runnable postsRefresh;
     private EditText emailInput;
@@ -86,6 +105,10 @@ public class AddPostModal extends BottomSheetDialogFragment {
     private Map<String, Object> setLikes;
     String[] tagsList={"Catering,","Graphics Design,","Development,","App development,","Animation,","Fashion Designing,","Trading,","Bitcoin,","Repairs,","Clothing,","Shoes,","Games,","Confectioneries,","Shoe making,","Tutorials,"};
     private String tagsText;
+    private TextCrawler textCrawler;
+    private String fetchLink;
+    private HashMap<String, String> linkPreviewData;
+
 
 
     public AddPostModal(Runnable postsRefresh) {
@@ -103,6 +126,8 @@ public class AddPostModal extends BottomSheetDialogFragment {
         user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+
 
         myInflater = inflater;
         myContainer = container;
@@ -124,6 +149,13 @@ public class AddPostModal extends BottomSheetDialogFragment {
         tags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
         random = new Random();
+
+        linkPreviewData = new HashMap<String, String>();
+        linkPreviewData.put("title", "");
+        linkPreviewData.put("description", "");
+        linkPreviewData.put("image", "");
+        linkPreviewData.put("url", "");
+
 
         postId = String.valueOf(random.nextInt(1000000));
 
@@ -194,6 +226,46 @@ public class AddPostModal extends BottomSheetDialogFragment {
         }
         else {
             postDetails.put("imageLink", "");
+            fetchLinkData();
+        }
+
+
+    }
+
+    private void fetchLinkData(){
+        //find link in post
+        List<String> postLinks = new ArrayList<String>();
+        Matcher m = Patterns.WEB_URL.matcher(addPostText);
+
+        while (m.find()) {
+            String url = m.group();
+            postLinks.add(url);
+        }
+
+
+        if (!postLinks.isEmpty()){
+            fetchLink = postLinks.get(0);
+            textCrawler = new TextCrawler();
+            LinkPreviewCallback lpCallback = new LinkPreviewCallback() {
+                @Override
+                public void onPre() {
+
+                }
+
+                @Override
+                public void onPos(SourceContent metaData, boolean isNull) {
+                    linkPreviewData.put("title", metaData.getTitle());
+                    linkPreviewData.put("description", metaData.getDescription());
+                    linkPreviewData.put("image", metaData.getImages().get(0));
+                    linkPreviewData.put("url", metaData.getUrl());
+
+                    postDetails.put("linkPreviewData", linkPreviewData);
+                    proceed();
+                }
+            };
+            textCrawler.makePreview(lpCallback, fetchLink);
+        }
+        else {
             proceed();
         }
 
@@ -205,6 +277,7 @@ public class AddPostModal extends BottomSheetDialogFragment {
         assert getArguments() != null;
 
 
+
         postDetails.put("name", getArguments().getString("fullname"));
         postDetails.put("tags", tagsText);
         postDetails.put("location", getArguments().getString("location"));
@@ -214,6 +287,7 @@ public class AddPostModal extends BottomSheetDialogFragment {
         postDetails.put("userEmail", user.getEmail());
         postDetails.put("upvotes", "0");
         postDetails.put("postText", addPostText);
+        postDetails.put("linkPreviewData", linkPreviewData);
         postDetails.put("created on", new Timestamp(new Date()));
 
 

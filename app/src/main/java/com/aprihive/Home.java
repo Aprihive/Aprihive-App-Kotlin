@@ -126,6 +126,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private boolean notified = false;
     private HomeViewPagerAdapter adapter;
     private GoogleSignInClient mGoogleSignInClient;
+    private Boolean getThreat;
+    private ImageView threatIcon;
 
 
     @Override
@@ -197,6 +199,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         navUsername = navigView.getHeaderView(0).findViewById(R.id.nav_profile_username);
         navImage = navigView.getHeaderView(0).findViewById(R.id.nav_profile_pic);
         verificationIcon = navigView.getHeaderView(0).findViewById(R.id.verifiedIcon);
+        threatIcon = navigView.getHeaderView(0).findViewById(R.id.warningIcon);
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -444,6 +448,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     getLocation = value.getString("school");
                     getProfilePic = value.getString("profileImageLink");
                     getVerified = value.getBoolean("verified");
+                    getThreat = value.getBoolean("threat");
+
                     isAdmin = value.getBoolean("isAdmin");
                     isUserNew = value.getBoolean("newAccount");
 
@@ -474,6 +480,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         verificationIcon.setVisibility(View.VISIBLE);
                     } else {
                         verificationIcon.setVisibility(View.GONE);
+                    }
+
+                    if (getThreat) {
+                        threatIcon.setVisibility(View.VISIBLE);
+                    } else {
+                        threatIcon.setVisibility(View.GONE);
                     }
 
                     Glide.with(getApplicationContext())

@@ -3,6 +3,7 @@ package com.aprihive.pages;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +27,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aprihive.Home;
 import com.aprihive.ImageViewActivity;
@@ -34,6 +37,8 @@ import com.aprihive.adapters.DiscoverRecyclerAdapter;
 import com.aprihive.fragments.PostOptionsModal;
 import com.aprihive.fragments.SendRequestModal;
 import com.aprihive.models.DiscoverPostsModel;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,6 +54,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.leocardz.link.preview.library.LinkPreviewCallback;
+import com.leocardz.link.preview.library.SourceContent;
+import com.leocardz.link.preview.library.TextCrawler;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -56,8 +64,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
 
 
 public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClickListener {
@@ -89,6 +99,8 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
     private ConstraintLayout nothingImage;
     private String getLocation;
     private Timestamp getTime;
+    private String fetchLink;
+    private HashMap<String, String> getLinkData;
 
 
     public Discover() {
@@ -216,7 +228,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
                         getPostImageLink = value.getString("imageLink");
                         getPostUserEmail = value.getString("userEmail");
                         getPostId = value.getString("postId");
-
+                        getLinkData = (HashMap<String, String>) value.get("linkPreviewData");
 
                         discoverModel = new DiscoverPostsModel();
                         discoverModel.setAuthorEmail(getPostUserEmail);
@@ -229,12 +241,16 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
                         discoverModel.setPostText(getPostText);
                         discoverModel.setPostImageLink(getPostImageLink);
                         discoverModel.setPostId(getPostId);
+                        discoverModel.setLinkData(getLinkData);
+
+
                         try {
                             getTags = value.getString("tags");
                             discoverModel.setPostTags(getTags);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
                         postList.add(discoverModel);
 
 
@@ -429,6 +445,12 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
         });
         super.onCreateOptionsMenu(menu, inflater);
 
+    }
+
+    @Override
+    public void onLinkOpen(int position, String link){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        startActivity(intent);
     }
 
     private void filter(String text){

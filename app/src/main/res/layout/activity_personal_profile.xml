@@ -77,6 +77,18 @@
                     app:layout_constraintTop_toTopOf="@+id/fullName"
                     app:srcCompat="@drawable/ic_verified" />
 
+                <ImageView
+                    android:id="@+id/warningIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:tint="@color/warningIconColor"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/fullName"
+                    app:layout_constraintStart_toEndOf="@+id/fullName"
+                    app:layout_constraintTop_toTopOf="@+id/fullName"
+                    app:srcCompat="@drawable/ic_danger_icon" />
+
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="0dp"

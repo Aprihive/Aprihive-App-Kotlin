@@ -12,6 +12,7 @@
     <color name="bg_color">#1E1E1E</color>
     <color name="bg_color_fade">#121212</color>
     <color name="card_bg_color">#1E1E1E</color>
+    <color name="card_bg_color2">#121212</color>
     <color name="color_theme_blue">#3ea2fa</color>
     <color name="color_theme_blue_500">#0f2233</color>
     <color name="color_theme_green_100">#93efbd</color>
@@ -20,7 +21,7 @@
     <color name="color_error_red_050">#43ECA4A4</color>
     <color name="color_error_red_100">#EF9393</color>
     <color name="color_error_red_200">#ED5050</color>
-    <color name="color_error_red_300">#E11818</color>
+    <color name="color_error_red_300">#DF5A5A</color>
 
 
     <color name="color_success_green_050">#335EE9B1</color>
@@ -36,6 +37,7 @@
     <color name="color_chip_blue_300">#3ea2fa</color>
 
     <color name="verifiedIconColor">#FFFFFF</color>
+    <color name="warningIconColor">#E34646</color>
     <color name="indicatorUnselected">#808080</color>
     
 

@@ -74,6 +74,18 @@
                     app:layout_constraintTop_toTopOf="@+id/fullName"
                     app:srcCompat="@drawable/ic_verified" />
 
+                <ImageView
+                    android:id="@+id/warningIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:tint="@color/warningIconColor"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/fullName"
+                    app:layout_constraintStart_toEndOf="@+id/fullName"
+                    app:layout_constraintTop_toTopOf="@+id/fullName"
+                    app:srcCompat="@drawable/ic_danger_icon" />
+
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="0dp"
@@ -143,6 +155,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/username" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
@@ -152,11 +165,11 @@
 
                     <ImageView
                         android:id="@+id/imageView8"
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_location"
                         android:tint="@color/color_theme_blue"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -165,14 +178,51 @@
                         android:id="@+id/description"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:layout_marginHorizontal="50dp"
+                        android:gravity="center"
                         android:maxLines="4"
                         android:text=""
                         android:textColor="@color/grey_color_300"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/warningBar"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/error_background"
+                    android:paddingVertical="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout8">
+
+                    <ImageView
+                        android:id="@+id/imageView9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:src="@drawable/ic_warning"
+                        android:tint="@color/color_error_red_300"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="@string/user_warning_text"
+                        android:textColor="@color/color_error_red_300"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imageView9"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
