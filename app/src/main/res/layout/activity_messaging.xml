@@ -136,7 +136,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:hint="Type Message..."
-            android:inputType="textCapSentences"
+            android:inputType="textCapSentences|textMultiLine"
             android:maxLines="10"
             android:textColorHint="@color/grey_color_200"
             android:textColor="@color/black_text_color"
