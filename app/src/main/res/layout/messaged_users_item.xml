@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Jesulonimii 2022. -->
+<!-- Copyright (c) Erlite 2022. -->
+<!-- Copyright (c) Aprihive 2022. -->
+<!-- All Rights Reserved -->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/userItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_color"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingHorizontal="20dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/messaged_profileImage"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/user_image_placeholder"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/userDetails"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/messaged_profileImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/messaged_profileImage"
+        app:layout_constraintTop_toTopOf="@+id/messaged_profileImage">
+
+        <TextView
+            android:id="@+id/messaged_fullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="14dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/gilroy_bold"
+            android:maxLength="18"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/color_text_blue_500"
+            android:textFontWeight="200"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toStartOf="@+id/messaged_verifiedIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/messaged_verifiedIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="2.2dp"
+            android:visibility="gone"
+            android:contentDescription="verification icon"
+            android:src="@drawable/ic_verified"
+            android:tint="@color/verifiedIconColor"
+            app:layout_constraintBottom_toBottomOf="@+id/messaged_fullName"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintStart_toEndOf="@+id/messaged_fullName"
+            app:layout_constraintTop_toTopOf="@+id/messaged_fullName" />
+
+        <ImageView
+            android:id="@+id/messaged_warningIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="2.2dp"
+            android:visibility="gone"
+            android:contentDescription="warning icon"
+            android:src="@drawable/ic_danger_icon"
+            android:tint="@color/warningIconColor"
+            app:layout_constraintBottom_toBottomOf="@+id/messaged_fullName"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintStart_toEndOf="@+id/messaged_fullName"
+            app:layout_constraintTop_toTopOf="@+id/messaged_fullName" />
+
+
+        <TextView
+            android:id="@+id/messaged_recent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text=""
+            android:textColor="@color/grey_color_200"
+            android:textFontWeight="50"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/messaged_fullName"
+            app:layout_constraintTop_toBottomOf="@+id/messaged_fullName" />
+
+        <TextView
+            android:id="@+id/messaged_recentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/grey_color_200"
+            android:textFontWeight="50"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/messaged_fullName" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="409dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messaged_profileImage" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -137,6 +137,24 @@
                     app:layout_constraintStart_toEndOf="@+id/connectButton"
                     app:layout_constraintTop_toTopOf="@+id/connectButton" />
 
+                <TextView
+                    android:id="@+id/messageButton"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/light_blue_bg_chip"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:text="Send Message"
+                    android:textColor="@color/color_theme_blue"
+                    android:textFontWeight="50"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/connectButton" />
+
 
 
                 <TextView
@@ -158,10 +176,10 @@
                     android:id="@+id/constraintLayout8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/connectButton">
+                    app:layout_constraintTop_toBottomOf="@+id/messageButton">
 
                     <ImageView
                         android:id="@+id/imageView8"
@@ -173,6 +191,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
 
                     <TextView
                         android:id="@+id/description"

@@ -73,6 +73,7 @@
                 android:layout_height="0dp"
                 android:background="@color/bg_color"
                 app:elevation="0dp"
+                app:labelVisibilityMode="unlabeled"
                 app:itemIconTint="@color/bottom_nav_item_color"
                 app:itemTextColor="@color/bottom_nav_item_color"
                 app:layout_constraintEnd_toEndOf="parent"

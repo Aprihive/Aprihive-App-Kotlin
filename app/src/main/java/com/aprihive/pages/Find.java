@@ -53,12 +53,11 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
     private FirebaseFirestore db;
 
     private static final Object TAG = "ok";
-    private TextView connectButton, userItem;
     private RecyclerView recyclerView;
     private List<FindModel> usersList;
     private FindRecyclerViewAdapter adapter;
 
-    private String getEmail, getFullname, getUsername, getPhone, getBio, getSchoolName, getProfileLink; //fetch from firebase into
+    private String getEmail, getFullname, getUsername, getPhone, getBio, getSchoolName, getProfileImageLink; //fetch from firebase into
     private Boolean getVerified; //fetch from firebase into
     private SwipeRefreshLayout swipeRefresh;
     private ConstraintLayout nothingImage;
@@ -86,8 +85,6 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
         db = FirebaseFirestore.getInstance();
         
         usersList= new ArrayList<>();
-        connectButton = view.findViewById(R.id.connectButton);
-        userItem = view.findViewById(R.id.fullName);
         recyclerView = view.findViewById(R.id.findRecyclerView);
         swipeRefresh = view.findViewById(R.id.find_swipeRefresh);
         nothingImage = view.findViewById(R.id.notFoundImage);
@@ -113,6 +110,7 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
 
     private void setupRecyclerView() {
 
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         //set items to arrange from bottom
         // linearLayoutManager.setReverseLayout(true);
@@ -124,7 +122,6 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
     }
 
     private void getUsersFromFirebase(){
-        FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -158,7 +155,7 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
                         getBio = value.getString("bio");
                         getUsername = value.getString("username");
                         getSchoolName = value.getString("school");
-                        getProfileLink = value.getString("profileImageLink");
+                        getProfileImageLink = value.getString("profileImageLink");
 
 
                         FindModel findModel = new FindModel();
@@ -169,7 +166,7 @@ public class Find extends Fragment implements FindRecyclerViewAdapter.MyClickLis
                         findModel.setUsername(getUsername);
                         findModel.setVerified(getVerified);
                         findModel.setSchoolName(getSchoolName);
-                        findModel.setProfileImageUrl(getProfileLink);
+                        findModel.setProfileImageUrl(getProfileImageLink);
                         findModel.setPhone(getPhone);
                         findModel.setTwitter(getTwitter);
                         findModel.setInstagram(getInstagram);

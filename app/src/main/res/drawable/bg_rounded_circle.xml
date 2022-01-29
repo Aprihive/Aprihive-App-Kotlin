@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Jesulonimii 2022. -->
+<!-- Copyright (c) Erlite 2022. -->
+<!-- Copyright (c) Aprihive 2022. -->
+<!-- All Rights Reserved -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <solid
+        android:color="@color/color_theme_blue"/>
+
+    <corners
+        android:radius="500dp"/>
+
+</shape>

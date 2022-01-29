@@ -191,7 +191,8 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
                         getPostImageLink = value.getString("imageLink");
                         getPostUserEmail = value.getString("userEmail");
                         getPostId = value.getString("postId");
-                        getLinkData = (HashMap<String, String>) value.get("linkPreviewData");
+
+
 
                         discoverModel = new DiscoverPostsModel();
                         discoverModel.setAuthorEmail(getPostUserEmail);
@@ -204,8 +205,13 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
                         discoverModel.setPostText(getPostText);
                         discoverModel.setPostImageLink(getPostImageLink);
                         discoverModel.setPostId(getPostId);
-                        discoverModel.setLinkData(getLinkData);
 
+                        try {
+                            getLinkData = (HashMap<String, String>) value.get("linkPreviewData");
+                            discoverModel.setLinkData(getLinkData);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
                         try {
                             getTags = value.getString("tags");

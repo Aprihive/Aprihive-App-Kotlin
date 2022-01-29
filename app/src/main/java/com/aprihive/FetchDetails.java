@@ -13,11 +13,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.aprihive.methods.SetBarsColor;
 import com.aprihive.methods.SharedPrefs;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,6 +36,8 @@ public class FetchDetails extends AppCompatActivity {
     FirebaseFirestore db;
     private String getUsername, getPhone, getBio, getSchool, getProfileImageUrl, getTwitter, getInstagram, getFullname;
     private Boolean getVerified;
+    private FirebaseAuth auth;
+    private FirebaseUser user;
 
 
     @Override
@@ -46,12 +51,23 @@ public class FetchDetails extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(getTheme);
 
         db =  FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
 
         Uri data = getIntent().getData();
         assert data != null;
         getUsernameData = data.getLastPathSegment().toLowerCase();
         Log.e("debug", "used username");
-        getUserInfoFromDbByUsername();
+
+        if (user.getDisplayName().toLowerCase().equals(getUsernameData)){
+            Intent i = new Intent(FetchDetails.this, PersonalProfileActivity.class);
+            startActivity(i);
+            finish();
+        }
+        else {
+            getUserInfoFromDbByUsername();
+        }
+
 
     }
 
@@ -87,7 +103,7 @@ public class FetchDetails extends AppCompatActivity {
                         getInstagram = value.getString("instagram");
 
                         Log.e("fetch", "fetched finished");
-                        
+
                         openProfile();
 
 
@@ -97,7 +113,10 @@ public class FetchDetails extends AppCompatActivity {
                 }
                 if (task.getResult().size() == 0) {
                     Log.d("debug", "User does not exist");
-
+                    Toast.makeText(FetchDetails.this, "User does not exist!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(FetchDetails.this, Home.class);
+                    startActivity(intent);
+                    finish();
                 }
 
             }

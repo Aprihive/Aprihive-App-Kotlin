@@ -54,6 +54,8 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class UserProfileActivity extends AppCompatActivity  {
 
     private static final String TAG = "debug" ;
@@ -83,6 +85,7 @@ public class UserProfileActivity extends AppCompatActivity  {
     private ImageView threatIcon;
     private Boolean getThreat;
     private ConstraintLayout warningBar;
+    private TextView sendMsgBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,7 @@ public class UserProfileActivity extends AppCompatActivity  {
         username = findViewById(R.id.username);
         bio = findViewById(R.id.description);
         schoolName = findViewById(R.id.schoolName);
+        sendMsgBtn =  findViewById(R.id.messageButton);
 
         Intent intent = getIntent();
 
@@ -141,6 +145,18 @@ public class UserProfileActivity extends AppCompatActivity  {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+        sendMsgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(UserProfileActivity.this, MessagingActivity.class);
+                intent.putExtra("getEmail", getUserEmail);
+                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+            }
+        });
 
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

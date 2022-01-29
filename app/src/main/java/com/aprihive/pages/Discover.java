@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.aprihive.Home;
 import com.aprihive.ImageViewActivity;
+import com.aprihive.PersonalProfileActivity;
 import com.aprihive.R;
 import com.aprihive.UserProfileActivity;
 import com.aprihive.adapters.DiscoverRecyclerAdapter;
@@ -123,6 +124,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
         //init firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        user = auth.getCurrentUser();
         recyclerView = view.findViewById(R.id.findRecyclerView);
         swipeRefresh = view.findViewById(R.id.find_swipeRefresh);
         context = getActivity().getApplicationContext();
@@ -228,7 +230,6 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
                         getPostImageLink = value.getString("imageLink");
                         getPostUserEmail = value.getString("userEmail");
                         getPostId = value.getString("postId");
-                        getLinkData = (HashMap<String, String>) value.get("linkPreviewData");
 
                         discoverModel = new DiscoverPostsModel();
                         discoverModel.setAuthorEmail(getPostUserEmail);
@@ -241,7 +242,13 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
                         discoverModel.setPostText(getPostText);
                         discoverModel.setPostImageLink(getPostImageLink);
                         discoverModel.setPostId(getPostId);
-                        discoverModel.setLinkData(getLinkData);
+
+                        try {
+                            getLinkData = (HashMap<String, String>) value.get("linkPreviewData");
+                            discoverModel.setLinkData(getLinkData);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
 
                         try {
@@ -365,9 +372,17 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
 
     @Override
     public void onProfileOpen(int position, String postAuthor){
-        Intent i = new Intent(context, UserProfileActivity.class);
-        i.putExtra("getEmail", postAuthor);
-        startActivity(i);
+        if (postAuthor.equals(user.getEmail())){
+            Intent i = new Intent(context, PersonalProfileActivity.class);
+            i.putExtra("getEmail", postAuthor);
+            startActivity(i);
+        }
+        else {
+            Intent i = new Intent(context, UserProfileActivity.class);
+            i.putExtra("getEmail", postAuthor);
+            startActivity(i);
+        }
+
     }
 
     @Override

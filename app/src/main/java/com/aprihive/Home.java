@@ -577,6 +577,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         setUserDetailsInNavbar();
                         viewPager.setAdapter(adapter);
                     }
+                    else if(getActionType.equals("update") && getVersion.equals(getResources().getString(R.string.version))){
+                        setUserDetailsInNavbar();
+                        viewPager.setAdapter(adapter);
+                    }
+                    else {
+                        fab.hide();
+                    }
 
 
                 } catch (Resources.NotFoundException e) {

@@ -94,7 +94,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         //inflate layout(find_users_item)
         View view;
         LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.discover_post_item, parent, false);
+        view = inflater.inflate(R.layout.discover_post_item_alt, parent, false);
 
         final ViewHolder viewHolder = new ViewHolder(view, listener);
 
@@ -300,9 +300,11 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
 
         if (getPostImageLink == "" || getPostImageLink == null) {
             holder.postImage.setVisibility(View.GONE);
+            holder.postImage_bg.setVisibility(View.GONE);
         } else {
             //post image
             holder.postImage.setVisibility(View.VISIBLE);
+            holder.postImage_bg.setVisibility(View.VISIBLE);
 
             Glide.with(context)
                     .load(getPostImageLink)
@@ -312,53 +314,58 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         }
 
 
-        if (!getLinkData.get("title").equals("")){
-            holder.linkTitle.setText(getLinkData.get("title"));
-            holder.linkDescription.setText(getLinkData.get("description"));
-            Glide.with(context)
-                    .load(getLinkData.get("image"))
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            holder.linkImage.setVisibility(View.GONE);
-                            return false;
-                        }
+        try {
+            if (!getLinkData.get("title").equals("")){
+                holder.linkTitle.setText(getLinkData.get("title"));
+                holder.linkDescription.setText(getLinkData.get("description"));
+                Glide.with(context)
+                        .load(getLinkData.get("image"))
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                holder.linkImage.setVisibility(View.GONE);
+                                return false;
+                            }
 
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            holder.linkImage.setVisibility(View.VISIBLE);
-                            return false;
-                        }
-                    })
-                    .into(holder.linkImage);
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                holder.linkImage.setVisibility(View.VISIBLE);
+                                return false;
+                            }
+                        })
+                        .into(holder.linkImage);
 
-            if (getLinkData.get("url").toLowerCase().contains("https://")){
-                stripHttp = getLinkData.get("url").replaceFirst("https://","");
+                if (getLinkData.get("url").toLowerCase().contains("https://")){
+                    stripHttp = getLinkData.get("url").replaceFirst("https://","");
+                }
+                else if (getLinkData.get("url").toLowerCase().contains("http://")){
+                    stripHttp = getLinkData.get("url").replaceFirst("http://","");
+                }
+
+                if (stripHttp.contains("/")){
+                    stripPaths = stripHttp.split("/")[0];
+                }
+                else {
+                    stripPaths = stripHttp;
+                }
+
+
+                holder.linkUrl.setText(stripPaths);
+                holder.linkPreviewBar.setVisibility(View.VISIBLE);
             }
-            else if (getLinkData.get("url").toLowerCase().contains("http://")){
-                stripHttp = getLinkData.get("url").replaceFirst("http://","");
-            }
-
-            if (stripHttp.contains("/")){
-                stripPaths = stripHttp.split("/")[0];
-            }
-            else {
-                stripPaths = stripHttp;
-            }
 
 
-            holder.linkUrl.setText(stripPaths);
-            holder.linkPreviewBar.setVisibility(View.VISIBLE);
+
+
+            if (getLinkData.get("title").equals("")){
+                holder.linkPreviewBar.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-
-
-
-        if (getLinkData.get("title").equals("")){
-            holder.linkPreviewBar.setVisibility(View.GONE);
-        }
 
     }
 
@@ -371,7 +378,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
 
 
         private ImageView profileImage, verifiedIcon, threatIcon, postImage, upvoteIcon, linkImage;
-        private CardView optionsIcon;
+        private CardView optionsIcon, postImage_bg;
         private TextView postFullName, postUsername, postText,trustedByText, requestButton, postTime, linkTitle, linkDescription, linkUrl;
         private ConstraintLayout postItem, linkPreviewBar;
         private MaterialCardView linkPreviewCard;
@@ -389,6 +396,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
             postItem = itemView.findViewById(R.id.postItem);
             postTime = itemView.findViewById(R.id.postTime);
             postImage = itemView.findViewById(R.id.postImage);
+            postImage_bg = itemView.findViewById(R.id.postImage_bg);
             optionsIcon = itemView.findViewById(R.id.optionsIcon);
             trustedByText = itemView.findViewById(R.id.trustedBy);
             requestButton = itemView.findViewById(R.id.requestButton);
