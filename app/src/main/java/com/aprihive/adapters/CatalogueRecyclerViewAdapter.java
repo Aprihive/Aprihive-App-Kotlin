@@ -23,6 +23,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.aprihive.CatalogueItemDetails;
 import com.aprihive.R;
 import com.aprihive.models.CatalogueModel;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.List;
@@ -109,6 +110,7 @@ public class CatalogueRecyclerViewAdapter extends RecyclerView.Adapter<Catalogue
                 .load(getItemImageLink)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.itemImage);
 
 
