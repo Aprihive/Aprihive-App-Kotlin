@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aprihive.adapters.MessagingRecyclerAdapter;
+import com.aprihive.backend.RetrofitInterface;
 import com.aprihive.methods.MySnackBar;
 import com.aprihive.methods.SetBarsColor;
 import com.aprihive.models.MessageModel;
@@ -46,13 +47,24 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MessagingActivity extends AppCompatActivity implements MessagingRecyclerAdapter.MyClickListener {
 
@@ -83,17 +95,30 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
     private String getMessageImageLink;
     private String getMessageType;
 
+    private Retrofit retrofit;
+    private RetrofitInterface retrofitInterface;
+    private String token;
+    private String receiverUserName;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_messaging);
+
 
         //firebase
         //init firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = auth.getCurrentUser();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(getResources().getString(R.string.API_URL))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        retrofitInterface = retrofit.create(RetrofitInterface.class);
 
         random = new Random();
 
@@ -304,7 +329,7 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
                         addTimeReference.set(timeAndRead).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(@NonNull Void aVoid) {
-
+                                sendMessagePushNotification();
                             }
                         });
                         Log.e("debug", "sent to receiver");
@@ -335,8 +360,11 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
                 //threat = value.getBoolean("threat");
                 //verified = value.getBoolean("verified");
 
+                receiverUserName = value.getString("username");
+
 
                 receiverName.setText(value.getString("name"));
+                token = value.getString("fcm-token");
                 try {
                     receiverBio.setText(value.getString("bio").substring(0, 30) + "...");
                 } catch (Exception e) {
@@ -355,6 +383,49 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
 
             }
         });
+    }
+
+    private void sendMessagePushNotification() {
+        HashMap<String, String> map = new HashMap<>();
+
+        map.put("senderName", user.getDisplayName());
+        map.put("receiverName", receiverUserName);
+        map.put("receiverToken", token);
+        map.put("senderEmail", user.getEmail());
+        map.put("senderProfilePicture", user.getPhotoUrl().toString());
+        map.put("message", addPostText);
+        try {
+            map.put("time", messageTime(new Timestamp(new Date())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            map.put("time", "Today");
+        }
+
+
+        Call<Void> call = retrofitInterface.executeMessagePushNotification(map);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.code() == 200){
+                    Log.e("message-push-status", "message push notification sent");
+                }
+                else if (response.code() == 400){
+                    Log.e("message-push-status", "failure: msg push not sent");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MessagingActivity.this, "Failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+                Log.e("error", t.getMessage());
+                Log.e("error", t.getLocalizedMessage());
+
+            }
+        });
+
     }
 
     private void setupRecyclerView() {
@@ -394,6 +465,60 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
         }
 
     }
+
+    private String messageTime(Timestamp timestamp) throws ParseException {
+
+        String time = "";
+
+        Date date = timestamp.toDate();
+        PrettyTime prettyTime = new PrettyTime(Locale.getDefault());
+        String ago = prettyTime.format(date);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy, hh:mm aaa");
+        SimpleDateFormat sdfYesterday = new SimpleDateFormat("hh:mm aaa");
+        SimpleDateFormat sdfDays = new SimpleDateFormat("EEEE, hh:mm aaa");
+
+
+        Calendar c1 = Calendar.getInstance(); // today
+        c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
+
+
+
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(date); // your date
+
+        Calendar c3 = Calendar.getInstance(); // today
+        c3.add(Calendar.DAY_OF_YEAR, 0); // today
+
+        if (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)){
+            time = "Yesterday, " + sdfYesterday.format(date);
+        }
+
+        else if (ago.contains("month") || ago.contains("week")){
+            //time = String.valueOf(sdf.parse(String.valueOf(date)));
+            time = sdf.format(date);
+        }
+
+        else if(ago.contains("day")){
+            time = sdfDays.format(date);
+        }
+        else if(ago.contains("hour")){
+
+            if (c3.get(Calendar.YEAR) == c2.get(Calendar.YEAR) && c3.get(Calendar.DAY_OF_YEAR) == c3.get(Calendar.DAY_OF_YEAR)){
+                time = sdfYesterday.format(date);
+            }
+            else {
+                time = "Yesterday, " + sdfYesterday.format(date);
+            }
+
+        }
+        else {
+            time = ago;
+        }
+        return time;
+
+    }
+
 
 
 }

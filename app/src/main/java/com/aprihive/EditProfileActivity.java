@@ -39,6 +39,7 @@ import com.aprihive.auth.SetUsername;
 import com.aprihive.methods.MySnackBar;
 import com.aprihive.methods.NetworkListener;
 import com.aprihive.methods.SetBarsColor;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
@@ -388,7 +389,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         .centerCrop() //4
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.user_image_placeholder) //7
-                        .fallback(R.drawable.user_image_placeholder) //7
+                        .fallback(R.drawable.user_image_placeholder)
+                        .transition(DrawableTransitionOptions.withCrossFade())//7
                         .into(profilePic); //8
 
 

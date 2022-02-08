@@ -25,6 +25,7 @@ import com.aprihive.R;
 import com.aprihive.fragments.ContactMethodModal;
 import com.aprihive.methods.MyActionDialog;
 import com.aprihive.methods.SetBarsColor;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -276,6 +277,7 @@ public class RequestDetails extends AppCompatActivity {
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.user_image_placeholder)
                         .fallback(R.drawable.user_image_placeholder) //7
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         .into(profileImage);
 
             }
@@ -311,6 +313,7 @@ public class RequestDetails extends AppCompatActivity {
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .error(R.drawable.user_image_placeholder)
                         .fallback(R.drawable.user_image_placeholder) //7
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         .into(profileImage);
 
             }

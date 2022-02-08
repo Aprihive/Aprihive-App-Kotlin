@@ -29,6 +29,7 @@ public class AboutApp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_about_app);
 
         SetBarsColor setBarsColor = new SetBarsColor(this, getWindow());

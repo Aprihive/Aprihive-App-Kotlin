@@ -37,6 +37,7 @@ import com.aprihive.adapters.ProfileViewPagerAdapter;
 import com.aprihive.R;
 import com.aprihive.fragments.ContactMethodModal;
 import com.aprihive.methods.SetBarsColor;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
@@ -287,7 +288,7 @@ public class UserProfileActivity extends AppCompatActivity  {
                 .centerCrop() //4
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.user_image_placeholder) //7
-                .fallback(R.drawable.user_image_placeholder) //7
+                .fallback(R.drawable.user_image_placeholder)
                 .into(profilePic); //8
 
 

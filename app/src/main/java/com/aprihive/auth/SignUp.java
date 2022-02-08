@@ -21,8 +21,10 @@ import com.aprihive.R;
 import com.aprihive.methods.MySnackBar;
 import com.aprihive.methods.NetworkListener;
 import com.aprihive.methods.SetBarsColor;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
@@ -31,6 +33,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -55,11 +58,13 @@ public class SignUp extends AppCompatActivity {
     private static final String TAG = "ok" ;
 
     private NetworkListener networkListener;
+    private String token;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_signup);
 
 
@@ -194,6 +199,7 @@ public class SignUp extends AppCompatActivity {
 
                 user = authResult.getUser();
 
+                getFCMToken();
                 assert user != null;
 
                 //set display name
@@ -214,6 +220,7 @@ public class SignUp extends AppCompatActivity {
                 details.put("profileImageLink", "-");
                 details.put("verified", false);
                 details.put("threat", false);
+                details.put("fcm-token", token);
                 details.put("registered on", new Timestamp(new Date()));
 
 
@@ -277,6 +284,24 @@ public class SignUp extends AppCompatActivity {
         });
 
     }
+
+    private void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        token = task.getResult();
+
+                    }
+                });
+    }
+
 
     private void createUserListsDb() {
         DocumentReference listsRef = db.collection("users").document(email).collection("lists").document("following");

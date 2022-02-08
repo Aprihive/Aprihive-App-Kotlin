@@ -55,6 +55,7 @@ import com.aprihive.methods.NetworkListener;
 import com.aprihive.methods.SetBarsColor;
 import com.aprihive.methods.SharedPrefs;
 import com.aprihive.pages.Discover;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -133,6 +134,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_home);
 
         sharedPrefs = new SharedPrefs(this);
@@ -403,7 +405,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private void sendNotification() {
         createNotificationChannel();
         NotificationCompat.Builder builder  = new NotificationCompat.Builder(Home.this, CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.notification_icon).setColor(ContextCompat.getColor(this, R.color.color_theme_green_100));
+        builder.setSmallIcon(R.drawable.notification_icon).setColor(ContextCompat.getColor(this, R.color.color_theme_blue));
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon));
         builder.setContentTitle("Welcome to Aprihive!");
         builder.setStyle(new NotificationCompat.BigTextStyle().bigText("Welcome to the network for social marketing!\nPlease complete your profile then go ahead to create your first campaign to start networking.\nDon't forget to add your items to your catalogue!"));

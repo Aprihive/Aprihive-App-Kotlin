@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import com.aprihive.R;
 import com.aprihive.models.MessageModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.Timestamp;
 
@@ -28,6 +30,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +85,7 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
                     .error(R.drawable.user_image_placeholder)
                     .fallback(R.drawable.user_image_placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(viewHolder.messageImage);
 
         } else {
@@ -117,7 +121,7 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
 
     public class Viewholder extends RecyclerView.ViewHolder {
 
-        ConstraintLayout messageItem;
+        CardView messageItem;
         MaterialCardView imageHolder;
         TextView messageText, messageTime;
         ImageView messageImage;
@@ -148,9 +152,18 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
         SimpleDateFormat sdfDays = new SimpleDateFormat("EEEE, hh:mm aaa");
 
 
+        Calendar c1 = Calendar.getInstance(); // today
+        c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
 
 
-        if (ago.contains("1 day ago")){
+
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(date); // your date
+
+        Calendar c3 = Calendar.getInstance(); // today
+        c3.add(Calendar.DAY_OF_YEAR, 0); // today
+
+        if (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)){
             time = "Yesterday, " + sdfYesterday.format(date);
         }
 
@@ -161,6 +174,16 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
 
         else if(ago.contains("day")){
             time = sdfDays.format(date);
+        }
+        else if(ago.contains("hour")){
+
+            if (c3.get(Calendar.YEAR) == c2.get(Calendar.YEAR) && c3.get(Calendar.DAY_OF_YEAR) == c3.get(Calendar.DAY_OF_YEAR)){
+                time = sdfYesterday.format(date);
+            }
+            else {
+                time = "Yesterday, " + sdfYesterday.format(date);
+            }
+
         }
         else {
             time = ago;

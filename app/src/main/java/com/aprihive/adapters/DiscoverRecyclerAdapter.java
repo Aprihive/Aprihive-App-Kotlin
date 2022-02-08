@@ -23,6 +23,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.aprihive.R;
 import com.aprihive.models.DiscoverPostsModel;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.card.MaterialCardView;
@@ -201,6 +202,9 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
 
                     if (!getUsername.equals(FirebaseAuth.getInstance().getCurrentUser().getDisplayName())){
                         holder.requestButton.setVisibility(View.VISIBLE);
+                    } else{
+                        holder.requestButton.setVisibility(View.INVISIBLE);
+
                     }
 
                     //profile dp
@@ -210,6 +214,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                             .error(R.drawable.user_image_placeholder)
                             .fallback(R.drawable.user_image_placeholder)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .transition(DrawableTransitionOptions.withCrossFade())
                             .into(holder.profileImage);
 
                 } catch (Exception e) {
@@ -310,6 +315,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                     .load(getPostImageLink)
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.postImage);
         }
 
@@ -322,6 +328,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                         .load(getLinkData.get("image"))
                         .centerCrop()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         .listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

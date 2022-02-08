@@ -78,10 +78,12 @@ public class MainActivity extends AppCompatActivity  {
     ConstraintLayout load;
     private View.OnClickListener emptyListener;
     private View.OnClickListener activeListeners;
+    private String token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_main);
 
 
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity  {
         //init firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -161,9 +164,12 @@ public class MainActivity extends AppCompatActivity  {
                             Log.w(TAG, "Fetching FCM registration token failed", task.getException());
                             return;
                         }
+                        else {
+                            // Get new FCM registration token
+                            token = task.getResult();
+                        }
 
-                        // Get new FCM registration token
-                        String token = task.getResult();
+
 
                     }
                 });
@@ -279,6 +285,7 @@ public class MainActivity extends AppCompatActivity  {
         details.put("profileImageLink", user.getPhotoUrl().toString());
         details.put("verified", false);
         details.put("threat", false);
+        details.put("fcm-token", token);
         details.put("registered on", new Timestamp(new Date()));
 
 

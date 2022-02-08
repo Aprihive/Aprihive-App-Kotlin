@@ -25,6 +25,7 @@ import com.aprihive.methods.NetworkListener;
 import com.aprihive.methods.SetBarsColor;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
@@ -33,6 +34,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends AppCompatActivity {
 
@@ -58,6 +63,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.activity_login);
 
         //firebase
@@ -188,6 +194,8 @@ public class Login extends AppCompatActivity {
 
                         user = auth.getCurrentUser();
 
+                        getFCMToken();
+
                         assert user != null;
                         if (user.isEmailVerified()){
                             //redirect to home
@@ -218,6 +226,40 @@ public class Login extends AppCompatActivity {
 
 
 
+    }
+
+    private void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        Map<String, Object> details = new HashMap<>();
+                        details.put("fcm-token", token);
+
+
+                        reference = db.collection("users").document(auth.getCurrentUser().getEmail());
+                        reference.update(details).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.e(TAG, "onSuccess: Stored new token");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "onFailed: failed to store new token" + e);
+
+                            }
+                        });
+                    }
+                });
     }
 
     private void enableButton(){

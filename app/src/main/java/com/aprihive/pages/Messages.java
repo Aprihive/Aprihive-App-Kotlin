@@ -116,14 +116,19 @@ public class Messages extends Fragment   implements MessagedUsersRecyclerAdapter
 
     private void setupRecyclerView() {
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        //set items to arrange from bottom
-        // linearLayoutManager.setReverseLayout(true);
-        //linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
+        try {
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
 
+
+            //set items to arrange from bottom
+            //linearLayoutManager.setReverseLayout(true);
+            //linearLayoutManager.setStackFromEnd(true);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -137,17 +142,22 @@ public class Messages extends Fragment   implements MessagedUsersRecyclerAdapter
             public void onEvent(@Nullable QuerySnapshot result, @Nullable FirebaseFirestoreException error) {
 
                 usersList.clear();
-                for (DocumentSnapshot value : result){
+                try {
+                    for (DocumentSnapshot value : result){
 
-                    getEmail = value.getId();
-
-
-                    MessagedUsersModel messagedUsersModel = new MessagedUsersModel();
-                    messagedUsersModel.setReceiverEmail(getEmail);
+                        getEmail = value.getId();
 
 
-                    usersList.add(messagedUsersModel);
+                        MessagedUsersModel messagedUsersModel = new MessagedUsersModel();
+                        messagedUsersModel.setReceiverEmail(getEmail);
 
+
+                        usersList.add(messagedUsersModel);
+
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
 

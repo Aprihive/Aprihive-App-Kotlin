@@ -84,4 +84,12 @@
     <!--*** customise toolbar icon color end*** -->
 
 
+    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="colorPrimary">@color/color_theme_blue_500</item>
+        <item name="colorPrimaryDark">@color/color_theme_blue_500</item>
+        <item name="colorAccent">@color/color_theme_blue_500</item>
+        <item name="android:statusBarColor">@color/color_theme_blue_500</item>
+    </style>
+
 </resources>

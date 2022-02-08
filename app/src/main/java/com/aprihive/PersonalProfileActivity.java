@@ -27,6 +27,7 @@ import com.aprihive.fragments.AddPostModal;
 import com.aprihive.methods.SetBarsColor;
 import com.aprihive.pages.Catalogue;
 import com.aprihive.pages.Feed;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;

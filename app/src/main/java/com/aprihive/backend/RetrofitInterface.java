@@ -19,5 +19,8 @@ public interface RetrofitInterface {
     @POST("post-removal-notify")
     Call<Void> executePostRemovalNotification(@Body HashMap<String, String> map);
 
+    @POST("message-push-notify")
+    Call<Void> executeMessagePushNotification(@Body HashMap<String, String> map);
+
 
 }

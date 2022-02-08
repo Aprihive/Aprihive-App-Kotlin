@@ -12,8 +12,9 @@
     <string name="notification_channel_name">Info</string>
     <string name="app_version">v1.2</string>
     <string name="version">1.2</string>
-    <string name="API_URL">https://aprihive.com/api/</string>
+    <string name="API_URL">https://www.aprihive.com/api/</string>
     <string name="user_warning_text">This user has  been flagged as suspicious and is currently under review.</string>
+    <string name="msg_token_fmt" />
 
 
 </resources>
