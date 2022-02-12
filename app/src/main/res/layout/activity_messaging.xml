@@ -9,6 +9,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/page"
     android:background="@color/bg_color_fade"
     tools:context=".MessagingActivity">
 
@@ -88,7 +89,7 @@
                 android:textSize="10sp"
                 android:maxLines="1"
                 android:text="Developer at Aprihive, Graphics designer at Aprihive"
-                android:textColor="@color/grey_color_200"
+                android:textColor="@color/grey_color_100"
                 app:layout_constraintEnd_toEndOf="@+id/receiverName"
                 app:layout_constraintStart_toStartOf="@+id/receiverName"
                 app:layout_constraintTop_toBottomOf="@+id/receiverName" />

@@ -144,7 +144,7 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
                 ClipData clip = ClipData.newPlainText("post", getArguments().getString("postText"));
                 clipboard.setPrimaryClip(clip);
 
-                MySnackBar snackBar = new MySnackBar(context, getActivity().getWindow().getDecorView().findViewById(R.id.page), "Copied to clipboard!", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
+                MySnackBar snackBar = new MySnackBar(context, getActivity().getWindow().getDecorView().findViewById(android.R.id.content), "Copied to clipboard!", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
                 dismiss();
             }
         });
@@ -209,7 +209,7 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
         postLikesReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(@NonNull Void aVoid) {
-                MySnackBar snackBar = new MySnackBar(context, getActivity().getWindow().getDecorView().findViewById(R.id.page), "Delete Successful", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
+                MySnackBar snackBar = new MySnackBar(context, getActivity().getWindow().getDecorView().findViewById(android.R.id.content), "Delete Successful", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
                 postsRefresh.run();
                 dismiss();
 
@@ -266,7 +266,7 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
                 fileRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(@NonNull Void aVoid) {
-                        MySnackBar snackBar = new MySnackBar(context, getActivity().getWindow().getDecorView().findViewById(R.id.page), "Image removed successfully", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
+                        MySnackBar snackBar = new MySnackBar(context, getActivity().getWindow().getDecorView().findViewById(android.R.id.content), "Image removed successfully", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
                         postsRefresh.run();
                         dismiss();
                     }
@@ -276,7 +276,7 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
                 .addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                MySnackBar snackBar = new MySnackBar(context, getActivity().getWindow().getDecorView().findViewById(R.id.page), "Something went wrong, Please try again.", R.color.color_error_red_200, Snackbar.LENGTH_SHORT);
+                MySnackBar snackBar = new MySnackBar(context, getActivity().getWindow().getDecorView().findViewById(android.R.id.content), "Something went wrong, Please try again.", R.color.color_error_red_200, Snackbar.LENGTH_SHORT);
                 postsRefresh.run();
                 dismiss();
             }

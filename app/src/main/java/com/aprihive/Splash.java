@@ -23,12 +23,14 @@ import com.aprihive.R;
 import com.aprihive.methods.SharedPrefs;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class Splash extends AppCompatActivity {
 
     private static final String TAG = "fcm-debug";
     SharedPrefs sharedPrefs;
+    public FirebaseAnalytics analytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,10 @@ public class Splash extends AppCompatActivity {
         sharedPrefs = new SharedPrefs(Splash.this);
         int getTheme = sharedPrefs.themeSettings;
         AppCompatDelegate.setDefaultNightMode(getTheme);
+
+        analytics = FirebaseAnalytics.getInstance(this);
+
+
 
 
         getWindow().setNavigationBarColor(getResources().getColor(R.color.color_theme_blue_600));

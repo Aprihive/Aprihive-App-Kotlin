@@ -96,71 +96,6 @@ public class PushNotificationService extends FirebaseMessagingService {
 
     }
 
-    private void sendNotification(String title, String content, String profileImageLink, String senderEmail) {
-        createNotificationChannel();
-
-        Random random = new Random();
-
-        String GROUP_NOTIFICATIONS = title;
-
-        int notify_id = random.nextInt(10000);
-
-        NotificationCompat.Builder builder  = new NotificationCompat.Builder(PushNotificationService.this, CHANNEL_ID);
-
-
-        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.message_notification_layout);
-        remoteViews.setTextViewText(R.id.title, title);
-        remoteViews.setTextViewText(R.id.content, content);
-
-        RemoteViews remoteViewsBig = new RemoteViews(getPackageName(), R.layout.message_notification_layout_expanded);
-        remoteViewsBig.setTextViewText(R.id.title, title);
-        remoteViewsBig.setTextViewText(R.id.content, content);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MessagingActivity.class)
-                .putExtra("getEmail", senderEmail), 0);
-
-        builder.setSmallIcon(R.drawable.ic_message_filled).setColor(ContextCompat.getColor(this, R.color.color_theme_blue))
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setCustomContentView(remoteViews)
-                .setCustomBigContentView(remoteViewsBig)
-                .setContentIntent(contentIntent)
-                .setGroup(GROUP_NOTIFICATIONS)
-                .addAction(R.drawable.ic_message_filled, "Open Chat", contentIntent)
-                .setAutoCancel(true);
-
-        final Notification notification = builder.build();
-
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(PushNotificationService.this);
-        notificationManagerCompat.notify(notify_id, notification);
-
-        Log.e(TAG, "sendNotification: done" );
-        NotificationTarget notificationTarget = new NotificationTarget(PushNotificationService.this, R.id.profileImage, remoteViews, builder.build(), notify_id);
-
-
-        Glide.with(this)
-                .asBitmap()
-                .load(profileImageLink)
-                .centerCrop()
-                .error(R.drawable.user_image_placeholder)
-                .fallback(R.drawable.user_image_placeholder)
-                .into(notificationTarget);
-
-
-        NotificationTarget notificationTarget2 = new NotificationTarget(PushNotificationService.this, R.id.profileImage, remoteViewsBig, builder.build(), notify_id);
-
-        Glide.with(this)
-                .asBitmap()
-                .load(profileImageLink)
-                .centerCrop()
-                .error(R.drawable.user_image_placeholder)
-                .fallback(R.drawable.user_image_placeholder)
-                .into(notificationTarget2);
-
-
-        Log.e(TAG, "sendNotification: done 2" );
-
-    }
-
     private void sendNotification(String title, String content, Bitmap userImageBitmap, String senderEmail, String receiverName, int id) {
         createNotificationChannel();
 
@@ -182,6 +117,7 @@ public class PushNotificationService extends FirebaseMessagingService {
                 .setGroupSummary(true)
                 .setStyle(new NotificationCompat.InboxStyle().setBigContentTitle("You have new messages").setSummaryText(receiverName.substring(0,1).toUpperCase() + receiverName.substring(1).toLowerCase()))
                 .setGroup(GROUP_NOTIFICATIONS)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .build();
 
 
@@ -195,6 +131,8 @@ public class PushNotificationService extends FirebaseMessagingService {
                 .setContentText(content)
                 .setGroup(GROUP_NOTIFICATIONS)
                 .setAutoCancel(true)
+                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                .setPublicVersion(groupBuilder)
                 .addAction(R.drawable.ic_message_filled, "Open Chat", contentIntent)
                 .build();
         
@@ -219,19 +157,11 @@ public class PushNotificationService extends FirebaseMessagingService {
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(color);
         canvas.drawOval(rectF, paint);
-
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        try {
-            canvas.drawBitmap(bitmap, rect, rect, paint);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        canvas.drawBitmap(bitmap, rect, rect, paint);
 
 
-        if (!bitmap.isRecycled()) {
-            bitmap.recycle();
-        }
-        
 
 
         return output;

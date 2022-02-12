@@ -84,8 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT,
-                        "Hey check out Aprihive, the app I use for marketing my services and products easily at: https://aprihive.com/download");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, R.string.share_app_message);
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
             }

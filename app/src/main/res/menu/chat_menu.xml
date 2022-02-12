@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Jesulonimii 2021. -->
+<!-- Copyright (c) Erlite 2021. -->
+<!-- Copyright (c) Aprihive 2021. -->
+<!-- All Rights Reserved -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <item
+        android:id="@+id/deleteConvo"
+        app:showAsAction="never"
+        android:title="Delete Conversation"/>
+
+    <item
+        android:id="@+id/report"
+        app:showAsAction="never"
+        android:title="Report"/>
+
+</menu>

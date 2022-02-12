@@ -128,7 +128,6 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
             }
         });
 
-
         viewHolder.postFullName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,7 +150,6 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                         postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostId().substring(0, postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostId().length()-7));
             }
         });
-
 
         viewHolder.linkPreviewCard.setOnClickListener(new View.OnClickListener() {
             @Override

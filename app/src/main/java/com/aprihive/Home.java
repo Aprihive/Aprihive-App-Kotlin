@@ -64,6 +64,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -129,6 +130,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private GoogleSignInClient mGoogleSignInClient;
     private Boolean getThreat;
     private ImageView threatIcon;
+    public FirebaseAnalytics analytics;
 
 
     @Override
@@ -141,6 +143,14 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         int getTheme = sharedPrefs.themeSettings;
         AppCompatDelegate.setDefaultNightMode(getTheme);
 
+        analytics = FirebaseAnalytics.getInstance(this);
+
+
+        Bundle altBundle = new Bundle();
+        altBundle.putString(FirebaseAnalytics.Param.ITEM_ID, "id");
+        altBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "name");
+        altBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, altBundle);
 
 
 

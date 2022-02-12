@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Constraints;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aprihive.R;
@@ -32,12 +32,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecyclerAdapter.Viewholder> {
 
+    private static final String TAG = "debug";
     private Context context;
     private List<MessageModel> messagesList;
     MyClickListener listener;
@@ -56,16 +56,44 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
     @NonNull
     @Override
     public Viewholder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        View view;
         LayoutInflater inflater = LayoutInflater.from(context);
 
 
         if (viewType == ITEM_TYPE_FROM){
-            View view = inflater.inflate(R.layout.message_container_from,viewGroup, false);
-            viewHolder = new MessagingRecyclerAdapter.Viewholder(view);
-        } else if (viewType == ITEM_TYPE_TO) {
-            View view = inflater.inflate(R.layout.message_container_to, viewGroup, false);
-            viewHolder = new MessagingRecyclerAdapter.Viewholder(view);
+            view = inflater.inflate(R.layout.message_container_from,viewGroup, false);
+            viewHolder = new Viewholder(view);
+
+            viewHolder.messageItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onMessageHold(viewHolder.getAbsoluteAdapterPosition(), messagesList.get(viewHolder.getAbsoluteAdapterPosition()).getMessageId(), messagesList.get(viewHolder.getAbsoluteAdapterPosition()).getMessageText(), messagesList.get(viewHolder.getAbsoluteAdapterPosition()).getOtherUserEmail(), "from");
+                    Log.e(TAG, "onLongClick: " + messagesList.get(viewHolder.getAbsoluteAdapterPosition()).getMessageId());
+                    Log.e(TAG, "onLongClick: " + viewHolder.getAbsoluteAdapterPosition());
+                    return false;
+                }
+            });
+
         }
+        else if (viewType == ITEM_TYPE_TO) {
+            view = inflater.inflate(R.layout.message_container_to, viewGroup, false);
+            viewHolder = new Viewholder(view);
+
+            viewHolder.messageItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onMessageHold(viewHolder.getAbsoluteAdapterPosition(), messagesList.get(viewHolder.getAbsoluteAdapterPosition()).getMessageId(), messagesList.get(viewHolder.getAbsoluteAdapterPosition()).getMessageText(), messagesList.get(viewHolder.getAbsoluteAdapterPosition()).getOtherUserEmail(), "to");
+                    Log.e(TAG, "onLongClick: " + messagesList.get(viewHolder.getAbsoluteAdapterPosition()).getMessageId());
+                    Log.e(TAG, "onLongClick: " + viewHolder.getAbsoluteAdapterPosition());
+                    return false;
+                }
+            });
+
+
+        }
+
+
+
 
         return viewHolder;
     }
@@ -89,7 +117,7 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
                     .into(viewHolder.messageImage);
 
         } else {
-            viewHolder.imageHolder.setVisibility(View.GONE);
+            holder.imageHolder.setVisibility(View.GONE);
         }
 
 
@@ -98,6 +126,33 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+
+        if (messagesList.get(position).getMessageType().equals("from")){
+            holder.messageItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onMessageHold(position, messagesList.get(position).getMessageId(), messagesList.get(position).getMessageText(), messagesList.get(position).getOtherUserEmail(), "from");
+                    Log.e(TAG, "onLongClick: " + messagesList.get(position).getMessageId());
+                    Log.e(TAG, "onLongClick: " + position);
+                    return false;
+                }
+            });
+
+        }
+        else {
+            holder.messageItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    listener.onMessageHold(position, messagesList.get(position).getMessageId(), messagesList.get(position).getMessageText(), messagesList.get(position).getOtherUserEmail(), "to");
+                    Log.e(TAG, "onLongClick: " + messagesList.get(position).getMessageId());
+                    Log.e(TAG, "onLongClick: " + position);
+                    return false;
+                }
+            });
+
+        }
+
 
 
     }
@@ -134,6 +189,7 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
             messageItem =  itemView.findViewById(R.id.messageItem);
             messageImage =  itemView.findViewById(R.id.messageImage);
             imageHolder =  itemView.findViewById(R.id.messageImage_bg);
+
 
 
         }
@@ -193,6 +249,8 @@ public class MessagingRecyclerAdapter extends RecyclerView.Adapter<MessagingRecy
     }
 
     public interface MyClickListener {
+        void onMessageHold(int position, String messageId, String messageText, String messageEmail, String type);
+
 
     }
 }

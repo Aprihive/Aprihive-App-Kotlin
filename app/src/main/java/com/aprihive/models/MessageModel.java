@@ -15,15 +15,36 @@ public class MessageModel {
     private Timestamp time;
     private String messageImageLink;
     private String messageType;
+    private String messageId;
+    private String otherUserEmail;
 
     public MessageModel() {
     }
 
-    public MessageModel(String messageText, Timestamp time, String messageImageLink, String messageType) {
+    public MessageModel(String messageText, Timestamp time, String messageImageLink, String messageType, String messageId, String otherUserEmail) {
         this.messageText = messageText;
         this.time = time;
         this.messageImageLink = messageImageLink;
         this.messageType = messageType;
+        this.messageId = messageId;
+        this.otherUserEmail = otherUserEmail;
+    }
+
+
+    public String getOtherUserEmail() {
+        return otherUserEmail;
+    }
+
+    public void setOtherUserEmail(String otherUserEmail) {
+        this.otherUserEmail = otherUserEmail;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
     }
 
     public String getMessageText() {

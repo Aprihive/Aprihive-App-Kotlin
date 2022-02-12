@@ -22,7 +22,10 @@ public class NetworkListener {
 
 
     public NetworkListener(Context context, View mview, Window window){
-        view = window.getDecorView().findViewById(R.id.page);
+
+        view = window.getDecorView().findViewById(android.R.id.content);
+
+
         showNetworkStatus(context, view, "No Connection!", R.color.color_error_red_200, Snackbar.LENGTH_INDEFINITE);
 
     }

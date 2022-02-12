@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">Aprihive</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="dummy_text">
         Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugiat, aspernatur nulla sed veniam cum dolorem maiores nihil repudiandae, magni nisi. Porro ducimus, optio perspiciatis, consequatur vero incidunt eos a fugiat.
     </string>
@@ -15,6 +14,7 @@
     <string name="API_URL">https://www.aprihive.com/api/</string>
     <string name="user_warning_text">This user has  been flagged as suspicious and is currently under review.</string>
     <string name="msg_token_fmt" />
+    <string name="share_app_message">Hey check out Aprihive, the app I use for marketing my services and products easily at: https://aprihive.com/download</string>
 
 
 </resources>

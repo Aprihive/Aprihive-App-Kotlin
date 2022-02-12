@@ -13,12 +13,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,18 +29,22 @@ import android.widget.Toast;
 
 import com.aprihive.adapters.MessagingRecyclerAdapter;
 import com.aprihive.backend.RetrofitInterface;
+import com.aprihive.fragments.OptionsDialogModal;
+import com.aprihive.fragments.ReportModal;
 import com.aprihive.methods.MySnackBar;
 import com.aprihive.methods.SetBarsColor;
 import com.aprihive.models.MessageModel;
-import com.aprihive.models.MessagedUsersModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -45,6 +52,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.ocpsoft.prettytime.PrettyTime;
@@ -57,7 +65,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -99,6 +106,9 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
     private RetrofitInterface retrofitInterface;
     private String token;
     private String receiverUserName;
+    private String getMessageId;
+    private DocumentReference msgRef;
+    private String receiverProfileImageLink;
 
 
     @Override
@@ -203,6 +213,8 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
 
                             try {
                                 getMessageText = details.getString("messageText");
+                                getMessageId = details.getId();
+
                                 getTime = details.getTimestamp("time");
                                 getMessageImageLink = details.getString("messageImageLink");
                                 getMessageType= details.getString("type");
@@ -211,6 +223,8 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
                                 messageModel.setMessageImageLink(getMessageImageLink);
                                 messageModel.setMessageType(getMessageType);
                                 messageModel.setTime(getTime);
+                                messageModel.setMessageId(getMessageId);
+                                messageModel.setOtherUserEmail(getIntent().getStringExtra("getEmail"));
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -361,6 +375,7 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
                 //verified = value.getBoolean("verified");
 
                 receiverUserName = value.getString("username");
+                receiverProfileImageLink = value.getString("profileImageLink");
 
 
                 receiverName.setText(value.getString("name"));
@@ -372,7 +387,7 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
                 }
 
                 Glide.with(MessagingActivity.this)
-                        .load(value.getString("profileImageLink"))
+                        .load(receiverProfileImageLink)
                         .centerCrop()
                         .error(R.drawable.user_image_placeholder)
                         .fallback(R.drawable.user_image_placeholder)
@@ -446,13 +461,84 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
 
     }
 
-
-
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        getMenuInflater().inflate(R.menu.user_profile_menu, menu);
+        getMenuInflater().inflate(R.menu.chat_menu, menu);
         return true;
     }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.deleteConvo:
+                deleteConversation();
+                return true;
+
+            case R.id.report:
+                ReportModal bottomSheet = new ReportModal();
+                Bundle bundle = new Bundle();
+                bundle.putString("postAuthorEmail", "ericx.group@gmail.com");
+                bundle.putString("postAuthor", "Support");
+                bundle.putString("postText", "Reporting conversation with " + receiverName.getText() + ".");
+                bundle.putString("postImage", receiverProfileImageLink);
+                bundle.putString("postId", receiverUserName);
+                bottomSheet.setArguments(bundle);
+                bottomSheet.show(getSupportFragmentManager(), "TAG");
+                return true;
+        }
+        return (super.onOptionsItemSelected(item));
+    }
+
+    private void deleteConversation() {
+
+
+
+
+        msgRef = db.collection("users").document(user.getEmail()).collection("messages").document(getIntent().getStringExtra("getEmail"));
+
+        msgRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(MessagingActivity.this, "Deleted conversation with " + receiverName.getText(), Toast.LENGTH_LONG).show();
+                        onBackPressed();
+
+                        int batchSize = 500;
+                        Query query = db.collection("users").document(user.getEmail()).collection("messages").document(getIntent().getStringExtra("getEmail")).collection("messageBox").limit(batchSize);
+
+                        try {
+                            // retrieve a small batch of documents to avoid out-of-memory errors
+                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                    int deleted = 0;
+
+                                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                                    for (DocumentSnapshot document : documents) {
+                                        document.getReference().delete();
+                                        ++deleted;
+                                    }
+                                    if (deleted >= batchSize) {
+                                        // retrieve and delete another batch
+                                        deleteConversation();
+                                    }
+
+                                }
+                            });
+                        } catch (Exception e) {
+                            System.err.println("Error deleting collection : " + e.getMessage());
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MessagingActivity.this, "Something went wrong\nPlease retry the action", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -520,5 +606,116 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
     }
 
 
+    @Override
+    public void onMessageHold(int position, String messageId, String messageText, String messageEmail, String type) {
 
+
+        Runnable copyMessageAction = new Runnable() {
+            @Override
+            public void run() {
+                copyMessage(messageText);
+            }
+        };
+
+        Runnable deleteForMeAction =  new Runnable() {
+            @Override
+            public void run() {
+                deleteMessageForMe(messageEmail, messageId);
+            }
+        };
+
+        Runnable unsendMessageAction =  new Runnable() {
+            @Override
+            public void run() {
+                unsendMessage(messageEmail, messageId);
+            }
+        };
+
+        Runnable shareAction =  new Runnable() {
+            @Override
+            public void run() {
+                shareMessage(messageText);
+            }
+        };
+
+        if (type.equals("to")){
+            OptionsDialogModal optionsDialogModal = new OptionsDialogModal(this,"Share", shareAction, "Copy message", copyMessageAction, "Unsend message", unsendMessageAction, "Delete for me", deleteForMeAction);
+        }
+        else {
+            OptionsDialogModal optionsDialogModal = new OptionsDialogModal(this,"Share", shareAction, "Copy message", copyMessageAction,  "Delete for me", deleteForMeAction);
+
+        }
+
+
+    }
+
+    private void unsendMessage(String participant, String messageId) {
+
+        DocumentReference myMsgRef = db.collection("users").document(user.getEmail()).collection("messages").document(participant).collection("messageBox").document(messageId);
+        DocumentReference otherMsgRef = db.collection("users").document(participant).collection("messages").document(user.getEmail()).collection("messageBox").document(messageId);
+
+
+        myMsgRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        otherMsgRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(MessagingActivity.this, "Message has been unsent.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(MessagingActivity.this, "Something went wrong\nPlease retry the action", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+    }
+
+
+    private void copyMessage(String message) {
+
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("message", message);
+        clipboard.setPrimaryClip(clip);
+
+        MySnackBar snackBar = new MySnackBar(this, getWindow().getDecorView().findViewById(R.id.page), "Message copied to clipboard!", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
+
+    }
+
+    private void shareMessage(String message) {
+
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
+
+    private void deleteMessageForMe(String participant, String messageId){
+
+        msgRef = db.collection("users").document(user.getEmail()).collection("messages").document(participant).collection("messageBox").document(messageId);
+
+        msgRef.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(MessagingActivity.this, "Message deleted.", Toast.LENGTH_SHORT).show();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MessagingActivity.this, "Something went wrong\nPlease retry the action", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+
+    }
 }

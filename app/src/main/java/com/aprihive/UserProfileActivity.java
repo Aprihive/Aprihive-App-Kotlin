@@ -249,6 +249,7 @@ public class UserProfileActivity extends AppCompatActivity  {
 
                 MySnackBar snackBar = new MySnackBar(this, getWindow().getDecorView().findViewById(R.id.page), "Copied to clipboard!", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
                 return true;
+
             case R.id.report:
                 ReportModal bottomSheet = new ReportModal();
                 Bundle bundle = new Bundle();

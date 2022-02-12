@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) Jesulonimii 2021. -->
+<!-- Copyright (c) Erlite 2021. -->
+<!-- Copyright (c) Aprihive 2021. -->
+<!-- All Rights Reserved -->
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_marginHorizontal="30dp"
+    android:layout_height="wrap_content"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="true"
+    app:cardBackgroundColor="@color/bg_color"
+    app:cardCornerRadius="10dp"
+    android:background="@drawable/layout_bg_rounded">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/option1"
+            android:visibility="gone"
+            android:textColor="@color/black_text_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Option 1"
+            android:padding="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+        <TextView
+            android:id="@+id/option2"
+            android:visibility="gone"
+            android:textColor="@color/black_text_color"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Option 2"
+            android:padding="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+        <TextView
+            android:id="@+id/option3"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_text_color"
+            android:text="Option 3"
+            android:padding="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+        <TextView
+            android:id="@+id/option4"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_text_color"
+            android:text="Option 4"
+            android:padding="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+        <TextView
+            android:id="@+id/option5"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_text_color"
+            android:text="Option 5"
+            android:padding="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless" />
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

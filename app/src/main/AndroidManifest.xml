@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MessagingActivity" android:theme="@style/SplashTheme"></activity>
+        <activity android:name=".MessagingActivity"></activity>
         <activity android:name=".OnboardingActivity" />
         <activity android:name=".FetchDetails" android:theme="@style/SplashTheme">
             <intent-filter>
@@ -133,8 +133,7 @@
         <activity
             android:name=".auth.SignUp"
             android:label="Sign Up"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/SplashTheme">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -171,7 +170,6 @@
         <activity
             android:name=".auth.Login"
             android:label="Login"
-            android:theme="@style/SplashTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -234,6 +232,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/color_theme_blue" />
+        <meta-data
+            android:name="google_analytics_automatic_screen_reporting_enabled"
+            android:value="true" />
     </application>
 
 
