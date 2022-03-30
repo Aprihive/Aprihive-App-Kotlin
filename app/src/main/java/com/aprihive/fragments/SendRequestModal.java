@@ -7,6 +7,7 @@ package com.aprihive.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -105,6 +106,8 @@ public class SendRequestModal extends BottomSheetDialogFragment {
 
     private Retrofit retrofit;
     private RetrofitInterface retrofitInterface;
+    private SharedPreferences sharedPreferences;
+
 
 
 
@@ -120,6 +123,12 @@ public class SendRequestModal extends BottomSheetDialogFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.bottom_sheet_send_request_modal, container, false);
 
+        context = getActivity().getApplicationContext();
+        homeView = getActivity().getWindow().getDecorView().findViewById(R.id.page);
+
+        sharedPreferences = context.getSharedPreferences("aprihive", Context.MODE_PRIVATE);
+
+
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
@@ -130,8 +139,7 @@ public class SendRequestModal extends BottomSheetDialogFragment {
                 .build();
         retrofitInterface = retrofit.create(RetrofitInterface.class);
 
-        context = getActivity().getApplicationContext();
-        homeView = getActivity().getWindow().getDecorView().findViewById(R.id.page);
+
 
 
 
@@ -204,7 +212,7 @@ public class SendRequestModal extends BottomSheetDialogFragment {
         }
 
         else{
-            uploadPost();
+            uploadRequest();
             submit.setVisibility(View.INVISIBLE);
             info.setVisibility(View.GONE);
             loading.setVisibility(View.VISIBLE);
@@ -214,7 +222,7 @@ public class SendRequestModal extends BottomSheetDialogFragment {
 
     }
 
-    private void uploadPost() {
+    private void uploadRequest() {
 
 
 
@@ -244,7 +252,7 @@ public class SendRequestModal extends BottomSheetDialogFragment {
             public void onSuccess(Void aVoid) {
 
                 createPersonalRequestInstance();
-                sendEmailNotification();
+                sendNotifications();
                 Log.d("debug", "test 2");
 
 
@@ -265,9 +273,10 @@ public class SendRequestModal extends BottomSheetDialogFragment {
 
     }
 
-    private void sendEmailNotification() {
+    private void sendNotifications() {
         HashMap<String, String> map = new HashMap<>();
 
+        map.put("token", getArguments().getString("token"));
         map.put("senderEmail", user.getEmail());
         map.put("receiverEmail", getArguments().getString("postAuthorEmail"));
         map.put("senderUsername", user.getDisplayName());
@@ -275,6 +284,8 @@ public class SendRequestModal extends BottomSheetDialogFragment {
         map.put("postId", postId);
         map.put("postText", getArguments().getString("postText"));
         map.put("deadline", deadlineText);
+        map.put("requestId", "requestTo:-" + sendTo + "-for:-" + postId);
+
 
         Call<Void> call = retrofitInterface.executeRequestNotification(map);
 
@@ -282,10 +293,10 @@ public class SendRequestModal extends BottomSheetDialogFragment {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200){
-                    Log.d("email-status", "email sent");
+                    Log.e("request-push-status", "sent");
                 }
                 else if (response.code() == 400){
-                    Log.d("email-status", "failure: email not sent");
+                    Log.e("request-push-status", "failure: not sent");
 
                 }
             }
@@ -293,6 +304,30 @@ public class SendRequestModal extends BottomSheetDialogFragment {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Toast.makeText(context, "Failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
+
+                Log.e("error", t.getMessage());
+                Log.e("error", t.getLocalizedMessage());
+
+            }
+        });
+
+        Call<Void> callPushNotifications = retrofitInterface.executeRequestPushNotification(map);
+
+        callPushNotifications.enqueue(new Callback<Void>() {
+
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.code() == 200){
+                    Log.e("push-notify-status", "sent");
+                }
+                else if (response.code() == 400){
+                    Log.e("push-notify-status", "failure: not sent");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
 
                 Log.e("error", t.getMessage());
                 Log.e("error", t.getLocalizedMessage());

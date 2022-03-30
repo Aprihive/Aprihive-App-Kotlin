@@ -8,11 +8,12 @@
 
 
     <item android:id="@+id/infoActions"
-        android:title="Info and Actions"
-        android:icon="@drawable/ic_info"/>
+        android:title="Settings"
+        android:icon="@drawable/ic_settings"/>
 
     <item android:id="@+id/promotions"
-        android:title="Ads and Promotions"
+        android:visible="false"
+        android:title="Become an Affliate"
         android:icon="@drawable/ic_label_outline" />
 
     <!--<item android:id="@+id/signOut"

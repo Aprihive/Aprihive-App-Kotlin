@@ -303,7 +303,7 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
     }
 
     @Override
-    public void onSendRequest(int position, String postId, String postAuthorEmail, String postText, String postImage, String postAuthor){
+    public void onSendRequest(int position, String postId, String postAuthorEmail, String postText, String postImage, String token, String postAuthor){
         SendRequestModal bottomSheet = new SendRequestModal();
         Bundle bundle = new Bundle();
         bundle.putString("postAuthorEmail", postAuthorEmail);
@@ -311,6 +311,7 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
         bundle.putString("postText", postText);
         bundle.putString("postImage", postImage);
         bundle.putString("postId", postId);
+        bundle.putString("token", token);
         bottomSheet.setArguments(bundle);
         bottomSheet.show(getActivity().getSupportFragmentManager(), "TAG");
     }

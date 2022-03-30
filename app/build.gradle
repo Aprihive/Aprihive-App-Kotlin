@@ -3,6 +3,14 @@ apply plugin: 'com.google.gms.google-services'
 
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\DELL\\Documents\\android\\keystore\\jesulonimii-key.jks')
+            storePassword 'jesus4eva'
+            keyAlias = 'jesulonimii'
+            keyPassword 'jesus4eva'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -18,9 +26,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable = true
+            signingConfig signingConfigs.release
         }
     }
 
@@ -82,6 +92,8 @@ dependencies {
 
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
 
     //downloader library

@@ -18,7 +18,8 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".MessagingActivity"></activity>
         <activity android:name=".OnboardingActivity" />
-        <activity android:name=".FetchDetails" android:theme="@style/SplashTheme">
+        <activity android:name=".FetchDetails" android:theme="@style/SplashTheme"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

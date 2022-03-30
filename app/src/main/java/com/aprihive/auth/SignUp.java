@@ -176,7 +176,7 @@ public class SignUp extends AppCompatActivity {
         else {
             errorFeedback.setVisibility(View.GONE);
             if (networkListener.connected){
-                storeUser();
+                createUser();
                 disableButton();
                 loading.setVisibility(View.VISIBLE);
             }
@@ -185,7 +185,7 @@ public class SignUp extends AppCompatActivity {
 
     }
 
-    private void storeUser(){
+    private void createUser(){
 
         //get values from input
         email = emailInput.getText().toString().trim();
@@ -210,8 +210,10 @@ public class SignUp extends AppCompatActivity {
                 Map <String, Object> details = new HashMap<>();
                 details.put("name", name);
                 details.put("email", email);
-                details.put("username", user.getUid());
-                details.put("username-lower", user.getUid().toLowerCase());
+                details.put("uid", user.getUid());
+                details.put("admin-level", 0);
+                details.put("username", user.getUid().substring(0, 7));
+                details.put("username-lower", user.getUid().toLowerCase().substring(0, 7));
                 details.put("bio", "This is what I do!");
                 details.put("school", "");
                 details.put("isAdmin", false);
@@ -243,6 +245,7 @@ public class SignUp extends AppCompatActivity {
 
                         MySnackBar snackBar = new MySnackBar(SignUp.this, page, "An error occurred while saving profile.", R.color.color_error_red_200, Snackbar.LENGTH_LONG);
                         enableButton();
+                        Log.e(TAG, "Saving user details failed: " + e.getLocalizedMessage());
                         loading.setVisibility(View.GONE);
                     }
                 });
@@ -275,7 +278,16 @@ public class SignUp extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                MySnackBar snackBar = new MySnackBar(SignUp.this, page, "An error occurred. Please try again.\n If errors persist, use another email", R.color.color_error_red_200, Snackbar.LENGTH_LONG);
+
+                Log.e(TAG, "Creating account failed: " + e.getLocalizedMessage() );
+
+                String errorMessage = "We could not sign you up at this time.\nPlease try again later.";
+
+                if (e.getLocalizedMessage().contains("email address is already in use")){
+                    errorMessage = "The email address entered is not available.\nPlease use another.";
+                }
+
+                MySnackBar snackBar = new MySnackBar(SignUp.this, page, errorMessage, R.color.color_error_red_200, Snackbar.LENGTH_LONG);
 
                 enableButton();
                 loading.setVisibility(View.GONE);

@@ -81,6 +81,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
     private String stripHttp;
     private String stripPaths;
     private Boolean getThreat;
+    private String getToken;
 
 
     public DiscoverRecyclerAdapter(Context context, List<DiscoverPostsModel> postList, MyClickListener listener) {
@@ -145,8 +146,12 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         viewHolder.requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onSendRequest(viewHolder.getAbsoluteAdapterPosition(), postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostId(), postList.get(viewHolder.getAbsoluteAdapterPosition()).getAuthorEmail(), postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostText(),
+                listener.onSendRequest(viewHolder.getAbsoluteAdapterPosition(),
+                        postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostId(),
+                        postList.get(viewHolder.getAbsoluteAdapterPosition()).getAuthorEmail(),
+                        postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostText(),
                         postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostImageLink(),
+                        getToken,
                         postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostId().substring(0, postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostId().length()-7));
             }
         });
@@ -193,6 +198,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                     getUsername = value.getString("username");
                     getVerified = value.getBoolean("verified");
                     getThreat = value.getBoolean("threat");
+                    getToken = value.getString("fcm-token");
                     getProfileImageUrl = value.getString("profileImageLink");
 
                     holder.postFullName.setText(getFullname);
@@ -212,7 +218,6 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                             .error(R.drawable.user_image_placeholder)
                             .fallback(R.drawable.user_image_placeholder)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .transition(DrawableTransitionOptions.withCrossFade())
                             .into(holder.profileImage);
 
                 } catch (Exception e) {
@@ -423,7 +428,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
 
     public interface MyClickListener {
         void onVote(int position, String postId);
-        void onSendRequest(int position, String postId, String postAuthorEmail, String postText, String postImage, String postAuthor);
+        void onSendRequest(int position, String postId, String postAuthorEmail, String postText, String postImage, String token, String postAuthor);
         void onPostMenuClick(int position, String postId, String postAuthorEmail, String postText, String postImage);
         void onTextExpandClick(int position, TextView textView);
         void onProfileOpen(int position, String postAuthor);

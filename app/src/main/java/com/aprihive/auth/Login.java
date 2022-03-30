@@ -219,7 +219,21 @@ public class Login extends AppCompatActivity {
                     Log.d(TAG, "could not login");
                     enableButton();
                     loading.setVisibility(View.GONE);
-                    MySnackBar snackBar = new MySnackBar(Login.this, page, "Login Failed\nCheck the details provided", R.color.color_error_red_200, Snackbar.LENGTH_LONG);
+
+                    String errorMsg = "We could not log you in at this time.\nPlease try again later.";
+
+                    if (e.getLocalizedMessage().contains("The user account has been disabled")){
+                        errorMsg = "This account has been disabled.\nPlease contact an administrator.";
+                    }
+                    else if (e.getLocalizedMessage().contains("The password is invalid")){
+                        errorMsg = "The Email/Password combination you have entered is invalid";
+                    }
+                    else if (e.getLocalizedMessage().contains("There is no user record corresponding to this identifier")){
+                        errorMsg = "We could not find any account matching the details you provided";
+                    }
+
+                    Log.e(TAG, "Error Logging in: " + e.getLocalizedMessage());
+                    MySnackBar snackBar = new MySnackBar(Login.this, page, errorMsg, R.color.color_error_red_200, Snackbar.LENGTH_LONG);
                 }
             });
 

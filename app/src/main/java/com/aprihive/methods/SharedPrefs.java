@@ -14,8 +14,9 @@ public class SharedPrefs {
 
 
     public boolean shownOnboard = false;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
+    public boolean pushEnabled = true;
+    public SharedPreferences sharedPreferences;
+    public SharedPreferences.Editor editor;
     public int themeSettings;
 
     public SharedPrefs(Context context){
@@ -47,6 +48,19 @@ public class SharedPrefs {
         editor.putBoolean("shownIntro", shownOnboard);
         editor.apply();
 
+    }
+
+    public void savePushSelection(Boolean value){
+
+        editor.putBoolean("enabledPush", value);
+        editor.apply();
+
+    }
+
+    public boolean getPushSelection(){
+        pushEnabled = sharedPreferences.getBoolean("enabledPush", true);
+
+        return pushEnabled;
     }
 
 

@@ -118,6 +118,7 @@ public class MessagingActivity extends AppCompatActivity implements MessagingRec
         setContentView(R.layout.activity_messaging);
 
 
+
         //firebase
         //init firebase
         auth = FirebaseAuth.getInstance();

@@ -461,6 +461,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                     getProfilePic = value.getString("profileImageLink");
                     getVerified = value.getBoolean("verified");
                     getThreat = value.getBoolean("threat");
+                    String token = value.getString("fcm-token");
+
+                    editor.putString("fcm-token", token);
+                    editor.apply();
 
                     isAdmin = value.getBoolean("isAdmin");
                     isUserNew = value.getBoolean("newAccount");

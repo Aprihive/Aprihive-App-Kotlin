@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity  {
     private View.OnClickListener emptyListener;
     private View.OnClickListener activeListeners;
     private String token;
+    private ConstraintLayout page;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +110,8 @@ public class MainActivity extends AppCompatActivity  {
         login = findViewById(R.id.loginBtn);
         withGoogle = findViewById(R.id.googleBtn);
         load = findViewById(R.id.progressTab);
+        page = findViewById(R.id.page);
+
 
         sharedPrefs = new SharedPrefs(this);
         int getTheme = sharedPrefs.themeSettings;
@@ -237,8 +241,20 @@ public class MainActivity extends AppCompatActivity  {
                             // If sign in fails, display a message to the user.
                             hideOverlay();
 
-                            Toast.makeText(MainActivity.this, "Login with Google Failed", Toast.LENGTH_SHORT).show();
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Exception e = task.getException();
+
+                            Log.e(TAG, "signInWithGoogle:failure " + e.getLocalizedMessage());
+
+                            String errorMsg = "Could not log you in with Google at this time.\nPlease try again later.";
+
+                            if (e.getLocalizedMessage().contains("The user account has been disabled")){
+                                errorMsg = "This account has been disabled.\nPlease contact an administrator.";
+                            }
+
+                            Toast.makeText(MainActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+                            MySnackBar snackBar = new MySnackBar(MainActivity.this, page, errorMsg, R.color.color_error_red_200, Snackbar.LENGTH_LONG);
+
+
                             //
                         }
                     }
@@ -254,6 +270,23 @@ public class MainActivity extends AppCompatActivity  {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
                     if (task.getResult().exists()){
+                        getFCMToken();
+
+                        String name = task.getResult().getString("username");
+                        String imageLink = task.getResult().getString("profileImageLink");
+
+                        if (!name.equals(user.getDisplayName())) {
+
+                            profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
+                            user.updateProfile(profileUpdates);
+
+                        }
+
+                        if (!imageLink.equals(user.getPhotoUrl())){
+                            profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(imageLink)).build();
+                            user.updateProfile(profileUpdates);
+                        }
+
                         Intent i = new Intent(MainActivity.this, Home.class);
                         startActivity(i);
                         finish();
@@ -268,15 +301,17 @@ public class MainActivity extends AppCompatActivity  {
 
     private void storeDetails() {
         user = auth.getCurrentUser();
-        profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(user.getUid()).build();
+        profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(user.getUid().substring(0, 7)).build();
         user.updateProfile(profileUpdates);
         ////
 
         Map<String, Object> details = new HashMap<>();
         details.put("name", user.getDisplayName());
         details.put("email", user.getEmail());
-        details.put("username", user.getUid());
-        details.put("username-lower", user.getUid().toLowerCase());
+        details.put("uid", user.getUid());
+        details.put("admin-level", 0);
+        details.put("username", user.getUid().substring(0, 7));
+        details.put("username-lower", user.getUid().toLowerCase().substring(0, 7));
         details.put("bio", "This is what I do!");
         details.put("school", "");
         details.put("isAdmin", false);
@@ -331,6 +366,40 @@ public class MainActivity extends AppCompatActivity  {
                 Log.d("Debug", "failed" + e);
             }
         });
+    }
+
+    private void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        Map<String, Object> details = new HashMap<>();
+                        details.put("fcm-token", token);
+
+
+                        reference = db.collection("users").document(auth.getCurrentUser().getEmail());
+                        reference.update(details).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.e(TAG, "onSuccess: Stored new token");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "onFailed: failed to store new token" + e);
+
+                            }
+                        });
+                    }
+                });
     }
 
 

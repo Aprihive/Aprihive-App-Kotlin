@@ -5,16 +5,24 @@
 
 package com.aprihive;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 
 import com.aprihive.R;
 import com.aprihive.fragments.SetThemeModal;
@@ -23,8 +31,11 @@ import com.aprihive.methods.SharedPrefs;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private static final String TAG = "debug" ;
     private Toolbar toolbar;
-    private ConstraintLayout aboutClick, themeSelect, shareApp, reportBug, termsPolicies, support, versionName;
+    private ConstraintLayout aboutClick, themeSelect, shareApp, reportBug, termsPolicies, versionName;
+    private SwitchCompat pushNotifySwitch;
+    private SharedPrefs sharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +45,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         SetBarsColor setBarsColor = new SetBarsColor(this, getWindow());
 
-        SharedPrefs sharedPrefs = new SharedPrefs(this);
+
+
+        sharedPrefs = new SharedPrefs(this);
         int getTheme = sharedPrefs.themeSettings;
         AppCompatDelegate.setDefaultNightMode(getTheme);
 
@@ -45,13 +58,16 @@ public class SettingsActivity extends AppCompatActivity {
         shareApp = findViewById(R.id.shareApp);
         reportBug = findViewById(R.id.reportBug);
         termsPolicies = findViewById(R.id.termsPolicies);
-        support = findViewById(R.id.supportClick);
+        pushNotifySwitch = findViewById(R.id.goIcon2);
         versionName = findViewById(R.id.versionName);
 
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
+
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +75,6 @@ public class SettingsActivity extends AppCompatActivity {
                 SettingsActivity.super.onBackPressed();
             }
         });
-
 
         aboutClick.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,8 +91,6 @@ public class SettingsActivity extends AppCompatActivity {
                 bottomSheet.show(getSupportFragmentManager(), "TAG");
             }
         });
-
-
 
         shareApp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,11 +124,37 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        support.setOnClickListener(new View.OnClickListener() {
+
+
+        if (sharedPrefs.getPushSelection()){
+            pushNotifySwitch.setChecked(true);
+        }else{
+            pushNotifySwitch.setChecked(false);
+
+        }
+
+
+        pushNotifySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/support"));
-                startActivity(intent);
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+
+                if(isChecked){
+                    pushNotifySwitch.setChecked(true);
+
+                    //PackageManager pm  = getApplicationContext().getPackageManager();
+                    //ComponentName componentName = new ComponentName(SettingsActivity.this, PushNotificationService.class);
+                    //pm.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_ENABLED,PackageManager.DONT_KILL_APP);
+
+                } else{
+                    pushNotifySwitch.setChecked(false);
+
+
+                }
+
+                sharedPrefs.savePushSelection(pushNotifySwitch.isChecked());
+
+
+
             }
         });
 
@@ -130,8 +169,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             }
         });
-
-
 
 
 

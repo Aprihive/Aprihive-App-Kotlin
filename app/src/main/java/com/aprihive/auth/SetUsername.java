@@ -193,7 +193,7 @@ public class SetUsername extends AppCompatActivity {
 
         Map<String, Object> details = new HashMap<>();
         details.put("username", username);
-        details.put("username-lower", username);
+        details.put("username-lower", username.toLowerCase());
 
 
         reference = db.collection("users").document(userEmail);

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -103,7 +104,7 @@ public class AddPostModal extends BottomSheetDialogFragment {
     private Bundle mySavedInstance;
     private DocumentReference likeRef;
     private Map<String, Object> setLikes;
-    String[] tagsList={"Catering,","Graphics Design,","Development,","App development,","Animation,","Fashion Designing,","Trading,","Bitcoin,","Repairs,","Clothing,","Shoes,","Games,","Confectioneries,","Shoe making,","Tutorials,"};
+    String[] tagsList;
     private String tagsText;
     private TextCrawler textCrawler;
     private String fetchLink;
@@ -127,6 +128,7 @@ public class AddPostModal extends BottomSheetDialogFragment {
         db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
+        tagsList = new String[]{"Catering,", "Graphics Design,", "Development,", "App development,", "Animation,", "Fashion Designing,", "Trading,", "Bitcoin,", "Repairs,", "Clothing,", "Shoes,", "Games,", "Confectioneries,", "Shoe making,", "Tutorials,", "Crypto,", "NFTs,", "Books,", "Forex,", "Digital,"};
 
 
         myInflater = inflater;
@@ -163,7 +165,10 @@ public class AddPostModal extends BottomSheetDialogFragment {
         imagePreview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CropImage.activity().setAspectRatio(3,2).setFixAspectRatio(true).start(getContext(), AddPostModal.this);
+                Intent openGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                openGalleryIntent.setType("image/*");
+                startActivityForResult(openGalleryIntent, 1000);
+                //CropImage.activity().setAspectRatio(3,2).setFixAspectRatio(true).start(getContext(), AddPostModal.this);
             }
         });
 
@@ -337,10 +342,11 @@ public class AddPostModal extends BottomSheetDialogFragment {
         saveTo = user.getDisplayName() + "_"  + postId + "_postImage.jpg";
 
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+        if (requestCode == 1000){
+            //CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == Activity.RESULT_OK){
-                imageUri = result.getUri();
+                imageUri = data.getData();
+                //imageUri = result.getUri();
                 imagePreview.setPadding(0,0,0,0);
 
 

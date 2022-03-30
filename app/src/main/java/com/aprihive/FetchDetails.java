@@ -17,11 +17,15 @@ import android.widget.Toast;
 
 import com.aprihive.methods.SetBarsColor;
 import com.aprihive.methods.SharedPrefs;
+import com.aprihive.models.NotificationModel;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -38,6 +42,17 @@ public class FetchDetails extends AppCompatActivity {
     private Boolean getVerified;
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private String getType;
+    private String getPostId;
+    private String getAuthorEmail;
+    private String getReceiverUsername;
+    private String getSenderUsername;
+    private String getSenderEmail;
+    private String getRequestText;
+    private String getPostText;
+    private String getPostImageLink;
+    private Timestamp getRequestedOn;
+    private String getDeadline;
 
 
     @Override
@@ -55,20 +70,60 @@ public class FetchDetails extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
-        Uri data = getIntent().getData();
-        assert data != null;
-        getUsernameData = data.getLastPathSegment().toLowerCase();
-        Log.e("debug", "used username");
+        try {
+            Uri data = getIntent().getData();
+            assert data != null;
+            getUsernameData = data.getLastPathSegment().toLowerCase();
+            Log.e("debug", "used username");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("debug", "onError: not a user link ");
+        }
 
         if (user.getDisplayName().toLowerCase().equals(getUsernameData)){
             Intent i = new Intent(FetchDetails.this, PersonalProfileActivity.class);
             startActivity(i);
             finish();
         }
+        else if(getIntent().getStringExtra("type").equals("requestNotification")){
+            getRequestInfoFromDb();
+        }
         else {
             getUserInfoFromDbByUsername();
         }
 
+
+    }
+
+    private void getRequestInfoFromDb() {
+
+        DocumentReference notificationsQuery = db.collection("users").document(user.getEmail()).collection("requests").document(getIntent().getStringExtra("requestId"));
+
+        //.orderBy("registered on", "asc")
+
+        notificationsQuery.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot value) {
+
+                getType = value.getString("type");
+                getPostId = value.getString("postId");
+                getAuthorEmail = value.getString("authorEmail");
+                getReceiverUsername = value.getString("receiverUsername");
+                getSenderUsername = value.getString("senderUsername");
+                getSenderEmail = value.getString("senderEmail");
+                getRequestText = value.getString("requestText");
+                getPostText = value.getString("postText");
+                getPostImageLink = value.getString("postImageLink");
+                getRequestedOn = value.getTimestamp("requested on");
+                getDeadline = value.getString("deadLine");
+
+
+
+                openRequestPage();
+
+            }
+        });
 
     }
 
@@ -140,6 +195,29 @@ public class FetchDetails extends AppCompatActivity {
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+
+    }
+
+    private void openRequestPage() {
+        Intent intent = new Intent(FetchDetails.this, RequestDetails.class);
+        intent.putExtra("getType", getType);
+        intent.putExtra("getSenderName", getSenderUsername);
+        intent.putExtra("getReceiverName", getReceiverUsername);
+        intent.putExtra("getDeadline", getDeadline);
+        intent.putExtra("getPostId", getPostId);
+        intent.putExtra("getPostImageLink", getPostImageLink);
+        intent.putExtra("getPostText", getPostText);
+        intent.putExtra("getRequestText", getRequestText);
+        intent.putExtra("getRequestedOn", getRequestedOn);
+        intent.putExtra("getSenderEmail", getSenderEmail);
+        intent.putExtra("getReceiverEmail", getAuthorEmail);
+        // intent.putExtra("refreshAction", (Serializable) refreshRequestsRunnable);
+
+
+
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
 
     }
 }

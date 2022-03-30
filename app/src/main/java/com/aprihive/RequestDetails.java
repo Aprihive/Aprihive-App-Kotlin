@@ -106,9 +106,12 @@ public class RequestDetails extends AppCompatActivity {
 
 
         toolbar = findViewById(R.id.toolbar);
+        TextView toolbarTitle = findViewById(R.id.title);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
+
 
 
 
@@ -126,11 +129,11 @@ public class RequestDetails extends AppCompatActivity {
 
 
         if (getType.equals("from")){
-            getSupportActionBar().setTitle(getSenderUsername.substring(0,1).toUpperCase() + getSenderUsername.substring(1).toLowerCase() + "\'s request");
+            toolbarTitle.setText(getSenderUsername.substring(0,1).toUpperCase() + getSenderUsername.substring(1).toLowerCase() + "\'s request");
             getSenderDetails();
         }
         else {
-            getSupportActionBar().setTitle("Request to " + getReceiverUsername);
+            toolbarTitle.setText("Request to " + getReceiverUsername);
             getReceiverDetails();
         }
 

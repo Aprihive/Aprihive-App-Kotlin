@@ -386,12 +386,12 @@ public class UserProfileActivity extends AppCompatActivity  {
 
                     if (check){
                         connectButton.setBackground(getResources().getDrawable(R.drawable.connect_active_button));
-                        connectButton.setText("Following");
+                        connectButton.setText("Upvoted");
                         connectButton.setTextColor(getResources().getColor(R.color.bg_color));
                     }
                     else {
                         connectButton.setBackground(getResources().getDrawable(R.drawable.connect_default_button));
-                        connectButton.setText("Follow");
+                        connectButton.setText("Upvote");
                         connectButton.setTextColor(getResources().getColor(R.color.color_theme_blue));
                     }
 

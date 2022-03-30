@@ -15,7 +15,7 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu"
@@ -29,15 +29,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:paddingStart="20dp"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/support"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:textColor="@color/black_text_color"
+                android:text="Support" />
+
+            <TextView
+                android:id="@+id/faqs"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:textColor="@color/black_text_color"
+                android:text="FAQs" />
 
             <TextView
                 android:id="@+id/logout"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:textColor="@color/white_color"
-                android:gravity="center"
-                android:background="@color/color_theme_blue"
+                android:textColor="@color/black_text_color"
                 android:text="Sign Out" />
         </LinearLayout>
 

@@ -25,9 +25,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MultiAutoCompleteTextView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +68,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
@@ -73,8 +77,9 @@ public class EditProfileActivity extends AppCompatActivity {
     private DocumentReference reference;
 
 
-    private EditText editName, editSchool, editBio, editEmail, editPhone, editInstagramName, editTwitterName;
+    private EditText editName, editBio, editEmail, editPhone, editInstagramName, editTwitterName;
     private TextView usernameChangeClick;
+    private Spinner editSchool;
 
     private StorageTask uploadTask;
     private StorageReference storageReference;
@@ -97,6 +102,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private CountryCodePicker ccp;
     private boolean canGoBack = true;
+    private String[] universitiesList;
+    private String editSchoolText;
 
 
     @Override
@@ -111,6 +118,26 @@ public class EditProfileActivity extends AppCompatActivity {
         SetBarsColor setBarsColor = new SetBarsColor(this, getWindow());
         networkListener = new NetworkListener(this, page, getWindow());
 
+        universitiesList = new String[]{
+                "",
+                "Obafemi Awolowo University, Ife",
+                "Convenant University, Ota",
+                "Unilag, Lagos",
+                "Unilorin, Ilorin",
+                "Unibadan, Ibadan",
+                "Babcock University, Ogun",
+                "Futa, Akure",
+                "Redeemers University, Osun",
+                "Afe Babalola Universoty, Ado-Ekiti",
+                "Bells University, Ota",
+                "Bowen university, Iwo",
+                "Funnab, Abeokuta",
+                "LASU, Lagos",
+                "Uniport, Rivers",
+                "University of Nigeria, Nsukka",
+                "Oduduwa University, Osun",
+                "Others"
+        };
 
 
         //init firebase
@@ -141,6 +168,15 @@ public class EditProfileActivity extends AppCompatActivity {
         ccp = findViewById(R.id.ccp);
 
 
+        editSchool.setOnItemSelectedListener(this);
+
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, universitiesList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        editSchool.setAdapter(adapter);
+
+
+
 
 
         statusLoadBar = findViewById(R.id.statusLoadBar);
@@ -160,13 +196,13 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
+        editSchoolText = "";
         getProfileImage();
         retrieveDetailsFromFirestore();
         
 
 
         editName.addTextChangedListener(textChangeListener);
-        editSchool.addTextChangedListener(textChangeListener);
         editPhone.addTextChangedListener(textChangeListener);
         editTwitterName.addTextChangedListener(textChangeListener);
         editInstagramName.addTextChangedListener(textChangeListener);
@@ -209,7 +245,7 @@ public class EditProfileActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             if (!editName.getText().toString().trim().equals(getFullname)||
-                    !editSchool.getText().toString().trim().equals(getSchool)||
+                    !editSchoolText.equals(getSchool)||
                     !editPhone.getText().toString().trim().equals(getPhone)||
                     !editTwitterName.getText().toString().trim().equals(getTwitterName)||
                     !editInstagramName.getText().toString().trim().equals(getInstagramName)||
@@ -247,7 +283,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         //get values from input
         setName = editName.getText().toString().trim();
-        setSchool = editSchool.getText().toString().trim();
+        setSchool = editSchoolText;
         setBio = editBio.getText().toString().trim();
         setInstagram = editInstagramName.getText().toString().trim();
         setTwitter = editTwitterName.getText().toString().trim();
@@ -399,7 +435,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 editName.setText(getFullname);
                 editEmail.setText(getEmail);
                 editBio.setText(getBio);
-                editSchool.setText(getSchool);
+                editSchool.setSelection(getIndex(editSchool, getSchool));
                 editPhone.setText(getPhone);
                 editInstagramName.setText(getInstagramName);
                 editTwitterName.setText(getTwitterName);
@@ -409,6 +445,20 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
         //end of retrieve
+    }
+
+    private int getIndex(Spinner spinner, String myString){
+
+        int index = 0;
+
+        for (int i=0; i < spinner.getCount(); i++){
+
+            if (spinner.getItemAtPosition(i).equals(myString)){
+                index = i;
+            }
+
+        }
+        return index;
     }
 
     @Override
@@ -549,4 +599,19 @@ public class EditProfileActivity extends AppCompatActivity {
             Toast.makeText(this, "Please wait...", Toast.LENGTH_LONG).show();
         }
     }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+
+        editSchoolText = universitiesList[position];
+        textChangeListener.onTextChanged("charSequence", 0, 1, 2);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }
+

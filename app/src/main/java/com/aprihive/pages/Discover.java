@@ -40,6 +40,7 @@ import com.aprihive.fragments.SendRequestModal;
 import com.aprihive.models.DiscoverPostsModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -102,6 +103,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
     private Timestamp getTime;
     private String fetchLink;
     private HashMap<String, String> getLinkData;
+    private ShimmerFrameLayout shimmer;
 
 
     public Discover() {
@@ -129,6 +131,9 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
         swipeRefresh = view.findViewById(R.id.find_swipeRefresh);
         context = getActivity().getApplicationContext();
         nothingImage = view.findViewById(R.id.notFoundImage);
+        shimmer = view.findViewById(R.id.shimmerLayout);
+
+        shimmer.startShimmer();
 
 
         fab = getActivity().findViewById(R.id.fabAddPost);
@@ -181,8 +186,6 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
 
 
 
-
-        swipeRefresh.setRefreshing(true);
         getPostsFromBackend();
 
 
@@ -264,6 +267,9 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
 
                     }
 
+                    shimmer.stopShimmer();
+                    shimmer.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     setupRecyclerView();
                     swipeRefresh.setRefreshing(false);
 
@@ -332,7 +338,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
     }
 
     @Override
-    public void onSendRequest(int position, String postId, String postAuthorEmail, String postText, String postImage, String postAuthor){
+    public void onSendRequest(int position, String postId, String postAuthorEmail, String postText, String postImage, String token, String postAuthor){
         SendRequestModal bottomSheet = new SendRequestModal();
         Bundle bundle = new Bundle();
         bundle.putString("postAuthorEmail", postAuthorEmail);
@@ -340,6 +346,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
         bundle.putString("postText", postText);
         bundle.putString("postImage", postImage);
         bundle.putString("postId", postId);
+        bundle.putString("token", token);
         bottomSheet.setArguments(bundle);
         bottomSheet.show(getActivity().getSupportFragmentManager(), "TAG");
     }

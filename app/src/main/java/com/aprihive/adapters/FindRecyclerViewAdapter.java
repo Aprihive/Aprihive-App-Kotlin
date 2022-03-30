@@ -222,12 +222,12 @@ public class FindRecyclerViewAdapter extends RecyclerView.Adapter<FindRecyclerVi
 
                     if (check){
                         holder.followButton.setBackground(context.getResources().getDrawable(R.drawable.connect_active_button));
-                        holder.followButton.setText("Following");
+                        holder.followButton.setText("Upvoted");
                         holder.followButton.setTextColor(context.getResources().getColor(R.color.bg_color));
                     }
                     else {
                         holder.followButton.setBackground(context.getResources().getDrawable(R.drawable.connect_default_button));
-                        holder.followButton.setText("Follow");
+                        holder.followButton.setText("Upvote");
                         holder.followButton.setTextColor(context.getResources().getColor(R.color.color_theme_blue));
                     }
 

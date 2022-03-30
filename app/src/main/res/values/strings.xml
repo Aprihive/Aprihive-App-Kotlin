@@ -12,9 +12,11 @@
     <string name="app_version">v1.2</string>
     <string name="version">1.2</string>
     <string name="API_URL">https://www.aprihive.com/api/</string>
+    <string name="TAG">debug</string>
     <string name="user_warning_text">This user has  been flagged as suspicious and is currently under review.</string>
     <string name="msg_token_fmt" />
-    <string name="share_app_message">Hey check out Aprihive, the app I use for marketing my services and products easily at: https://aprihive.com/download</string>
+    <string name="share_app_message">Hey check out Aprihive, the app I use for marketing my services and products easily at: https://www.aprihive.com/download</string>
+    <string name="about_info">This is the official version of the Aprihive app.\n Developed by the team at Aprihive. \n Sponsored by Jèsúlonimii™.</string>
 
 
 </resources>
