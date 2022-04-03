@@ -12,6 +12,7 @@ public class DiscoverPostsModel {
     private String fullname, username, postText, postId, postImageLink,  postTags, location, timePosted, authorEmail;
     private HashMap<String, String> linkData;
     private Boolean verified;
+    private int positionId;
 
     public DiscoverPostsModel(){}
 
@@ -115,5 +116,13 @@ public class DiscoverPostsModel {
 
     public void setLinkData(HashMap<String, String> linkData) {
         this.linkData = linkData;
+    }
+
+    public int getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(int positionId) {
+        this.positionId = positionId;
     }
 }

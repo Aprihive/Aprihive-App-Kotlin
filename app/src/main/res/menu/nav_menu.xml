@@ -11,9 +11,8 @@
         android:title="Settings"
         android:icon="@drawable/ic_settings"/>
 
-    <item android:id="@+id/promotions"
-        android:visible="false"
-        android:title="Become an Affliate"
+    <item android:id="@+id/payments"
+        android:title="Payments"
         android:icon="@drawable/ic_label_outline" />
 
     <!--<item android:id="@+id/signOut"

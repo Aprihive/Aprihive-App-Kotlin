@@ -16,10 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".MessagingActivity"></activity>
+        <activity android:name=".MessagingActivity" />
         <activity android:name=".OnboardingActivity" />
-        <activity android:name=".FetchDetails" android:theme="@style/SplashTheme"
-            android:noHistory="true">
+        <activity
+            android:name=".FetchDetails"
+            android:noHistory="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -45,7 +47,8 @@
         </activity>
         <activity android:name=".ImageViewActivity" />
         <activity android:name=".RequestDetails" />
-        <activity android:name=".Splash"
+        <activity
+            android:name=".Splash"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,18 +58,20 @@
         </activity>
         <activity
             android:name=".EditProfileActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".PersonalProfileActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".PaymentActivity"/>
         <activity
             android:name=".AboutApp"
-            android:windowSoftInputMode="adjustResize" android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SettingsActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".UserProfileActivity"
             android:windowSoftInputMode="adjustResize">
@@ -122,12 +127,12 @@
         </activity>
         <activity
             android:name=".auth.SetUsername"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".auth.VerifyEmail"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".fragments.ForgotPassword"
             android:windowSoftInputMode="adjustResize" />
@@ -210,8 +215,8 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".CatalogueItemDetails"
             android:windowSoftInputMode="adjustResize" />
@@ -219,14 +224,15 @@
         <service
             android:name=".PushNotificationService"
             android:enabled="true"
-            android:permission="com.google.android.c2dm.permission.SEND"
-            android:exported="true">
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/icon" />
@@ -237,6 +243,5 @@
             android:name="google_analytics_automatic_screen_reporting_enabled"
             android:value="true" />
     </application>
-
 
 </manifest>

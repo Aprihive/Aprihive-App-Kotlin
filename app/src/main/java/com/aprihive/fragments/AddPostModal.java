@@ -16,12 +16,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +32,8 @@ import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
+import com.aprihive.Home;
 import com.aprihive.backend.RetrofitInterface;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -42,6 +47,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -323,6 +329,32 @@ public class AddPostModal extends BottomSheetDialogFragment {
             public void onSuccess(Void aVoid) {
                 dismiss();
                 postsRefresh.run();
+
+
+
+                ConstraintLayout feedbackBar = getActivity().findViewById(R.id.feedbackBar);
+                TextView feedbackBarText = getActivity().findViewById(R.id.textFeedback);
+                LottieAnimationView feedbackBarAnimation = getActivity().findViewById(R.id.animationView);
+                FloatingActionButton fab = getActivity().findViewById(R.id.fabAddPost);
+                Animation fadeUp = AnimationUtils.loadAnimation(context, R.anim.fade_up_animation);
+                feedbackBarText.setText("Your campaign was successfully created!");
+
+
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        feedbackBar.setVisibility(View.VISIBLE);
+                        feedbackBar.setAnimation(fadeUp);
+                        fab.hide();
+                        feedbackBarAnimation.playAnimation();
+
+                    }
+                }, 1500);
+
+
+
                 Log.d("Debug", "success stuff");
             }
         }).addOnFailureListener(new OnFailureListener() {

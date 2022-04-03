@@ -42,6 +42,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 public class PersonalProfileActivity extends AppCompatActivity {
@@ -75,7 +77,9 @@ public class PersonalProfileActivity extends AppCompatActivity {
     private ListenerRegistration registerQuery;
     private FloatingActionButton addPostFab, addCatalogueItemFab;
     private Bundle bundle;
-
+    private DocumentReference upvoteReference;
+    private ListenerRegistration upvoteRegisterQuery;
+    private TextView upvoteText;
 
 
     @Override
@@ -99,6 +103,8 @@ public class PersonalProfileActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
         currentUserId = currentUser.getUid();
         reference = firestore.collection("users").document(currentUser.getEmail());
+        upvoteReference = firestore.collection("users").document(currentUser.getEmail()).collection("lists").document("following");
+
         //
 
         toolbar = findViewById(R.id.toolbar);
@@ -111,6 +117,7 @@ public class PersonalProfileActivity extends AppCompatActivity {
         username = findViewById(R.id.username);
         bio = findViewById(R.id.description);
         schoolName = findViewById(R.id.schoolName);
+        upvoteText =  findViewById(R.id.upvoteText);
 
         editProfilebutton = findViewById(R.id.editProfileButton);
         addPostFab = findViewById(R.id.fabAddPost);
@@ -191,6 +198,9 @@ public class PersonalProfileActivity extends AppCompatActivity {
         });
         
         backendCodes();
+        checkUpvotes();
+
+
 
 
 
@@ -278,11 +288,42 @@ public class PersonalProfileActivity extends AppCompatActivity {
         //end of retrieve
     }
 
+    private int checkUpvotes(){
+
+        final int[] count = {0};
+
+        upvoteRegisterQuery = upvoteReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@androidx.annotation.Nullable DocumentSnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
+
+                if (value.exists()){
+
+
+                    Map<String, Object> map = value.getData();
+                    count[0] = map.size();
+
+                    if (count[0] == 1){
+                        upvoteText.setText(count[0] + " Upvote.");
+                    }
+                    else {
+                        upvoteText.setText(count[0] + " Upvotes.");
+                    }
+
+                }
+
+            }
+        });
+
+        return count[0];
+
+    }
+
 
     @Override
     protected void onPause() {
         super.onPause();
         registerQuery.remove();
+        upvoteRegisterQuery.remove();
 
     }
 
@@ -291,5 +332,7 @@ public class PersonalProfileActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         registerQuery.remove();
+        upvoteRegisterQuery.remove();
+
     }
 }

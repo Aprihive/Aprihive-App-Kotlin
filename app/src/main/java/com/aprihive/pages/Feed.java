@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.aprihive.ImageViewActivity;
 import com.aprihive.R;
 import com.aprihive.adapters.DiscoverRecyclerAdapter;
@@ -85,6 +86,7 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
     private Timestamp getTime;
     private String fetchLink;
     private HashMap<String, String> getLinkData;
+    private int getPositionId;
 
     public Feed() {
 
@@ -192,6 +194,8 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
                         getPostUserEmail = value.getString("userEmail");
                         getPostId = value.getString("postId");
 
+                        getPositionId = postList.size() + 1;
+
 
 
                         discoverModel = new DiscoverPostsModel();
@@ -219,6 +223,9 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
+                        discoverModel.setPositionId(getPositionId);
+
 
                         postList.add(discoverModel);
 
@@ -272,7 +279,7 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
     }
 
     @Override
-    public void onVote(int position, String postId) {
+    public void onVote(int position, String postId, LottieAnimationView icon) {
         final Boolean[] processLike = {true};
         final DocumentReference fileRef = db.collection("upvotes").document(postId);
         fileRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -284,10 +291,12 @@ public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickLis
 
                         if (value.contains(auth.getCurrentUser().getUid())){
                             fileRef.update(auth.getCurrentUser().getUid(), FieldValue.delete());
+                            icon.playAnimation();
                             processLike[0] =false;
                         }
                         else {
                             fileRef.update(auth.getCurrentUser().getUid(), auth.getCurrentUser().getEmail());
+                            icon.playAnimation();
                             processLike[0] =false;
                         }
 

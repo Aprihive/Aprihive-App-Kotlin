@@ -7,6 +7,7 @@ package com.aprihive;
 
 
 import android.Manifest;
+import android.animation.Animator;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,9 +22,12 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +47,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.aprihive.adapters.HomeViewPagerAdapter;
@@ -75,6 +80,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -98,7 +106,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private ImageView verificationIcon;
     private ListenerRegistration registerQuery;
     private ImageView logo;
-    private FloatingActionButton fab;
+    public FloatingActionButton fab;
     private String getFullname, getUsername, getProfilePic;
     private boolean getVerified;
     public Bundle bundle;
@@ -107,7 +115,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private String CHANNEL_ID = "welcome_notification";
     private Boolean isUserNew;
     private Boolean isAdmin;
-    private TextView signOut;
+    private TextView signOut, support, faq;
     private Runnable action;
     private String getLocation;
     private String getAction;
@@ -131,6 +139,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private Boolean getThreat;
     private ImageView threatIcon;
     public FirebaseAnalytics analytics;
+    public ConstraintLayout feedbackBar;
+    public TextView feedbackBarText;
+    public LottieAnimationView feedbackBarAnimation;
 
 
     @Override
@@ -201,9 +212,51 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         page = findViewById(R.id.page);
         navigView = findViewById(R.id.nav_view);
         signOut = navigView.findViewById(R.id.logout);
+        support = navigView.findViewById(R.id.support);
+        faq = navigView.findViewById(R.id.faqs);
         drawer = findViewById(R.id.drawer);
         toolbar = findViewById(R.id.toolbar);
         fab = findViewById(R.id.fabAddPost);
+
+        feedbackBar = findViewById(R.id.feedbackBar);
+        feedbackBarText = findViewById(R.id.textFeedback);
+        feedbackBarAnimation = findViewById(R.id.animationView);
+        feedbackBarAnimation.setMinFrame(56);
+        feedbackBarAnimation.setMaxFrame(156);
+
+        feedbackBarAnimation.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                feedbackBarAnimation.setFrame(156);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animation fadeDown = AnimationUtils.loadAnimation(Home.this, R.anim.fade_down_animation);
+                        feedbackBar.setAnimation(fadeDown);
+                        feedbackBar.setVisibility(View.GONE);
+                        fab.show();
+
+                    }
+                }, 2000);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+
 
         logo = findViewById(R.id.logoImageView);
 
@@ -212,6 +265,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         navImage = navigView.getHeaderView(0).findViewById(R.id.nav_profile_pic);
         verificationIcon = navigView.getHeaderView(0).findViewById(R.id.verifiedIcon);
         threatIcon = navigView.getHeaderView(0).findViewById(R.id.warningIcon);
+
 
 
         setSupportActionBar(toolbar);
@@ -277,6 +331,22 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             public void onClick(View view) {
                 MyActionDialog dialog = new MyActionDialog(Home.this, "Sign Out?", "Are you sure you want to sign out?", R.drawable.ic_exit, R.color.color_error_red_200, action, "Yes, Sign out", "No, Just kidding.");
                 dialog.show();
+            }
+        });
+
+        support.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/support"));
+                startActivity(i);
+            }
+        });
+
+        faq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/faqs"));
+                startActivity(i);
             }
         });
 
@@ -742,9 +812,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             startActivity(i);
         }
 
-        if (item.getItemId() ==  R.id.promotions){
-            //TODO: create promotions activities
-            Toast.makeText(this, "This action is temporarily disabled.", Toast.LENGTH_SHORT).show();
+        if (item.getItemId() ==  R.id.payments){
+            //TODO: integrate payments
+            Intent i = new Intent(Home.this, PaymentActivity.class);
+            startActivity(i);
         }
 
        // if (item.getItemId() == R.id.signOut){

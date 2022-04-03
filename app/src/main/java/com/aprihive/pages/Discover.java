@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.aprihive.Home;
 import com.aprihive.ImageViewActivity;
 import com.aprihive.PersonalProfileActivity;
@@ -104,6 +105,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
     private String fetchLink;
     private HashMap<String, String> getLinkData;
     private ShimmerFrameLayout shimmer;
+    private int getPositionId;
 
 
     public Discover() {
@@ -158,11 +160,19 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
         });
 
 
+        getActivity().findViewById(R.id.refreshButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                swipeRefresh.setRefreshing(true);
+                getPostsFromBackend();
+            }
+        });
 
         //to refresh posts after posting or deleting
         refreshPostsRunnable = new Runnable() {
             @Override
             public void run() {
+                swipeRefresh.setRefreshing(true);
                 getPostsFromBackend();
             }
         };
@@ -181,6 +191,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
 
         postList = new ArrayList<>();
         adapter = new DiscoverRecyclerAdapter(getContext(), postList, this);
+        adapter.setHasStableIds(true);
         Log.d(TAG, "attached adapter");
 
 
@@ -234,6 +245,8 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
                         getPostUserEmail = value.getString("userEmail");
                         getPostId = value.getString("postId");
 
+                        getPositionId = postList.size() + 1;
+
                         discoverModel = new DiscoverPostsModel();
                         discoverModel.setAuthorEmail(getPostUserEmail);
                         discoverModel.setLocation(getLocation);
@@ -245,6 +258,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
                         discoverModel.setPostText(getPostText);
                         discoverModel.setPostImageLink(getPostImageLink);
                         discoverModel.setPostId(getPostId);
+                        discoverModel.setPositionId(getPositionId);
 
                         try {
                             getLinkData = (HashMap<String, String>) value.get("linkPreviewData");
@@ -307,7 +321,7 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
     }
 
     @Override
-    public void onVote(int position, String postId) {
+    public void onVote(int position, String postId, LottieAnimationView icon) {
         final Boolean[] processLike = {true};
         final DocumentReference fileRef = db.collection("upvotes").document(postId);
         fileRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -318,11 +332,21 @@ public class Discover extends Fragment implements DiscoverRecyclerAdapter.MyClic
                     if (processLike[0]){
 
                         if (value.contains(auth.getCurrentUser().getUid())){
+                            //icon.setAnimation("lottie_upvote_default.json");
                             fileRef.update(auth.getCurrentUser().getUid(), FieldValue.delete());
+                            adapter.notifyDataSetChanged();
+                            icon.playAnimation();
+
+
                             processLike[0] =false;
                         }
                         else {
+                            //icon.setAnimation("lottie_upvote_active.json");
                             fileRef.update(auth.getCurrentUser().getUid(), auth.getCurrentUser().getEmail());
+                            adapter.notifyDataSetChanged();
+                            icon.playAnimation();
+
+
                             processLike[0] =false;
                         }
 

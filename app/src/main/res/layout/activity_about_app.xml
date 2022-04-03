@@ -33,7 +33,7 @@
             android:layout_marginTop="10dp"
             android:elevation="0dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="@color/bg_color_fade"
+            app:cardBackgroundColor="@color/color_theme_blue_500"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -12,8 +12,11 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
@@ -141,7 +144,7 @@ public class ImageViewActivity extends AppCompatActivity {
         String root = Environment.getExternalStorageDirectory().toString();
 
         Timestamp timestamp = new Timestamp(new Date());
-        String time = timestamp.toString();
+        String time = timestamp.toDate().toString();
 
         String fileName = "Aprihive-"+ time +".jpg";
         File myDirectory = new File(root + "/Aprihive");
@@ -160,6 +163,8 @@ public class ImageViewActivity extends AppCompatActivity {
             out.close();
 
             Toast.makeText(ImageViewActivity.this, "Image saved to storage.", Toast.LENGTH_SHORT).show();
+
+            MediaScannerConnection.scanFile(getApplicationContext(), new String[]{file.getPath()}, new String[]{"image/jpeg"}, null);
 
         } catch (Exception e) {
             e.printStackTrace();

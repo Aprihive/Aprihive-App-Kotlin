@@ -199,7 +199,7 @@ public class PostOptionsModal extends BottomSheetDialogFragment {
             fileRef.delete();
         }
 
-        if (getArguments().getBoolean("isAdmin")){
+        if (getArguments().getBoolean("isAdmin") && !getArguments().getString("postAuthorEmail").equals(user.getEmail())){
            sendDeleteNotification();
         }
 

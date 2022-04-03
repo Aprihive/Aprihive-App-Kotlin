@@ -313,15 +313,17 @@ public class SendRequestModal extends BottomSheetDialogFragment {
 
         Call<Void> callPushNotifications = retrofitInterface.executeRequestPushNotification(map);
 
+        Log.e("debug", "sendNotifications: about to send request notification" );
+
         callPushNotifications.enqueue(new Callback<Void>() {
 
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.code() == 200){
-                    Log.e("push-notify-status", "sent");
+                    Log.e("request-notify-status", "sent request notification");
                 }
                 else if (response.code() == 400){
-                    Log.e("push-notify-status", "failure: not sent");
+                    Log.e("request-notify-status", "failure: not sent");
 
                 }
             }

@@ -130,11 +130,19 @@ public class RequestDetails extends AppCompatActivity {
 
         if (getType.equals("from")){
             toolbarTitle.setText(getSenderUsername.substring(0,1).toUpperCase() + getSenderUsername.substring(1).toLowerCase() + "\'s request");
-            getSenderDetails();
+           try {
+               getSenderDetails();
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
         }
         else {
             toolbarTitle.setText("Request to " + getReceiverUsername);
-            getReceiverDetails();
+           try {
+               getReceiverDetails();
+           } catch (Exception e) {
+               e.printStackTrace();
+           }
         }
 
 
@@ -296,28 +304,36 @@ public class RequestDetails extends AppCompatActivity {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                getFullname = value.getString("name");
-                getUsername = value.getString("username");
-                getProfilePic = value.getString("profileImageLink");
-                getVerified = value.getBoolean("verified");
+                try {
 
 
-                senderName.setText(getFullname);
-                senderUsername.setText("@" + getUsername);
-                if (getVerified){
-                    verificationIcon.setVisibility(View.VISIBLE);
-                } else {
-                    verificationIcon.setVisibility(View.GONE);
+                    getFullname = value.getString("name");
+                    getUsername = value.getString("username");
+                    getProfilePic = value.getString("profileImageLink");
+                    getVerified = value.getBoolean("verified");
+
+
+                    senderName.setText(getFullname);
+                    senderUsername.setText("@" + getUsername);
+                    if (getVerified) {
+                        verificationIcon.setVisibility(View.VISIBLE);
+                    } else {
+                        verificationIcon.setVisibility(View.GONE);
+                    }
+
+                    Glide.with(getApplicationContext())
+                            .load(getProfilePic)
+                            .centerCrop() //4
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .error(R.drawable.user_image_placeholder)
+                            .fallback(R.drawable.user_image_placeholder) //7
+                            .transition(DrawableTransitionOptions.withCrossFade())
+                            .into(profileImage);
+
                 }
-
-                Glide.with(getApplicationContext())
-                        .load(getProfilePic)
-                        .centerCrop() //4
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.drawable.user_image_placeholder)
-                        .fallback(R.drawable.user_image_placeholder) //7
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .into(profileImage);
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
         });

@@ -1,5 +1,6 @@
 package com.aprihive.adapters;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -17,6 +18,7 @@ import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -104,7 +106,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
         viewHolder.upvoteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onVote(viewHolder.getAbsoluteAdapterPosition(), postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostId() );
+                listener.onVote(viewHolder.getAbsoluteAdapterPosition(), postList.get(viewHolder.getAbsoluteAdapterPosition()).getPostId(), viewHolder.upvoteIcon );
             }
         });
 
@@ -259,40 +261,57 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
                     assert user != null;
                     String uid = user.getUid();
 
+                    getLikeCount(holder, value);
+
+
                     Boolean check = false;
 
                     try {
                         check = value.contains(uid);
                     }
-                    catch (Exception e){
-                        
-                    }
+                    catch (Exception e){}
 
 
                     if (check){
-                        holder.upvoteIcon.setColorFilter(context.getResources().getColor(R.color.color_success_green_200));
+                        //holder.upvoteIcon.setColorFilter(context.getResources().getColor(R.color.color_success_green_200));
+                        holder.upvoteIcon.setAnimation("lottie_upvote_active.json");
+                        holder.upvoteIcon.setFrame(24);
+
                     }
                     else {
-                        holder.upvoteIcon.setColorFilter(context.getResources().getColor(R.color.grey_color_100));
+                        //holder.upvoteIcon.setColorFilter(context.getResources().getColor(R.color.grey_color_100));
+                        holder.upvoteIcon.setAnimation("lottie_upvote_default.json");
+                        holder.upvoteIcon.setFrame(24);
                     }
 
 
 
 
-                    try {
-                        Map<String, Object> map = value.getData();
-                        getUpvotes = map.size();
-                   } catch (Exception e) {
-                       e.printStackTrace();
-                   }
 
+                    holder.upvoteIcon.addAnimatorListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+                            //DiscoverRecyclerAdapter.this.notifyDataSetChanged();
+                        }
 
-                    if (getUpvotes == 1){
-                        holder.trustedByText.setText("  Upvoted by " + getUpvotes + " person");
-                    }
-                    else {
-                        holder.trustedByText.setText("  Upvoted by " + getUpvotes + " people");
-                    }
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+
+                            holder.upvoteIcon.setFrame(24);
+                            //getLikeCount(holder, value);
+
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    });
 
                 } catch (Resources.NotFoundException e) {
                     e.printStackTrace();
@@ -379,6 +398,24 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
 
     }
 
+    private void getLikeCount(ViewHolder holder, DocumentSnapshot value){
+        try {
+            Map<String, Object> map = value.getData();
+            getUpvotes = map.size();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        if (getUpvotes == 1){
+            holder.trustedByText.setText("  Upvoted by " + getUpvotes + " person");
+        }
+        else {
+            holder.trustedByText.setText("  Upvoted by " + getUpvotes + " people");
+        }
+
+    }
+
     @Override
     public int getItemCount() {
         return postList.size();
@@ -387,7 +424,8 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
     public class ViewHolder extends RecyclerView.ViewHolder {
 
 
-        private ImageView profileImage, verifiedIcon, threatIcon, postImage, upvoteIcon, linkImage;
+        private ImageView profileImage, verifiedIcon, threatIcon, postImage, linkImage;
+        private LottieAnimationView upvoteIcon;
         private CardView optionsIcon, postImage_bg;
         private TextView postFullName, postUsername, postText,trustedByText, requestButton, postTime, linkTitle, linkDescription, linkUrl;
         private ConstraintLayout postItem, linkPreviewBar;
@@ -427,7 +465,7 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
     }
 
     public interface MyClickListener {
-        void onVote(int position, String postId);
+        void onVote(int position, String postId, LottieAnimationView icon);
         void onSendRequest(int position, String postId, String postAuthorEmail, String postText, String postImage, String token, String postAuthor);
         void onPostMenuClick(int position, String postId, String postAuthorEmail, String postText, String postImage);
         void onTextExpandClick(int position, TextView textView);
@@ -437,6 +475,10 @@ public class DiscoverRecyclerAdapter extends RecyclerView.Adapter<DiscoverRecycl
 
     }
 
+    @Override
+    public long getItemId(int position) {
+        return postList.get(position).getPositionId();
+    }
 
     @Override
     public void onViewDetachedFromWindow(@NonNull ViewHolder holder) {
