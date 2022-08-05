@@ -2,337 +2,337 @@
 // Copyright (c) Erlite 2021.
 // Copyright (c) Aprihive 2021.
 // All Rights Reserved
+package com.aprihive
 
-package com.aprihive;
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import android.os.Bundle
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import android.annotation.SuppressLint
+import com.aprihive.R
+import com.aprihive.methods.SharedPrefs
+import androidx.appcompat.app.AppCompatDelegate
+import com.aprihive.methods.SetBarsColor
+import android.content.Intent
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import android.view.animation.Animation
+import com.aprihive.ImageViewActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.aprihive.methods.MyActionDialog
+import com.google.android.gms.tasks.OnSuccessListener
+import com.aprihive.fragments.ContactMethodModal
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.StorageReference
+import androidx.cardview.widget.CardView
+import com.aprihive.methods.NetworkListener
+import com.rilixtech.CountryCodePicker
+import com.google.firebase.storage.FirebaseStorage
+import com.theartofdev.edmodo.cropper.CropImage
+import com.aprihive.auth.SetUsername
+import android.text.TextWatcher
+import android.text.Editable
+import com.aprihive.methods.MySnackBar
+import com.google.android.material.snackbar.Snackbar
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import android.app.Activity
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.android.gms.tasks.OnFailureListener
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import com.aprihive.PersonalProfileActivity
+import com.google.android.gms.tasks.OnCompleteListener
+import com.aprihive.Home
+import com.aprihive.UserProfileActivity
+import com.aprihive.RequestDetails
+import com.google.android.material.navigation.NavigationView
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.content.SharedPreferences
+import com.aprihive.adapters.HomeViewPagerAdapter
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.airbnb.lottie.LottieAnimationView
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.aprihive.MainActivity
+import com.aprihive.pages.Discover
+import com.aprihive.fragments.AddPostModal
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.core.content.ContextCompat
+import android.graphics.BitmapFactory
+import android.app.PendingIntent
+import com.aprihive.EditProfileActivity
+import androidx.core.app.NotificationManagerCompat
+import android.os.Build
+import android.app.NotificationManager
+import android.app.NotificationChannel
+import android.content.res.Resources.NotFoundException
+import com.aprihive.auth.Login
+import androidx.core.app.ActivityCompat
+import android.content.pm.PackageManager
+import com.aprihive.SettingsActivity
+import com.aprihive.PaymentActivity
+import androidx.core.view.GravityCompat
+import android.os.PersistableBundle
+import com.github.chrisbanes.photoview.PhotoView
+import com.bumptech.glide.request.target.CustomTarget
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.os.Environment
+import android.media.MediaScannerConnection
+import com.aprihive.auth.SignUp
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.AuthResult
+import com.aprihive.adapters.MessagingRecyclerAdapter
+import com.aprihive.models.MessageModel
+import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Retrofit
+import com.aprihive.backend.RetrofitInterface
+import retrofit2.converter.gson.GsonConverterFactory
+import com.aprihive.MessagingActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.aprihive.fragments.ReportModal
+import kotlin.Throws
+import org.ocpsoft.prettytime.PrettyTime
+import com.aprihive.fragments.OptionsDialogModal
+import android.content.ClipData
+import com.google.android.material.tabs.TabLayout
+import com.aprihive.adapters.OnboardingViewAdapter
+import com.aprihive.models.OnboardingModel
+import com.aprihive.adapters.ProfileViewPagerAdapter
+import com.aprihive.pages.Feed
+import com.aprihive.fragments.AddCatalogueItemModal
+import com.aprihive.pages.Catalogue
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.aprihive.PushNotificationService
+import com.google.firebase.messaging.RemoteMessage
+import com.aprihive.FetchDetails
+import android.graphics.RectF
+import android.graphics.PorterDuffXfermode
+import android.graphics.PorterDuff
+import android.net.Uri
+import android.view.View
+import android.widget.*
+import androidx.appcompat.widget.SwitchCompat
+import com.aprihive.AboutApp
+import com.aprihive.fragments.SetThemeModal
+import androidx.appcompat.widget.Toolbar
+import com.aprihive.OnboardingActivity
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import com.google.firebase.firestore.*
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
-
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.aprihive.methods.SharedPrefs;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.aprihive.adapters.ProfileViewPagerAdapter;
-import com.aprihive.R;
-import com.aprihive.fragments.AddCatalogueItemModal;
-import com.aprihive.fragments.AddPostModal;
-import com.aprihive.methods.SetBarsColor;
-import com.aprihive.pages.Catalogue;
-import com.aprihive.pages.Feed;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
-
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-public class PersonalProfileActivity extends AppCompatActivity {
-
+class PersonalProfileActivity : AppCompatActivity() {
     //firebase
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore firestore;
-    private FirebaseUser currentUser;
-    private DocumentReference reference;
-    private String currentUserId;
-
-    private StorageTask uploadTask;
-    private StorageReference storageReference;
-    public Uri imageUri;
-    private String myUri;
-
-    private String getEmail, getFullname, getUsername, getPhone, getBio, getSchool, getUserProfilePic; //fetch from firebase into
-    private Boolean getVerified; //fetch from firebase into
-
-
+    private var mAuth: FirebaseAuth? = null
+    private var firestore: FirebaseFirestore? = null
+    private var currentUser: FirebaseUser? = null
+    private var reference: DocumentReference? = null
+    private var currentUserId: String? = null
+    private val uploadTask: StorageTask<*>? = null
+    private var storageReference: StorageReference? = null
+    var imageUri: Uri? = null
+    private val myUri: String? = null
+    private var getEmail: String? = null
+    private var getFullname: String? = null
+    private var getUsername: String? = null
+    private var getPhone: String? = null
+    private var getBio: String? = null
+    private var getSchool: String? = null
+    private var getUserProfilePic //fetch from firebase into
+            : String? = null
+    private var getVerified //fetch from firebase into
+            : Boolean? = null
 
     //firebase end
-
-    private Toolbar toolbar;
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-
-    private ImageView verifiedIcon, profilePic;
-    private TextView email, fullname, username, phone, bio, schoolName;
-    private TextView editProfilebutton;
-    private ListenerRegistration registerQuery;
-    private FloatingActionButton addPostFab, addCatalogueItemFab;
-    private Bundle bundle;
-    private DocumentReference upvoteReference;
-    private ListenerRegistration upvoteRegisterQuery;
-    private TextView upvoteText;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_profile);
-
-        SharedPrefs sharedPrefs = new SharedPrefs(this);
-        int getTheme = sharedPrefs.themeSettings;
-        AppCompatDelegate.setDefaultNightMode(getTheme);
-
-        SetBarsColor setBarsColor = new SetBarsColor(this, getWindow());
-        ProfileViewPagerAdapter adapter = new ProfileViewPagerAdapter(getSupportFragmentManager());
-
-        bundle = new Bundle();
+    private var toolbar: Toolbar? = null
+    private var viewPager: ViewPager? = null
+    private var tabLayout: TabLayout? = null
+    private var verifiedIcon: ImageView? = null
+    private var profilePic: ImageView? = null
+    private val email: TextView? = null
+    private var fullname: TextView? = null
+    private var username: TextView? = null
+    private val phone: TextView? = null
+    private var bio: TextView? = null
+    private var schoolName: TextView? = null
+    private var editProfilebutton: TextView? = null
+    private var registerQuery: ListenerRegistration? = null
+    private var addPostFab: FloatingActionButton? = null
+    private var addCatalogueItemFab: FloatingActionButton? = null
+    private var bundle: Bundle? = null
+    private var upvoteReference: DocumentReference? = null
+    private var upvoteRegisterQuery: ListenerRegistration? = null
+    private var upvoteText: TextView? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_personal_profile)
+        val sharedPrefs = SharedPrefs(this)
+        val getTheme = sharedPrefs.themeSettings
+        AppCompatDelegate.setDefaultNightMode(getTheme)
+        val setBarsColor = SetBarsColor(this, window)
+        val adapter = ProfileViewPagerAdapter(supportFragmentManager)
+        bundle = Bundle()
 
         //init firebase
-        mAuth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        currentUser = mAuth.getCurrentUser();
-        currentUserId = currentUser.getUid();
-        reference = firestore.collection("users").document(currentUser.getEmail());
-        upvoteReference = firestore.collection("users").document(currentUser.getEmail()).collection("lists").document("following");
+        mAuth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        storageReference = FirebaseStorage.getInstance().reference
+        currentUser = mAuth!!.currentUser
+        currentUserId = currentUser!!.uid
+        reference = firestore!!.collection("users").document(currentUser!!.email!!)
+        upvoteReference = firestore!!.collection("users").document(currentUser!!.email!!).collection("lists").document("following")
 
         //
-
-        toolbar = findViewById(R.id.toolbar);
-        viewPager = findViewById(R.id.profileViewPager);
-        tabLayout = findViewById(R.id.tabLayout);
-
-        verifiedIcon =  findViewById(R.id.verifiedIcon);
-        profilePic = findViewById(R.id.profileImage);
-        fullname = findViewById(R.id.fullName);
-        username = findViewById(R.id.username);
-        bio = findViewById(R.id.description);
-        schoolName = findViewById(R.id.schoolName);
-        upvoteText =  findViewById(R.id.upvoteText);
-
-        editProfilebutton = findViewById(R.id.editProfileButton);
-        addPostFab = findViewById(R.id.fabAddPost);
-        addCatalogueItemFab = findViewById(R.id.fabAddItem);
-
-
-
-
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("My Profile");
-
-        addPostFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddPostModal bottomSheet = new AddPostModal(Feed.refreshPostsRunnable);
-                bottomSheet.setArguments(bundle);
-                bottomSheet.show(getSupportFragmentManager(), "TAG");
-            }
-        });
-
-        addCatalogueItemFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddCatalogueItemModal bottomSheet = new AddCatalogueItemModal(Catalogue.refreshItemsRunnable);
-                bottomSheet.setArguments(bundle);
-                bottomSheet.show(getSupportFragmentManager(), "TAG");
-            }
-        });
-
-
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PersonalProfileActivity.super.onBackPressed();
-            }
-        });
-
-
-        viewPager.setAdapter(adapter);
-        viewPager.setTag(mAuth.getCurrentUser().getEmail());
-        tabLayout.setupWithViewPager(viewPager);
+        toolbar = findViewById(R.id.toolbar)
+        viewPager = findViewById(R.id.profileViewPager)
+        tabLayout = findViewById(R.id.tabLayout)
+        verifiedIcon = findViewById(R.id.verifiedIcon)
+        profilePic = findViewById(R.id.profileImage)
+        fullname = findViewById(R.id.fullName)
+        username = findViewById(R.id.username)
+        bio = findViewById(R.id.description)
+        schoolName = findViewById(R.id.schoolName)
+        upvoteText = findViewById(R.id.upvoteText)
+        editProfilebutton = findViewById(R.id.editProfileButton)
+        addPostFab = findViewById(R.id.fabAddPost)
+        addCatalogueItemFab = findViewById(R.id.fabAddItem)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
+        supportActionBar!!.setTitle("My Profile")
+        addPostFab.setOnClickListener(View.OnClickListener {
+            val bottomSheet = AddPostModal(Feed.refreshPostsRunnable)
+            bottomSheet.arguments = bundle
+            bottomSheet.show(supportFragmentManager, "TAG")
+        })
+        addCatalogueItemFab.setOnClickListener(View.OnClickListener {
+            val bottomSheet = AddCatalogueItemModal(Catalogue.refreshItemsRunnable)
+            bottomSheet.arguments = bundle
+            bottomSheet.show(supportFragmentManager, "TAG")
+        })
+        toolbar.setNavigationOnClickListener(View.OnClickListener { super@PersonalProfileActivity.onBackPressed() })
+        viewPager.setAdapter(adapter)
+        viewPager.setTag(mAuth!!.currentUser!!.email)
+        tabLayout.setupWithViewPager(viewPager)
 
         // get tabs from adapter
-        TabLayout.Tab feedTab = tabLayout.getTabAt(0);
-        TabLayout.Tab catalogueTab = tabLayout.getTabAt(1);
-
-        feedTab.setIcon(R.drawable.ic_feed).setText("My Feed");
-        catalogueTab.setIcon(R.drawable.ic_shopping_cart).setText("My Catalogue");
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        addCatalogueItemFab.hide();
-                        addPostFab.show();
-                        break;
-                    case 1:
-                        addPostFab.hide();
-                        addCatalogueItemFab.show();
-                        break;
+        val feedTab = tabLayout.getTabAt(0)
+        val catalogueTab = tabLayout.getTabAt(1)
+        feedTab!!.setIcon(R.drawable.ic_feed).text = "My Feed"
+        catalogueTab!!.setIcon(R.drawable.ic_shopping_cart).text = "My Catalogue"
+        viewPager.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    0 -> {
+                        addCatalogueItemFab.hide()
+                        addPostFab.show()
+                    }
+                    1 -> {
+                        addPostFab.hide()
+                        addCatalogueItemFab.show()
+                    }
                 }
             }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        
-        backendCodes();
-        checkUpvotes();
-
-
-
-
-
-        editProfilebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(PersonalProfileActivity.this, EditProfileActivity.class);
-                i.putExtra("name", getFullname);
-                i.putExtra("bio", getBio);
-                i.putExtra("school", getSchool);
-                startActivity(i);
-            }
-        });
-
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+        backendCodes()
+        checkUpvotes()
+        editProfilebutton.setOnClickListener(View.OnClickListener {
+            val i = Intent(this@PersonalProfileActivity, EditProfileActivity::class.java)
+            i.putExtra("name", getFullname)
+            i.putExtra("bio", getBio)
+            i.putExtra("school", getSchool)
+            startActivity(i)
+        })
     }
 
-    private void backendCodes() {
-        if (!(mAuth.getCurrentUser() == null)) {
-            retrieveDetailsFromFirestore();
+    private fun backendCodes() {
+        if (mAuth!!.currentUser != null) {
+            retrieveDetailsFromFirestore()
         }
     }
 
-    private void retrieveDetailsFromFirestore() {
-
-        getEmail = currentUser.getEmail();
+    private fun retrieveDetailsFromFirestore() {
+        getEmail = currentUser!!.email
 
 
         //retrieve from firestore
-        registerQuery = reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-
-                getFullname = documentSnapshot.getString("name");
-                getPhone = documentSnapshot.getString("phone");
-                getUsername = documentSnapshot.getString("username");
-                getVerified = documentSnapshot.getBoolean("verified");
-                getBio = documentSnapshot.getString("bio");
-                getSchool = documentSnapshot.getString("school");
-                getUserProfilePic = documentSnapshot.getString("profileImageLink");
-
-
-                bundle.putString("fullname", getFullname);
-                bundle.putString("username", getUsername);
-                bundle.putBoolean("verified", getVerified);
-
-                Glide.with(getApplicationContext())  //2
-                        .load(getUserProfilePic) //3
-                        .centerCrop() //4
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .error(R.drawable.user_image_placeholder) //7
-                        .fallback(R.drawable.user_image_placeholder) //7
-                        .into(profilePic); //8
-
-                assert getUserProfilePic != null;
-                if (!getUserProfilePic.equals("")){
-                    profilePic.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent i = new Intent(PersonalProfileActivity.this, ImageViewActivity.class);
-                            i.putExtra("imageUri", getUserProfilePic);
-                            startActivity(i);
-                        }
-                    });
+        registerQuery = reference!!.addSnapshotListener { documentSnapshot, e ->
+            getFullname = documentSnapshot!!.getString("name")
+            getPhone = documentSnapshot.getString("phone")
+            getUsername = documentSnapshot.getString("username")
+            getVerified = documentSnapshot.getBoolean("verified")
+            getBio = documentSnapshot.getString("bio")
+            getSchool = documentSnapshot.getString("school")
+            getUserProfilePic = documentSnapshot.getString("profileImageLink")
+            bundle!!.putString("fullname", getFullname)
+            bundle!!.putString("username", getUsername)
+            bundle!!.putBoolean("verified", getVerified!!)
+            Glide.with(applicationContext) //2
+                    .load(getUserProfilePic) //3
+                    .centerCrop() //4
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .error(R.drawable.user_image_placeholder) //7
+                    .fallback(R.drawable.user_image_placeholder) //7
+                    .into(profilePic!!) //8
+            assert(getUserProfilePic != null)
+            if (getUserProfilePic != "") {
+                profilePic!!.setOnClickListener {
+                    val i = Intent(this@PersonalProfileActivity, ImageViewActivity::class.java)
+                    i.putExtra("imageUri", getUserProfilePic)
+                    startActivity(i)
                 }
-
-
-                if (getVerified){
-                    verifiedIcon.setVisibility(View.VISIBLE);
-                }
-                else { verifiedIcon.setVisibility(View.INVISIBLE);
-                }
-
-                fullname.setText(getFullname);
-                username.setText("@" + getUsername);
-                bio.setText(getBio);
-                schoolName.setText(getSchool);
-
-                
-
-
-
-
             }
-        });
+            if (getVerified!!) {
+                verifiedIcon!!.visibility = View.VISIBLE
+            } else {
+                verifiedIcon!!.visibility = View.INVISIBLE
+            }
+            fullname!!.text = getFullname
+            username!!.text = "@$getUsername"
+            bio!!.text = getBio
+            schoolName!!.text = getSchool
+        }
         //end of retrieve
     }
 
-    private int checkUpvotes(){
-
-        final int[] count = {0};
-
-        upvoteRegisterQuery = upvoteReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@androidx.annotation.Nullable DocumentSnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
-
-                if (value.exists()){
-
-
-                    Map<String, Object> map = value.getData();
-                    count[0] = map.size();
-
-                    if (count[0] == 1){
-                        upvoteText.setText(count[0] + " Upvote.");
-                    }
-                    else {
-                        upvoteText.setText(count[0] + " Upvotes.");
-                    }
-
+    private fun checkUpvotes(): Int {
+        val count = intArrayOf(0)
+        upvoteRegisterQuery = upvoteReference!!.addSnapshotListener { value, error ->
+            if (value!!.exists()) {
+                val map = value.data
+                count[0] = map!!.size
+                if (count[0] == 1) {
+                    upvoteText!!.text = count[0].toString() + " Upvote."
+                } else {
+                    upvoteText!!.text = count[0].toString() + " Upvotes."
                 }
-
             }
-        });
-
-        return count[0];
-
+        }
+        return count[0]
     }
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        registerQuery.remove();
-        upvoteRegisterQuery.remove();
-
+    override fun onPause() {
+        super.onPause()
+        registerQuery!!.remove()
+        upvoteRegisterQuery!!.remove()
     }
 
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        registerQuery.remove();
-        upvoteRegisterQuery.remove();
-
+    override fun onBackPressed() {
+        super.onBackPressed()
+        registerQuery!!.remove()
+        upvoteRegisterQuery!!.remove()
     }
 }

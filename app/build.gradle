@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android-extensions'
 
 
 android {
@@ -11,7 +13,7 @@ android {
             keyPassword 'jesus4eva'
         }
     }
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
 
     defaultConfig {
@@ -102,10 +104,12 @@ dependencies {
     implementation 'com.mindorks.android:prdownloader:0.6.0'
 
     implementation 'com.github.jesulonimii:Android-Link-Preview:1.0'
+    //noinspection GradleCompatible
     implementation 'com.android.support:cardview-v7:28.0.0'
 
     implementation "com.airbnb.android:lottie:5.0.3"
-
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 
     // dependencies {
@@ -113,4 +117,7 @@ dependencies {
     // }
 //
 
+}
+repositories {
+    mavenCentral()
 }

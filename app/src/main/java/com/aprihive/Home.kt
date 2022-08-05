@@ -2,850 +2,680 @@
 // Copyright (c) Erlite 2021.
 // Copyright (c) Aprihive 2021.
 // All Rights Reserved
+package com.aprihive
 
-package com.aprihive;
+import android.Manifest
+import android.animation.Animator
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import android.annotation.SuppressLint
+import com.aprihive.R
+import com.aprihive.methods.SharedPrefs
+import androidx.appcompat.app.AppCompatDelegate
+import com.aprihive.methods.SetBarsColor
+import android.content.Intent
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import android.view.animation.Animation
+import com.aprihive.ImageViewActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.aprihive.methods.MyActionDialog
+import com.google.android.gms.tasks.OnSuccessListener
+import com.aprihive.fragments.ContactMethodModal
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.StorageReference
+import androidx.cardview.widget.CardView
+import com.aprihive.methods.NetworkListener
+import com.rilixtech.CountryCodePicker
+import com.google.firebase.storage.FirebaseStorage
+import com.theartofdev.edmodo.cropper.CropImage
+import com.aprihive.auth.SetUsername
+import android.text.TextWatcher
+import android.text.Editable
+import com.aprihive.methods.MySnackBar
+import com.google.android.material.snackbar.Snackbar
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import android.app.Activity
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.android.gms.tasks.OnFailureListener
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import com.aprihive.PersonalProfileActivity
+import com.google.android.gms.tasks.OnCompleteListener
+import com.aprihive.Home
+import com.aprihive.UserProfileActivity
+import com.aprihive.RequestDetails
+import com.google.android.material.navigation.NavigationView
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.content.SharedPreferences
+import com.aprihive.adapters.HomeViewPagerAdapter
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.airbnb.lottie.LottieAnimationView
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.aprihive.MainActivity
+import com.aprihive.pages.Discover
+import com.aprihive.fragments.AddPostModal
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.core.content.ContextCompat
+import android.graphics.BitmapFactory
+import android.app.PendingIntent
+import com.aprihive.EditProfileActivity
+import androidx.core.app.NotificationManagerCompat
+import android.app.NotificationManager
+import android.app.NotificationChannel
+import android.content.res.Resources.NotFoundException
+import com.aprihive.auth.Login
+import androidx.core.app.ActivityCompat
+import android.content.pm.PackageManager
+import com.aprihive.SettingsActivity
+import com.aprihive.PaymentActivity
+import androidx.core.view.GravityCompat
+import com.github.chrisbanes.photoview.PhotoView
+import com.bumptech.glide.request.target.CustomTarget
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.media.MediaScannerConnection
+import com.aprihive.auth.SignUp
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.AuthResult
+import com.aprihive.adapters.MessagingRecyclerAdapter
+import com.aprihive.models.MessageModel
+import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Retrofit
+import com.aprihive.backend.RetrofitInterface
+import retrofit2.converter.gson.GsonConverterFactory
+import com.aprihive.MessagingActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.aprihive.fragments.ReportModal
+import kotlin.Throws
+import org.ocpsoft.prettytime.PrettyTime
+import com.aprihive.fragments.OptionsDialogModal
+import android.content.ClipData
+import com.google.android.material.tabs.TabLayout
+import com.aprihive.adapters.OnboardingViewAdapter
+import com.aprihive.models.OnboardingModel
+import com.aprihive.adapters.ProfileViewPagerAdapter
+import com.aprihive.pages.Feed
+import com.aprihive.fragments.AddCatalogueItemModal
+import com.aprihive.pages.Catalogue
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.aprihive.PushNotificationService
+import com.google.firebase.messaging.RemoteMessage
+import com.aprihive.FetchDetails
+import android.graphics.RectF
+import android.graphics.PorterDuffXfermode
+import android.graphics.PorterDuff
+import android.net.Uri
+import android.os.*
+import android.view.MenuItem
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.*
+import androidx.appcompat.widget.SwitchCompat
+import com.aprihive.AboutApp
+import com.aprihive.fragments.SetThemeModal
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NotificationCompat
+import com.aprihive.OnboardingActivity
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import com.google.firebase.firestore.*
+import java.lang.Exception
 
-
-import android.Manifest;
-import android.animation.Animator;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.PersistableBundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager.widget.ViewPager;
-
-import com.airbnb.lottie.LottieAnimationView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.aprihive.adapters.HomeViewPagerAdapter;
-import com.aprihive.R;
-import com.aprihive.auth.Login;
-import com.aprihive.auth.SetUsername;
-import com.aprihive.fragments.AddPostModal;
-import com.aprihive.methods.MyActionDialog;
-import com.aprihive.methods.NetworkListener;
-import com.aprihive.methods.SetBarsColor;
-import com.aprihive.methods.SharedPrefs;
-import com.aprihive.pages.Discover;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-
-    public ViewPager viewPager;
-    private BottomNavigationView tabLayout;
-    private NetworkListener networkListener;
-    private ConstraintLayout loading, page;
-    private Toolbar toolbar;
-    private NavigationView navigView;
-    private DrawerLayout drawer;
-    private ActionBarDrawerToggle toggle;
-
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-    private DocumentReference reference;
-    private FirebaseUser user;
-    private UserProfileChangeRequest profileUpdates;
-
-    private TextView navName, navUsername;
-    private ImageView navImage;
-    private ImageView verificationIcon;
-    private ListenerRegistration registerQuery;
-    private ImageView logo;
-    public FloatingActionButton fab;
-    private String getFullname, getUsername, getProfilePic;
-    private boolean getVerified;
-    public Bundle bundle;
-    private Runnable postRefresh;
-    private SharedPrefs sharedPrefs;
-    private String CHANNEL_ID = "welcome_notification";
-    private Boolean isUserNew;
-    private Boolean isAdmin;
-    private TextView signOut, support, faq;
-    private Runnable action;
-    private String getLocation;
-    private String getAction;
-    private String getTitle;
-    private String getText;
-    private String getActionText;
-    private Boolean getCloseable;
-    private String getActionType;
-    private Boolean getActive;
-    private String getIconType;
-    private String getIconColor;
-    private String getVersion;
-    private DocumentReference notifyReference;
-    private ListenerRegistration notifyRegisterQuery;
-    private boolean notificationGotten = false;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
-    private boolean notified = false;
-    private HomeViewPagerAdapter adapter;
-    private GoogleSignInClient mGoogleSignInClient;
-    private Boolean getThreat;
-    private ImageView threatIcon;
-    public FirebaseAnalytics analytics;
-    public ConstraintLayout feedbackBar;
-    public TextView feedbackBarText;
-    public LottieAnimationView feedbackBarAnimation;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTheme(R.style.AppTheme);
-        setContentView(R.layout.activity_home);
-
-        sharedPrefs = new SharedPrefs(this);
-        int getTheme = sharedPrefs.themeSettings;
-        AppCompatDelegate.setDefaultNightMode(getTheme);
-
-        analytics = FirebaseAnalytics.getInstance(this);
-
-
-        Bundle altBundle = new Bundle();
-        altBundle.putString(FirebaseAnalytics.Param.ITEM_ID, "id");
-        altBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "name");
-        altBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
-        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, altBundle);
-
-
-
-        sharedPreferences = getSharedPreferences("aprihive", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
+class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    var viewPager: ViewPager? = null
+    private var tabLayout: BottomNavigationView? = null
+    private var networkListener: NetworkListener? = null
+    private val loading: ConstraintLayout? = null
+    private var page: ConstraintLayout? = null
+    private var toolbar: Toolbar? = null
+    private var navigView: NavigationView? = null
+    private var drawer: DrawerLayout? = null
+    private var toggle: ActionBarDrawerToggle? = null
+    private var auth: FirebaseAuth? = null
+    private var db: FirebaseFirestore? = null
+    private var reference: DocumentReference? = null
+    private var user: FirebaseUser? = null
+    private val profileUpdates: UserProfileChangeRequest? = null
+    private var navName: TextView? = null
+    private var navUsername: TextView? = null
+    private var navImage: ImageView? = null
+    private var verificationIcon: ImageView? = null
+    private var registerQuery: ListenerRegistration? = null
+    private var logo: ImageView? = null
+    var fab: FloatingActionButton? = null
+    private var getFullname: String? = null
+    private var getUsername: String? = null
+    private var getProfilePic: String? = null
+    private var getVerified = false
+    var bundle: Bundle? = null
+    private val postRefresh: Runnable? = null
+    private var sharedPrefs: SharedPrefs? = null
+    private val CHANNEL_ID = "welcome_notification"
+    private var isUserNew: Boolean? = null
+    var isAdmin: Boolean? = null
+        private set
+    private var signOut: TextView? = null
+    private var support: TextView? = null
+    private var faq: TextView? = null
+    private var action: Runnable? = null
+    private var getLocation: String? = null
+    private var getAction: String? = null
+    private var getTitle: String? = null
+    private var getText: String? = null
+    private var getActionText: String? = null
+    private var getCloseable: Boolean? = null
+    private var getActionType: String? = null
+    private var getActive: Boolean? = null
+    private var getIconType: String? = null
+    private var getIconColor: String? = null
+    private var getVersion: String? = null
+    private var notifyReference: DocumentReference? = null
+    private var notifyRegisterQuery: ListenerRegistration? = null
+    private var notificationGotten = false
+    private var sharedPreferences: SharedPreferences? = null
+    private var editor: SharedPreferences.Editor? = null
+    private var notified = false
+    private var adapter: HomeViewPagerAdapter? = null
+    private var mGoogleSignInClient: GoogleSignInClient? = null
+    private var getThreat: Boolean? = null
+    private var threatIcon: ImageView? = null
+    var analytics: FirebaseAnalytics? = null
+    var feedbackBar: ConstraintLayout? = null
+    var feedbackBarText: TextView? = null
+    var feedbackBarAnimation: LottieAnimationView? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
+        setContentView(R.layout.activity_home)
+        sharedPrefs = SharedPrefs(this)
+        val getTheme = sharedPrefs!!.themeSettings
+        AppCompatDelegate.setDefaultNightMode(getTheme)
+        analytics = FirebaseAnalytics.getInstance(this)
+        val altBundle = Bundle()
+        altBundle.putString(FirebaseAnalytics.Param.ITEM_ID, "id")
+        altBundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "name")
+        altBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image")
+        analytics!!.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, altBundle)
+        sharedPreferences = getSharedPreferences("aprihive", MODE_PRIVATE)
+        editor = sharedPreferences.edit()
 
         //firebase
         //init firebase
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
-                .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        FirebaseAuth.AuthStateListener authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() == null){
-                    Intent intent = new Intent(Home.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-                else {
-                    //nothing
-                }
+                .build()
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        val authStateListener = AuthStateListener { firebaseAuth ->
+            if (firebaseAuth.currentUser == null) {
+                val intent = Intent(this@Home, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                finish()
+            } else {
+                //nothing
             }
-        };
-
-        user = auth.getCurrentUser();
+        }
+        user = auth!!.currentUser
 
         //reference = db.collection("users").document(user.getEmail());
-
-        SetBarsColor setBarsColor = new SetBarsColor(this, getWindow());
-        adapter = new HomeViewPagerAdapter(getSupportFragmentManager());
-
-        bundle = new Bundle();
-
-
-        viewPager = findViewById(R.id.pager);
-        tabLayout = findViewById(R.id.bar);
-        page = findViewById(R.id.page);
-        navigView = findViewById(R.id.nav_view);
-        signOut = navigView.findViewById(R.id.logout);
-        support = navigView.findViewById(R.id.support);
-        faq = navigView.findViewById(R.id.faqs);
-        drawer = findViewById(R.id.drawer);
-        toolbar = findViewById(R.id.toolbar);
-        fab = findViewById(R.id.fabAddPost);
-
-        feedbackBar = findViewById(R.id.feedbackBar);
-        feedbackBarText = findViewById(R.id.textFeedback);
-        feedbackBarAnimation = findViewById(R.id.animationView);
-        feedbackBarAnimation.setMinFrame(56);
-        feedbackBarAnimation.setMaxFrame(156);
-
-        feedbackBarAnimation.addAnimatorListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-
+        val setBarsColor = SetBarsColor(this, window)
+        adapter = HomeViewPagerAdapter(supportFragmentManager)
+        bundle = Bundle()
+        viewPager = findViewById(R.id.pager)
+        tabLayout = findViewById(R.id.bar)
+        page = findViewById(R.id.page)
+        navigView = findViewById(R.id.nav_view)
+        signOut = navigView.findViewById(R.id.logout)
+        support = navigView.findViewById(R.id.support)
+        faq = navigView.findViewById(R.id.faqs)
+        drawer = findViewById(R.id.drawer)
+        toolbar = findViewById(R.id.toolbar)
+        fab = findViewById(R.id.fabAddPost)
+        feedbackBar = findViewById(R.id.feedbackBar)
+        feedbackBarText = findViewById(R.id.textFeedback)
+        feedbackBarAnimation = findViewById(R.id.animationView)
+        feedbackBarAnimation.setMinFrame(56)
+        feedbackBarAnimation.setMaxFrame(156)
+        feedbackBarAnimation.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animator: Animator) {}
+            override fun onAnimationEnd(animator: Animator) {
+                feedbackBarAnimation.setFrame(156)
+                Handler().postDelayed({
+                    val fadeDown = AnimationUtils.loadAnimation(this@Home, R.anim.fade_down_animation)
+                    feedbackBar.setAnimation(fadeDown)
+                    feedbackBar.setVisibility(View.GONE)
+                    fab.show()
+                }, 2000)
             }
 
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                feedbackBarAnimation.setFrame(156);
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Animation fadeDown = AnimationUtils.loadAnimation(Home.this, R.anim.fade_down_animation);
-                        feedbackBar.setAnimation(fadeDown);
-                        feedbackBar.setVisibility(View.GONE);
-                        fab.show();
-
-                    }
-                }, 2000);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
-
-
-        logo = findViewById(R.id.logoImageView);
-
-        navName = navigView.getHeaderView(0).findViewById(R.id.nav_profile_name);
-        navUsername = navigView.getHeaderView(0).findViewById(R.id.nav_profile_username);
-        navImage = navigView.getHeaderView(0).findViewById(R.id.nav_profile_pic);
-        verificationIcon = navigView.getHeaderView(0).findViewById(R.id.verifiedIcon);
-        threatIcon = navigView.getHeaderView(0).findViewById(R.id.warningIcon);
-
-
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
+            override fun onAnimationCancel(animator: Animator) {}
+            override fun onAnimationRepeat(animator: Animator) {}
+        })
+        logo = findViewById(R.id.logoImageView)
+        navName = navigView.getHeaderView(0).findViewById(R.id.nav_profile_name)
+        navUsername = navigView.getHeaderView(0).findViewById(R.id.nav_profile_username)
+        navImage = navigView.getHeaderView(0).findViewById(R.id.nav_profile_pic)
+        verificationIcon = navigView.getHeaderView(0).findViewById(R.id.verifiedIcon)
+        threatIcon = navigView.getHeaderView(0).findViewById(R.id.warningIcon)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setHomeButtonEnabled(true)
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        navImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Home.this, PersonalProfileActivity.class);
-                startActivity(i);
-            }
-        });
-
-        navName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Home.this, PersonalProfileActivity.class);
-                startActivity(i);
-            }
-        });
-
-        action = new Runnable() {
-            @Override
-            public void run() {
-                auth.signOut();
-
-                try {
-                    mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            db.clearPersistence();
-                            Discover discover = new Discover();
-                            discover.onStop();
-                            registerQuery.remove();
-                            notifyRegisterQuery.remove();
-                            Intent intent = new Intent(Home.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
+        navImage.setOnClickListener(View.OnClickListener {
+            val i = Intent(this@Home, PersonalProfileActivity::class.java)
+            startActivity(i)
+        })
+        navName.setOnClickListener(View.OnClickListener {
+            val i = Intent(this@Home, PersonalProfileActivity::class.java)
+            startActivity(i)
+        })
+        action = Runnable {
+            auth!!.signOut()
+            try {
+                mGoogleSignInClient!!.signOut().addOnCompleteListener {
+                    db!!.clearPersistence()
+                    val discover = Discover()
+                    discover.onStop()
+                    registerQuery!!.remove()
+                    notifyRegisterQuery!!.remove()
+                    val intent = Intent(this@Home, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                    finish()
                 }
-
-                db.clearPersistence();
-                Discover discover = new Discover();
-                discover.onStop();
-                registerQuery.remove();
-                notifyRegisterQuery.remove();
-                Intent intent = new Intent(Home.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        };
-
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MyActionDialog dialog = new MyActionDialog(Home.this, "Sign Out?", "Are you sure you want to sign out?", R.drawable.ic_exit, R.color.color_error_red_200, action, "Yes, Sign out", "No, Just kidding.");
-                dialog.show();
-            }
-        });
-
-        support.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/support"));
-                startActivity(i);
-            }
-        });
-
-        faq.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/faqs"));
-                startActivity(i);
-            }
-        });
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddPostModal bottomSheet = new AddPostModal(Discover.refreshPostsRunnable);
-                bottomSheet.setArguments(bundle);
-                bottomSheet.show(getSupportFragmentManager(), "TAG");
-            }
-        });
+            db!!.clearPersistence()
+            val discover = Discover()
+            discover.onStop()
+            registerQuery!!.remove()
+            notifyRegisterQuery!!.remove()
+            val intent = Intent(this@Home, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+            finish()
+        }
+        signOut.setOnClickListener(View.OnClickListener {
+            val dialog = MyActionDialog(this@Home, "Sign Out?", "Are you sure you want to sign out?", R.drawable.ic_exit, R.color.color_error_red_200, action, "Yes, Sign out", "No, Just kidding.")
+            dialog.show()
+        })
+        support.setOnClickListener(View.OnClickListener {
+            val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/support"))
+            startActivity(i)
+        })
+        faq.setOnClickListener(View.OnClickListener {
+            val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/faqs"))
+            startActivity(i)
+        })
+        fab.setOnClickListener(View.OnClickListener {
+            val bottomSheet = AddPostModal(Discover.refreshPostsRunnable)
+            bottomSheet.arguments = bundle
+            bottomSheet.show(supportFragmentManager, "TAG")
+        })
 
         //init action bar drawer toggle
-        toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open, R.string.close);
-        drawer.addDrawerListener(toggle);
-        toggle.setDrawerIndicatorEnabled(true);
-        toggle.syncState();
-
-        navigView.setNavigationItemSelectedListener(this);
-
-        auth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                if (user == null){
-                    auth.signOut();
-                    db.clearPersistence();
-                    finish();
-                    Intent intent = new Intent(Home.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                }
-
+        toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.open, R.string.close)
+        drawer.addDrawerListener(toggle!!)
+        toggle!!.isDrawerIndicatorEnabled = true
+        toggle!!.syncState()
+        navigView.setNavigationItemSelectedListener(this)
+        auth!!.addAuthStateListener {
+            if (user == null) {
+                auth!!.signOut()
+                db!!.clearPersistence()
+                finish()
+                val intent = Intent(this@Home, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
             }
-        });
+        }
 
         //setUserDetailsInNavbar();
-
-
-
-        networkListener = new NetworkListener(this, page, getWindow());
-        IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(networkListener.networkListenerReceiver, networkIntentFilter);
+        networkListener = NetworkListener(this, page, window)
+        val networkIntentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkListener!!.networkListenerReceiver, networkIntentFilter)
 
         //viewPager.setAdapter(adapter);
-
-        tabLayout.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.home:
-                        viewPager.setCurrentItem(0);
-                        break;
-                    case R.id.find:
-                        viewPager.setCurrentItem(1);
-                        break;
-                    case R.id.requests:
-                        viewPager.setCurrentItem(2);
-                        break;
-                    case R.id.messages:
-                        viewPager.setCurrentItem(3);
-                        break;
-                }
-                return true;
+        tabLayout.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.home -> viewPager.setCurrentItem(0)
+                R.id.find -> viewPager.setCurrentItem(1)
+                R.id.requests -> viewPager.setCurrentItem(2)
+                R.id.messages -> viewPager.setCurrentItem(3)
             }
-        });
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-                switch (position) {
-                    case 0:
-                        tabLayout.getMenu().findItem(R.id.home).setChecked(true);
-                        if(viewPager.getCurrentItem() != 0){
-                            showHamburger();
-                            findViewById(R.id.logoImageView).setVisibility(View.VISIBLE);
+            true
+        })
+        viewPager.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    0 -> {
+                        tabLayout.getMenu().findItem(R.id.home).isChecked = true
+                        if (viewPager.getCurrentItem() != 0) {
+                            showHamburger()
+                            findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
                         }
-                        fab.show();
-                        break;
-                    case 1:
-                        tabLayout.getMenu().findItem(R.id.find).setChecked(true);
-                        if(viewPager.getCurrentItem() != 1){
-                            showHamburger();
-                            findViewById(R.id.logoImageView).setVisibility(View.VISIBLE);
+                        fab.show()
+                    }
+                    1 -> {
+                        tabLayout.getMenu().findItem(R.id.find).isChecked = true
+                        if (viewPager.getCurrentItem() != 1) {
+                            showHamburger()
+                            findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
                         }
-                        fab.hide();
-                        break;
-                    case 2:
-                        tabLayout.getMenu().findItem(R.id.requests).setChecked(true);
-                        showHamburger();
-                        findViewById(R.id.logoImageView).setVisibility(View.VISIBLE);
-                        fab.hide();
-                        break;
-                    case 3:
-                        tabLayout.getMenu().findItem(R.id.messages).setChecked(true);
-                        showHamburger();
-                        findViewById(R.id.logoImageView).setVisibility(View.VISIBLE);
-                        fab.hide();
-                        break;
+                        fab.hide()
+                    }
+                    2 -> {
+                        tabLayout.getMenu().findItem(R.id.requests).isChecked = true
+                        showHamburger()
+                        findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
+                        fab.hide()
+                    }
+                    3 -> {
+                        tabLayout.getMenu().findItem(R.id.messages).isChecked = true
+                        showHamburger()
+                        findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
+                        fab.hide()
+                    }
                 }
-
             }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-
-        if(getIntent().getBooleanExtra("newly created", false)){
-
-            sendNotification();
-
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+        if (intent.getBooleanExtra("newly created", false)) {
+            sendNotification()
         }
-
         if (savedInstanceState != null) {
-            notificationGotten = savedInstanceState.getBoolean("notified", false);
-            if (!notificationGotten){
-                getNotification();
+            notificationGotten = savedInstanceState.getBoolean("notified", false)
+            if (!notificationGotten) {
+                notification
             }
         } else {
-            getNotification();
-        }
-
-
-    }
-
-    private void sendNotification() {
-        createNotificationChannel();
-        NotificationCompat.Builder builder  = new NotificationCompat.Builder(Home.this, CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.notification_icon).setColor(ContextCompat.getColor(this, R.color.color_theme_blue));
-        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.icon));
-        builder.setContentTitle("Welcome to Aprihive!");
-        builder.setStyle(new NotificationCompat.BigTextStyle().bigText("Welcome to the network for social marketing!\nPlease complete your profile then go ahead to create your first campaign to start networking.\nDon't forget to add your items to your catalogue!"));
-        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
-        PendingIntent contentIntent =
-                PendingIntent.getActivity(this, 0, new Intent(this, EditProfileActivity.class), 0);
-        builder.setContentIntent(contentIntent);
-        builder.setAutoCancel(true);
-
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(Home.this);
-        notificationManagerCompat.notify(1, builder.build());
-    }
-
-    private void createNotificationChannel(){
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            
-            CharSequence name = "Reminder Service";
-            String description = "Basic information and app reminders.";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            
-            
-            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            manager.createNotificationChannel(channel);
+            notification
         }
     }
 
-    private void setUserDetailsInNavbar() {
+    private fun sendNotification() {
+        createNotificationChannel()
+        val builder = NotificationCompat.Builder(this@Home, CHANNEL_ID)
+        builder.setSmallIcon(R.drawable.notification_icon).color = ContextCompat.getColor(this, R.color.color_theme_blue)
+        builder.setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.icon))
+        builder.setContentTitle("Welcome to Aprihive!")
+        builder.setStyle(NotificationCompat.BigTextStyle().bigText("Welcome to the network for social marketing!\nPlease complete your profile then go ahead to create your first campaign to start networking.\nDon't forget to add your items to your catalogue!"))
+        builder.priority = NotificationCompat.PRIORITY_HIGH
+        val contentIntent = PendingIntent.getActivity(this, 0, Intent(this, EditProfileActivity::class.java), 0)
+        builder.setContentIntent(contentIntent)
+        builder.setAutoCancel(true)
+        val notificationManagerCompat = NotificationManagerCompat.from(this@Home)
+        notificationManagerCompat.notify(1, builder.build())
+    }
 
-        reference = db.collection("users").document(user.getEmail());
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name: CharSequence = "Reminder Service"
+            val description = "Basic information and app reminders."
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(CHANNEL_ID, name, importance)
+            channel.description = description
+            val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+        }
+    }
 
-        registerQuery = reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                try {
-                    getFullname = value.getString("name");
-                    getUsername = value.getString("username");
-                    getLocation = value.getString("school");
-                    getProfilePic = value.getString("profileImageLink");
-                    getVerified = value.getBoolean("verified");
-                    getThreat = value.getBoolean("threat");
-                    String token = value.getString("fcm-token");
-
-                    editor.putString("fcm-token", token);
-                    editor.apply();
-
-                    isAdmin = value.getBoolean("isAdmin");
-                    isUserNew = value.getBoolean("newAccount");
-
-
-
-                    Runnable action = new Runnable() {
-                        @Override
-                        public void run() {
-                            startActivity(new Intent(Home.this, EditProfileActivity.class));
-                        }
-                    };
-
-                    if (isUserNew){
-                        sendNotification();
-                        MyActionDialog confirm = new MyActionDialog(Home.this, "Welcome to Aprihive!", "Welcome to the social marketing network.\nPlease click continue to finish setting up your account", R.drawable.vg_boy_skating, action, "Continue", R.color.color_text_blue_500);
-                        confirm.show();
-                    }
-
-                    bundle.putString("fullname", getFullname);
-                    bundle.putString("username", getUsername);
-                    bundle.putBoolean("verified", getVerified);
-                    bundle.putString("location", getLocation);
-
-
-                    navName.setText(getFullname);
-                    navUsername.setText("@" + getUsername);
-                    if (getVerified) {
-                        verificationIcon.setVisibility(View.VISIBLE);
-                    } else {
-                        verificationIcon.setVisibility(View.GONE);
-                    }
-
-                    if (getThreat) {
-                        threatIcon.setVisibility(View.VISIBLE);
-                    } else {
-                        threatIcon.setVisibility(View.GONE);
-                    }
-
-                    Glide.with(getApplicationContext())
-                            .load(getProfilePic)
-                            .centerCrop() //4
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .error(R.drawable.user_image_placeholder)
-                            .fallback(R.drawable.user_image_placeholder) //7
-                            .into(navImage);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+    private fun setUserDetailsInNavbar() {
+        reference = db!!.collection("users").document(user!!.email!!)
+        registerQuery = reference!!.addSnapshotListener { value, error ->
+            try {
+                getFullname = value!!.getString("name")
+                getUsername = value.getString("username")
+                getLocation = value.getString("school")
+                getProfilePic = value.getString("profileImageLink")
+                getVerified = value.getBoolean("verified")!!
+                getThreat = value.getBoolean("threat")
+                val token = value.getString("fcm-token")
+                editor!!.putString("fcm-token", token)
+                editor!!.apply()
+                isAdmin = value.getBoolean("isAdmin")
+                isUserNew = value.getBoolean("newAccount")
+                val action = Runnable { startActivity(Intent(this@Home, EditProfileActivity::class.java)) }
+                if (isUserNew!!) {
+                    sendNotification()
+                    val confirm = MyActionDialog(this@Home, "Welcome to Aprihive!", "Welcome to the social marketing network.\nPlease click continue to finish setting up your account", R.drawable.vg_boy_skating, action, "Continue", R.color.color_text_blue_500)
+                    confirm.show()
                 }
+                bundle!!.putString("fullname", getFullname)
+                bundle!!.putString("username", getUsername)
+                bundle!!.putBoolean("verified", getVerified)
+                bundle!!.putString("location", getLocation)
+                navName!!.text = getFullname
+                navUsername!!.text = "@$getUsername"
+                if (getVerified) {
+                    verificationIcon!!.visibility = View.VISIBLE
+                } else {
+                    verificationIcon!!.visibility = View.GONE
+                }
+                if (getThreat!!) {
+                    threatIcon!!.visibility = View.VISIBLE
+                } else {
+                    threatIcon!!.visibility = View.GONE
+                }
+                Glide.with(applicationContext)
+                        .load(getProfilePic)
+                        .centerCrop() //4
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .error(R.drawable.user_image_placeholder)
+                        .fallback(R.drawable.user_image_placeholder) //7
+                        .into(navImage!!)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        });
+        }
+    }//clear existing dialog//nothing
 
-
-
-
-    }
-
-    private void getNotification() {
-
-        notifyReference = db.collection("general").document("app notifications");
-        notifyRegisterQuery = notifyReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-
+    //nothing
+    private val notification: Unit
+        private get() {
+            notifyReference = db!!.collection("general").document("app notifications")
+            notifyRegisterQuery = notifyReference!!.addSnapshotListener { value, error ->
                 try {
-
-
-                    getActive = value.getBoolean("active");
-                    getTitle = value.getString("title");
-                    getText = value.getString("text");
-                    getIconType = value.getString("iconType");
-                    getIconColor = value.getString("iconColor");
-                    getCloseable = value.getBoolean("close");
-                    getActionText = value.getString("actionText");
-                    getActionType = value.getString("actionType");
-                    getAction = value.getString("action");
-                    getVersion = value.getString("version");
-
-
-                    Runnable action = new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getActionType.equals("url")) {
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getAction));
-                                startActivity(intent);
-                            } else if (getActionType.equals("okay")) {
-                                //nothing
-                            } else if (getActionType.equals("update")) {
-                                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getAction));
-                                startActivity(intent);
-                            } else if (getActionType.equals("closeApp")) {
-                                finishAndRemoveTask();
-                            } else if (getActionType.equals("intent")) {
-                                try {
-                                    Intent i = new Intent(Home.this, Class.forName(getAction));
-                                } catch (ClassNotFoundException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                //nothing
+                    getActive = value!!.getBoolean("active")
+                    getTitle = value.getString("title")
+                    getText = value.getString("text")
+                    getIconType = value.getString("iconType")
+                    getIconColor = value.getString("iconColor")
+                    getCloseable = value.getBoolean("close")
+                    getActionText = value.getString("actionText")
+                    getActionType = value.getString("actionType")
+                    getAction = value.getString("action")
+                    getVersion = value.getString("version")
+                    val action = Runnable {
+                        if (getActionType == "url") {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getAction))
+                            startActivity(intent)
+                        } else if (getActionType == "okay") {
+                            //nothing
+                        } else if (getActionType == "update") {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(getAction))
+                            startActivity(intent)
+                        } else if (getActionType == "closeApp") {
+                            finishAndRemoveTask()
+                        } else if (getActionType == "intent") {
+                            try {
+                                val i = Intent(this@Home, Class.forName(getAction))
+                            } catch (e: ClassNotFoundException) {
+                                e.printStackTrace()
                             }
-
+                        } else {
+                            //nothing
                         }
-                    };
-
-
-                    MyActionDialog dialog = new MyActionDialog(Home.this, getTitle, getText, icon(getIconType), iconColor(getIconColor), action, getActionText, getCloseable);
-
+                    }
+                    val dialog = MyActionDialog(this@Home, getTitle, getText, icon(getIconType), iconColor(getIconColor), action, getActionText, getCloseable)
                     try {
                         //clear existing dialog
-                        dialog.dismiss();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        dialog.dismiss()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                    if (getActionType.equals("update") && getActive) {
-                        if (!getVersion.equals(getResources().getString(R.string.version))) {
-                            dialog.show();
+                    if (getActionType == "update" && getActive!!) {
+                        if (getVersion != resources.getString(R.string.version)) {
+                            dialog.show()
                         }
-                    } else if (!getActionType.equals("update") && getActive) {
-                        dialog.show();
+                    } else if (getActionType != "update" && getActive!!) {
+                        dialog.show()
                     }
-
-                    if (getCloseable){
-                        setUserDetailsInNavbar();
-                        viewPager.setAdapter(adapter);
+                    if (getCloseable!!) {
+                        setUserDetailsInNavbar()
+                        viewPager!!.adapter = adapter
+                    } else if (getActionType == "update" && getVersion == resources.getString(R.string.version)) {
+                        setUserDetailsInNavbar()
+                        viewPager!!.adapter = adapter
+                    } else {
+                        fab!!.hide()
                     }
-                    else if(getActionType.equals("update") && getVersion.equals(getResources().getString(R.string.version))){
-                        setUserDetailsInNavbar();
-                        viewPager.setAdapter(adapter);
-                    }
-                    else {
-                        fab.hide();
-                    }
-
-
-                } catch (Resources.NotFoundException e) {
-                    e.printStackTrace();
+                } catch (e: NotFoundException) {
+                    e.printStackTrace()
                 }
             }
-        });
-
-        notified = true;
-    }
-
-    private int iconColor(String getIconColor) {
-        int i;
-        switch (getIconColor){
-            case "red":
-                i = R.color.color_error_red_300;
-                break;
-            case "yellow":
-                i = R.color.color_yellow;
-                break;
-            case "blue":
-                i = R.color.color_theme_blue;
-                break;
-            case "green":
-                i = R.color.color_green;
-                break;
-            default:
-                i = R.color.color_theme_blue;
+            notified = true
         }
-        return i;
-    }
 
-    private int icon(String getIconType) {
-        int i;
-        switch (getIconType){
-            case "warning":
-                i = R.drawable.ic_warning;
-                break;
-            case "info":
-                i = R.drawable.ic_info;
-                break;
-            case "alert":
-                i = R.drawable.ic_alert;
-                break;
-            case "done":
-                i = R.drawable.ic_done;
-                break;
-            case "cancel":
-                i = R.drawable.ic_cancel;
-                break;
-            case "notify":
-                i = R.drawable.ic_notifications_active;
-                break;
-            case "logo":
-                i = R.drawable.icon;
-                break;
-            case "fire":
-                i = R.drawable.ic_feed;
-                break;
-            default:
-                i = R.drawable.ic_info;
+    private fun iconColor(getIconColor: String?): Int {
+        val i: Int
+        i = when (getIconColor) {
+            "red" -> R.color.color_error_red_300
+            "yellow" -> R.color.color_yellow
+            "blue" -> R.color.color_theme_blue
+            "green" -> R.color.color_green
+            else -> R.color.color_theme_blue
         }
-        return i;
+        return i
     }
 
-    public void showHamburger(){
-        toggle.setDrawerIndicatorEnabled(true);
-    }
-    public void hideHamburger(){
-        toggle.setDrawerIndicatorEnabled(false);
+    private fun icon(getIconType: String?): Int {
+        val i: Int
+        i = when (getIconType) {
+            "warning" -> R.drawable.ic_warning
+            "info" -> R.drawable.ic_info
+            "alert" -> R.drawable.ic_alert
+            "done" -> R.drawable.ic_done
+            "cancel" -> R.drawable.ic_cancel
+            "notify" -> R.drawable.ic_notifications_active
+            "logo" -> R.drawable.icon
+            "fire" -> R.drawable.ic_feed
+            else -> R.drawable.ic_info
+        }
+        return i
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    fun showHamburger() {
+        toggle!!.isDrawerIndicatorEnabled = true
+    }
+
+    fun hideHamburger() {
+        toggle!!.isDrawerIndicatorEnabled = false
+    }
+
+    public override fun onStart() {
+        super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
 
         //permissions
-        verifyPermissions();
-
+        verifyPermissions()
         if (user != null) {
             //nothing
-
-            if (user.getDisplayName().equals(user.getUid())) {
-
-                Intent intent = new Intent(Home.this, SetUsername.class);
-                startActivity(intent);
-
-
+            if (user!!.displayName == user!!.uid) {
+                val intent = Intent(this@Home, SetUsername::class.java)
+                startActivity(intent)
             }
-
         } else {
-            Intent intent = new Intent(Home.this, Login.class);
-            startActivity(intent);
+            val intent = Intent(this@Home, Login::class.java)
+            startActivity(intent)
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    override fun onResume() {
+        super.onResume()
         try {
-           // Discover.refreshPostsRunnable.run();
-        } catch (Exception e) {
-            e.printStackTrace();
+            // Discover.refreshPostsRunnable.run();
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    public Boolean verifyPermissions() {
+    fun verifyPermissions(): Boolean {
 
         // This will return the current Status
-        int permissionExternalMemory = ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
+        val permissionExternalMemory = ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         if (permissionExternalMemory != PackageManager.PERMISSION_GRANTED) {
-
-            String[] PERMISSIONS = {
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            };
+            val PERMISSIONS = arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
             // If permission not granted then ask for permission real time.
-            ActivityCompat.requestPermissions(this, PERMISSIONS, 1);
-            return false;
+            ActivityCompat.requestPermissions(this, PERMISSIONS, 1)
+            return false
         }
-        return true;
-
+        return true
     }
 
-    public Boolean isAdmin(){
-        return isAdmin;
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-        if (item.getItemId() == R.id.myProfile){
-            Intent i = new Intent(Home.this, PersonalProfileActivity.class);
-            startActivity(i);
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.myProfile) {
+            val i = Intent(this@Home, PersonalProfileActivity::class.java)
+            startActivity(i)
         }
-
-        if (item.getItemId() ==  R.id.infoActions){
-            Intent i = new Intent(Home.this, SettingsActivity.class);
-            startActivity(i);
+        if (item.itemId == R.id.infoActions) {
+            val i = Intent(this@Home, SettingsActivity::class.java)
+            startActivity(i)
         }
-
-        if (item.getItemId() ==  R.id.payments){
+        if (item.itemId == R.id.payments) {
             //TODO: integrate payments
-            Intent i = new Intent(Home.this, PaymentActivity.class);
-            startActivity(i);
+            val i = Intent(this@Home, PaymentActivity::class.java)
+            startActivity(i)
         }
 
-       // if (item.getItemId() == R.id.signOut){
-       //     auth.signOut();
-       //     db.clearPersistence();
-       //     Discover discover = new Discover();
-       //     discover.onStop();
-       //     registerQuery.remove();
-       //     Intent intent = new Intent(Home.this, MainActivity.class);
-       //     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-       //     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-       //     startActivity(intent);
-       //     finish();
-       // }
-
-        drawer.closeDrawer(GravityCompat.START);
-
-        return false;
+        // if (item.getItemId() == R.id.signOut){
+        //     auth.signOut();
+        //     db.clearPersistence();
+        //     Discover discover = new Discover();
+        //     discover.onStop();
+        //     registerQuery.remove();
+        //     Intent intent = new Intent(Home.this, MainActivity.class);
+        //     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //     startActivity(intent);
+        //     finish();
+        // }
+        drawer!!.closeDrawer(GravityCompat.START)
+        return false
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
+    override fun onStop() {
+        super.onStop()
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState, @NonNull PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putBoolean("notified", notified);
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState.putBoolean("notified", notified)
     }
-
 }

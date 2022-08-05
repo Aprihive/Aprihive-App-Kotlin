@@ -2,400 +2,389 @@
 // Copyright (c) Erlite 2021.
 // Copyright (c) Aprihive 2021.
 // All Rights Reserved
+package com.aprihive
 
-package com.aprihive;
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import android.os.Bundle
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import android.annotation.SuppressLint
+import com.aprihive.R
+import com.aprihive.methods.SharedPrefs
+import androidx.appcompat.app.AppCompatDelegate
+import com.aprihive.methods.SetBarsColor
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import android.view.animation.Animation
+import com.aprihive.ImageViewActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.aprihive.methods.MyActionDialog
+import com.google.android.gms.tasks.OnSuccessListener
+import com.aprihive.fragments.ContactMethodModal
+import com.google.firebase.storage.StorageTask
+import com.google.firebase.storage.StorageReference
+import androidx.cardview.widget.CardView
+import com.aprihive.methods.NetworkListener
+import com.rilixtech.CountryCodePicker
+import com.google.firebase.storage.FirebaseStorage
+import com.theartofdev.edmodo.cropper.CropImage
+import com.aprihive.auth.SetUsername
+import android.text.TextWatcher
+import android.text.Editable
+import com.aprihive.methods.MySnackBar
+import com.google.android.material.snackbar.Snackbar
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import android.app.Activity
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.android.gms.tasks.OnFailureListener
+import android.net.ConnectivityManager
+import com.aprihive.PersonalProfileActivity
+import com.google.android.gms.tasks.OnCompleteListener
+import com.aprihive.Home
+import com.aprihive.UserProfileActivity
+import com.aprihive.RequestDetails
+import com.google.android.material.navigation.NavigationView
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.aprihive.adapters.HomeViewPagerAdapter
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.airbnb.lottie.LottieAnimationView
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.aprihive.MainActivity
+import com.aprihive.pages.Discover
+import com.aprihive.fragments.AddPostModal
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.core.content.ContextCompat
+import android.graphics.BitmapFactory
+import android.app.PendingIntent
+import com.aprihive.EditProfileActivity
+import androidx.core.app.NotificationManagerCompat
+import android.os.Build
+import android.app.NotificationManager
+import android.app.NotificationChannel
+import android.content.*
+import android.content.res.Resources.NotFoundException
+import com.aprihive.auth.Login
+import androidx.core.app.ActivityCompat
+import android.content.pm.PackageManager
+import com.aprihive.SettingsActivity
+import com.aprihive.PaymentActivity
+import androidx.core.view.GravityCompat
+import android.os.PersistableBundle
+import com.github.chrisbanes.photoview.PhotoView
+import com.bumptech.glide.request.target.CustomTarget
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
+import android.os.Environment
+import android.media.MediaScannerConnection
+import com.aprihive.auth.SignUp
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.AuthResult
+import com.aprihive.adapters.MessagingRecyclerAdapter
+import com.aprihive.models.MessageModel
+import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Retrofit
+import com.aprihive.backend.RetrofitInterface
+import retrofit2.converter.gson.GsonConverterFactory
+import com.aprihive.MessagingActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.aprihive.fragments.ReportModal
+import kotlin.Throws
+import org.ocpsoft.prettytime.PrettyTime
+import com.aprihive.fragments.OptionsDialogModal
+import com.google.android.material.tabs.TabLayout
+import com.aprihive.adapters.OnboardingViewAdapter
+import com.aprihive.models.OnboardingModel
+import com.aprihive.adapters.ProfileViewPagerAdapter
+import com.aprihive.pages.Feed
+import com.aprihive.fragments.AddCatalogueItemModal
+import com.aprihive.pages.Catalogue
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.aprihive.PushNotificationService
+import com.google.firebase.messaging.RemoteMessage
+import com.aprihive.FetchDetails
+import android.graphics.RectF
+import android.graphics.PorterDuffXfermode
+import android.graphics.PorterDuff
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.*
+import androidx.appcompat.widget.SwitchCompat
+import com.aprihive.AboutApp
+import com.aprihive.fragments.SetThemeModal
+import androidx.appcompat.widget.Toolbar
+import com.aprihive.OnboardingActivity
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import com.google.firebase.firestore.*
+import java.lang.Exception
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.viewpager.widget.ViewPager;
-
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.aprihive.fragments.ReportModal;
-import com.aprihive.fragments.SendRequestModal;
-import com.aprihive.methods.MySnackBar;
-import com.aprihive.methods.SharedPrefs;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.aprihive.adapters.ProfileViewPagerAdapter;
-import com.aprihive.R;
-import com.aprihive.fragments.ContactMethodModal;
-import com.aprihive.methods.SetBarsColor;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-public class UserProfileActivity extends AppCompatActivity  {
-
-    private static final String TAG = "debug" ;
-    private FirebaseAuth auth;
-    private FirebaseUser user;
-    private FirebaseFirestore db;
-    private DocumentReference reference;
-
-    private Toolbar toolbar;
-    private TextView connectButton;
-    private TextView callButton;
-
-    private ImageView verifiedIcon, profilePic;
-    private TextView email, fullname, username, phone, bio, schoolName;
-
-    private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private Bundle bundle;
-    private ListenerRegistration likeRegisterQuery;
-    private String getUserEmail;
-    private ListenerRegistration registerQuery;
-    private String getUsername;
-    private String getPhone, getBio, getSchool, getProfileImageUrl, getTwitter, getInstagram, getFullname;
-    private boolean getVerified;
-    private String getUsernameData;
-    private ProfileViewPagerAdapter adapter;
-    private ImageView threatIcon;
-    private Boolean getThreat;
-    private ConstraintLayout warningBar;
-    private TextView sendMsgBtn;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
-
-        auth = FirebaseAuth.getInstance();
-        user = auth.getCurrentUser();
-        db = FirebaseFirestore.getInstance();
-
-        SharedPrefs sharedPrefs = new SharedPrefs(this);
-        int getTheme = sharedPrefs.themeSettings;
-        AppCompatDelegate.setDefaultNightMode(getTheme);
-
-        SetBarsColor setBarsColor = new SetBarsColor(this, getWindow());
-        adapter = new ProfileViewPagerAdapter(getSupportFragmentManager());
-
-        bundle = new Bundle();
-
-        viewPager = findViewById(R.id.profileViewPager);
-        toolbar = findViewById(R.id.toolbar);
-        connectButton = findViewById(R.id.connectButton);
-        callButton = findViewById(R.id.callButton);
-        tabLayout =  findViewById(R.id.tabLayout);
-        warningBar = findViewById(R.id.warningBar);
-
-        verifiedIcon =  findViewById(R.id.verifiedIcon);
-        threatIcon =  findViewById(R.id.warningIcon);
-
-        profilePic = findViewById(R.id.user_profileImage);
-        fullname = findViewById(R.id.fullName);
-        username = findViewById(R.id.username);
-        bio = findViewById(R.id.description);
-        schoolName = findViewById(R.id.schoolName);
-        sendMsgBtn =  findViewById(R.id.messageButton);
-
-        Intent intent = getIntent();
-
-        try{
-            Uri data = getIntent().getData();
-            assert data != null;
-            getUserEmail = data.getLastPathSegment();
-            Log.e("debug", "used email");
-            getUserInfoFromDbByEmail();
-
-        } catch (Exception e) {
-            getUserEmail = intent.getStringExtra("getEmail");
-            getUsername = intent.getStringExtra("getUsername");
-            getUserInfoFromDbByEmail();
-
+class UserProfileActivity : AppCompatActivity() {
+    private var auth: FirebaseAuth? = null
+    private var user: FirebaseUser? = null
+    private var db: FirebaseFirestore? = null
+    private var reference: DocumentReference? = null
+    private var toolbar: Toolbar? = null
+    private var connectButton: TextView? = null
+    private var callButton: TextView? = null
+    private var verifiedIcon: ImageView? = null
+    private var profilePic: ImageView? = null
+    private val email: TextView? = null
+    private var fullname: TextView? = null
+    private var username: TextView? = null
+    private val phone: TextView? = null
+    private var bio: TextView? = null
+    private var schoolName: TextView? = null
+    private var viewPager: ViewPager? = null
+    private var tabLayout: TabLayout? = null
+    private var bundle: Bundle? = null
+    private var likeRegisterQuery: ListenerRegistration? = null
+    private var getUserEmail: String? = null
+    private var registerQuery: ListenerRegistration? = null
+    private var getUsername: String? = null
+    private var getPhone: String? = null
+    private var getBio: String? = null
+    private var getSchool: String? = null
+    private var getProfileImageUrl: String? = null
+    private var getTwitter: String? = null
+    private var getInstagram: String? = null
+    private var getFullname: String? = null
+    private var getVerified = false
+    private val getUsernameData: String? = null
+    private var adapter: ProfileViewPagerAdapter? = null
+    private var threatIcon: ImageView? = null
+    private var getThreat: Boolean? = null
+    private var warningBar: ConstraintLayout? = null
+    private var sendMsgBtn: TextView? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_user_profile)
+        auth = FirebaseAuth.getInstance()
+        user = auth!!.currentUser
+        db = FirebaseFirestore.getInstance()
+        val sharedPrefs = SharedPrefs(this)
+        val getTheme = sharedPrefs.themeSettings
+        AppCompatDelegate.setDefaultNightMode(getTheme)
+        val setBarsColor = SetBarsColor(this, window)
+        adapter = ProfileViewPagerAdapter(supportFragmentManager)
+        bundle = Bundle()
+        viewPager = findViewById(R.id.profileViewPager)
+        toolbar = findViewById(R.id.toolbar)
+        connectButton = findViewById(R.id.connectButton)
+        callButton = findViewById(R.id.callButton)
+        tabLayout = findViewById(R.id.tabLayout)
+        warningBar = findViewById(R.id.warningBar)
+        verifiedIcon = findViewById(R.id.verifiedIcon)
+        threatIcon = findViewById(R.id.warningIcon)
+        profilePic = findViewById(R.id.user_profileImage)
+        fullname = findViewById(R.id.fullName)
+        username = findViewById(R.id.username)
+        bio = findViewById(R.id.description)
+        schoolName = findViewById(R.id.schoolName)
+        sendMsgBtn = findViewById(R.id.messageButton)
+        val intent = intent
+        try {
+            val data = getIntent().data!!
+            getUserEmail = data.lastPathSegment
+            Log.e("debug", "used email")
+            userInfoFromDbByEmail
+        } catch (e: Exception) {
+            getUserEmail = intent.getStringExtra("getEmail")
+            getUsername = intent.getStringExtra("getUsername")
+            userInfoFromDbByEmail
         }
-
-
-
-
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        sendMsgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(UserProfileActivity.this, MessagingActivity.class);
-                intent.putExtra("getEmail", getUserEmail);
-                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-
-            }
-        });
-
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UserProfileActivity.super.onBackPressed();
-            }
-        });
-
-        connectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                DocumentReference fileRef = db.collection("users").document(getUserEmail).collection("lists").document("following");
-                final Boolean[] processFollow = {true};
-                fileRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                        try {
-                            if (processFollow[0]){
-
-                                if (value.contains(auth.getCurrentUser().getUid())){
-                                    fileRef.update(auth.getCurrentUser().getUid(), FieldValue.delete());
-                                    processFollow[0] =false;
-                                }
-                                else {
-                                    fileRef.update(auth.getCurrentUser().getUid(), auth.getCurrentUser().getEmail());
-                                    processFollow[0] =false;
-                                }
-
-
-                            }
-                        } catch (Resources.NotFoundException e) {
-                            e.printStackTrace();
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
+        sendMsgBtn.setOnClickListener(View.OnClickListener {
+            val intent = Intent(this@UserProfileActivity, MessagingActivity::class.java)
+            intent.putExtra("getEmail", getUserEmail)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        })
+        toolbar.setNavigationOnClickListener(View.OnClickListener { super@UserProfileActivity.onBackPressed() })
+        connectButton.setOnClickListener(View.OnClickListener {
+            val fileRef = db!!.collection("users").document(getUserEmail!!).collection("lists").document("following")
+            val processFollow = arrayOf(true)
+            fileRef.addSnapshotListener { value, error ->
+                try {
+                    if (processFollow[0]) {
+                        if (value!!.contains(auth!!.currentUser!!.uid)) {
+                            fileRef.update(auth!!.currentUser!!.uid, FieldValue.delete())
+                            processFollow[0] = false
+                        } else {
+                            fileRef.update(auth!!.currentUser!!.uid, auth!!.currentUser!!.email)
+                            processFollow[0] = false
                         }
-
-
                     }
-                });
-
+                } catch (e: NotFoundException) {
+                    e.printStackTrace()
+                }
             }
-        });
-
-        callButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ContactMethodModal bottomSheet = new ContactMethodModal();
-                bottomSheet.setArguments(bundle);
-                bottomSheet.show(getSupportFragmentManager(), "TAG");
-            }
-        });
+        })
+        callButton.setOnClickListener(View.OnClickListener {
+            val bottomSheet = ContactMethodModal()
+            bottomSheet.arguments = bundle
+            bottomSheet.show(supportFragmentManager, "TAG")
+        })
 
         //set viewpager
-        viewPager.setAdapter(adapter);
-        viewPager.setTag(getUserEmail); //pass data to viewpager
+        viewPager.setAdapter(adapter)
+        viewPager.setTag(getUserEmail) //pass data to viewpager
 
         //set listener to viewpager from tabLayout
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
-        tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+        tabLayout.setupWithViewPager(viewPager)
 
         // get tabs from adapter
-        TabLayout.Tab feedTab = tabLayout.getTabAt(0);
-        TabLayout.Tab catalogueTab = tabLayout.getTabAt(1);
-
-        feedTab.setIcon(R.drawable.ic_feed);
-        catalogueTab.setIcon(R.drawable.ic_shopping_cart);
-
-        Log.e(TAG, "onCreate: " + getUsername);
-        getSupportActionBar().setTitle(getUsername);
-
-
-
+        val feedTab = tabLayout.getTabAt(0)
+        val catalogueTab = tabLayout.getTabAt(1)
+        feedTab!!.setIcon(R.drawable.ic_feed)
+        catalogueTab!!.setIcon(R.drawable.ic_shopping_cart)
+        Log.e(TAG, "onCreate: $getUsername")
+        supportActionBar!!.setTitle(getUsername)
     }
 
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.user_profile_menu, menu);
-        return true;
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.user_profile_menu, menu)
+        return true
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.profileLink:
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("profile-link", "https://aprihive.com/user/"+getUsername);
-                clipboard.setPrimaryClip(clip);
-
-                MySnackBar snackBar = new MySnackBar(this, getWindow().getDecorView().findViewById(R.id.page), "Copied to clipboard!", R.color.color_theme_blue, Snackbar.LENGTH_SHORT);
-                return true;
-
-            case R.id.report:
-                ReportModal bottomSheet = new ReportModal();
-                Bundle bundle = new Bundle();
-                bundle.putString("postAuthorEmail", "ericx.group@gmail.com");
-                bundle.putString("postAuthor", "Support");
-                bundle.putString("postText", "Reporting " + getFullname + " ("+getUsername+")");
-                bundle.putString("postImage", getProfileImageUrl);
-                bundle.putString("postId", getUsername);
-                bottomSheet.setArguments(bundle);
-                bottomSheet.show(getSupportFragmentManager(), "TAG");
-                return true;
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.profileLink -> {
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("profile-link", "https://aprihive.com/user/$getUsername")
+                clipboard.setPrimaryClip(clip)
+                val snackBar = MySnackBar(this, window.decorView.findViewById(R.id.page), "Copied to clipboard!", R.color.color_theme_blue, Snackbar.LENGTH_SHORT)
+                return true
+            }
+            R.id.report -> {
+                val bottomSheet = ReportModal()
+                val bundle = Bundle()
+                bundle.putString("postAuthorEmail", "ericx.group@gmail.com")
+                bundle.putString("postAuthor", "Support")
+                bundle.putString("postText", "Reporting $getFullname ($getUsername)")
+                bundle.putString("postImage", getProfileImageUrl)
+                bundle.putString("postId", getUsername)
+                bottomSheet.arguments = bundle
+                bottomSheet.show(supportFragmentManager, "TAG")
+                return true
+            }
         }
-        return (super.onOptionsItemSelected(item));
+        return super.onOptionsItemSelected(item)
     }
 
-    private void useLocalUserData(Intent intent) {
-
-        getUsername = intent.getStringExtra("getUsername");
-        getVerified = intent.getBooleanExtra("getVerified", false);
-        getUserEmail = intent.getStringExtra("getEmail");
-        getFullname = intent.getStringExtra("getFullName");
-        getProfileImageUrl = intent.getStringExtra("getProfileImageUrl");
-        getBio = intent.getStringExtra("getBio");
-        getSchool = intent.getStringExtra("getSchoolName");
-        getPhone= intent.getStringExtra("getPhone");
-        getTwitter= intent.getStringExtra("getTwitter");
-        getInstagram= intent.getStringExtra("getInstagram");
-
-        populateViews();
-
+    private fun useLocalUserData(intent: Intent) {
+        getUsername = intent.getStringExtra("getUsername")
+        getVerified = intent.getBooleanExtra("getVerified", false)
+        getUserEmail = intent.getStringExtra("getEmail")
+        getFullname = intent.getStringExtra("getFullName")
+        getProfileImageUrl = intent.getStringExtra("getProfileImageUrl")
+        getBio = intent.getStringExtra("getBio")
+        getSchool = intent.getStringExtra("getSchoolName")
+        getPhone = intent.getStringExtra("getPhone")
+        getTwitter = intent.getStringExtra("getTwitter")
+        getInstagram = intent.getStringExtra("getInstagram")
+        populateViews()
     }
 
-    private void populateViews() {
-
-        Glide.with(getApplicationContext())  //2
+    private fun populateViews() {
+        Glide.with(applicationContext) //2
                 .load(getProfileImageUrl) //3
                 .centerCrop() //4
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.user_image_placeholder) //7
                 .fallback(R.drawable.user_image_placeholder)
-                .into(profilePic); //8
-
-
-
-
-        fullname.setText(getFullname);
-        username.setText("@" + getUsername);
-        bio.setText(getBio);
-        schoolName.setText(getSchool);
-
-        if (getVerified){
-            verifiedIcon.setVisibility(View.VISIBLE);
+                .into(profilePic!!) //8
+        fullname!!.text = getFullname
+        username!!.text = "@$getUsername"
+        bio!!.text = getBio
+        schoolName!!.text = getSchool
+        if (getVerified) {
+            verifiedIcon!!.visibility = View.VISIBLE
         } else {
-            verifiedIcon.setVisibility(View.GONE);
+            verifiedIcon!!.visibility = View.GONE
         }
-
-        if (getThreat){
-            threatIcon.setVisibility(View.VISIBLE);
-            warningBar.setVisibility(View.VISIBLE);
+        if (getThreat!!) {
+            threatIcon!!.visibility = View.VISIBLE
+            warningBar!!.visibility = View.VISIBLE
         } else {
-            threatIcon.setVisibility(View.GONE);
-            warningBar.setVisibility(View.GONE);
+            threatIcon!!.visibility = View.GONE
+            warningBar!!.visibility = View.GONE
         }
-
-        assert getProfileImageUrl != null;
-        if (!getProfileImageUrl.equals("")){
-            profilePic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(UserProfileActivity.this, ImageViewActivity.class);
-                    i.putExtra("imageUri", getProfileImageUrl);
-                    startActivity(i);
-                }
-            });
-        }
-
-        bundle.putString("phoneNumber", getPhone);
-        bundle.putString("instagramName", getInstagram);
-        bundle.putString("twitterName", getTwitter);
-
-        checkIfUserIsInFavourites();
-
-    }
-
-    private void getUserInfoFromDbByEmail() {
-
-        //retrieve from firestore
-        DocumentReference fetchReference;
-        fetchReference = db.collection("users").document(getUserEmail);
-        registerQuery = fetchReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-
-                getFullname = documentSnapshot.getString("name");
-                getPhone = documentSnapshot.getString("phone");
-                getUsername = documentSnapshot.getString("username");
-                getVerified = documentSnapshot.getBoolean("verified");
-                getThreat = documentSnapshot.getBoolean("threat");
-
-                getBio = documentSnapshot.getString("bio");
-                getSchool = documentSnapshot.getString("school");
-                getProfileImageUrl = documentSnapshot.getString("profileImageLink");
-                getTwitter = documentSnapshot.getString("twitter");
-                getInstagram = documentSnapshot.getString("instagram");
-
-                populateViews();
-
+        assert(getProfileImageUrl != null)
+        if (getProfileImageUrl != "") {
+            profilePic!!.setOnClickListener {
+                val i = Intent(this@UserProfileActivity, ImageViewActivity::class.java)
+                i.putExtra("imageUri", getProfileImageUrl)
+                startActivity(i)
             }
-        });
-        //end of retrieve
-
+        }
+        bundle!!.putString("phoneNumber", getPhone)
+        bundle!!.putString("instagramName", getInstagram)
+        bundle!!.putString("twitterName", getTwitter)
+        checkIfUserIsInFavourites()
     }
 
-    private void checkIfUserIsInFavourites() {
+    //retrieve from firestore
+    private val userInfoFromDbByEmail: Unit
+        //end of retrieve
+        private get() {
 
-        reference = db.collection("users").document(getUserEmail).collection("lists").document("following");
-        likeRegisterQuery =  reference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+            //retrieve from firestore
+            val fetchReference: DocumentReference
+            fetchReference = db!!.collection("users").document(getUserEmail!!)
+            registerQuery = fetchReference.addSnapshotListener { documentSnapshot, e ->
+                getFullname = documentSnapshot!!.getString("name")
+                getPhone = documentSnapshot.getString("phone")
+                getUsername = documentSnapshot.getString("username")
+                getVerified = documentSnapshot.getBoolean("verified")!!
+                getThreat = documentSnapshot.getBoolean("threat")
+                getBio = documentSnapshot.getString("bio")
+                getSchool = documentSnapshot.getString("school")
+                getProfileImageUrl = documentSnapshot.getString("profileImageLink")
+                getTwitter = documentSnapshot.getString("twitter")
+                getInstagram = documentSnapshot.getString("instagram")
+                populateViews()
+            }
+            //end of retrieve
+        }
 
+    private fun checkIfUserIsInFavourites() {
+        reference = db!!.collection("users").document(getUserEmail!!).collection("lists").document("following")
+        likeRegisterQuery = reference!!.addSnapshotListener { value, error ->
+            try {
+                assert(user != null)
+                val uid = user!!.uid
+                var check = false
                 try {
-                    assert user != null;
-                    String uid = user.getUid();
+                    check = value!!.contains(uid)
+                } catch (e: Exception) {
+                }
+                if (check) {
+                    connectButton!!.background = resources.getDrawable(R.drawable.connect_active_button)
+                    connectButton!!.text = "Upvoted"
+                    connectButton!!.setTextColor(resources.getColor(R.color.bg_color))
+                } else {
+                    connectButton!!.background = resources.getDrawable(R.drawable.connect_default_button)
+                    connectButton!!.text = "Upvote"
+                    connectButton!!.setTextColor(resources.getColor(R.color.color_theme_blue))
+                }
 
-                    Boolean check = false;
-
-                    try {
-                        check = value.contains(uid);
-                    }
-                    catch (Exception e){
-
-                    }
-
-
-                    if (check){
-                        connectButton.setBackground(getResources().getDrawable(R.drawable.connect_active_button));
-                        connectButton.setText("Upvoted");
-                        connectButton.setTextColor(getResources().getColor(R.color.bg_color));
-                    }
-                    else {
-                        connectButton.setBackground(getResources().getDrawable(R.drawable.connect_default_button));
-                        connectButton.setText("Upvote");
-                        connectButton.setTextColor(getResources().getColor(R.color.color_theme_blue));
-                    }
-
-                    /*
+                /*
                     try {
                         Map<String, Object> map = value.getData();
                         getUpvotes = map.size();
@@ -411,16 +400,13 @@ public class UserProfileActivity extends AppCompatActivity  {
                         holder.trustedByText.setText("  Trusted by " + getUpvotes + " people");
                     }
                     */
-
-                } catch (Resources.NotFoundException e) {
-                    e.printStackTrace();
-                }
-
-
+            } catch (e: NotFoundException) {
+                e.printStackTrace()
             }
-        });
-
+        }
     }
 
-
+    companion object {
+        private const val TAG = "debug"
+    }
 }
