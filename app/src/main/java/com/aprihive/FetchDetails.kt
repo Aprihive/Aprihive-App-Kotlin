@@ -195,7 +195,7 @@ class FetchDetails : AppCompatActivity() {
         } else if (intent.getStringExtra("type") == "requestNotification") {
             requestInfoFromDb
         } else {
-            userInfoFromDbByUsername
+            userInfoFromDbByUsername()
         }
     }
 
@@ -222,8 +222,7 @@ class FetchDetails : AppCompatActivity() {
         }
 
     //retrieve from firestore
-    private val userInfoFromDbByUsername: Unit
-        private get() {
+    private fun userInfoFromDbByUsername() {
 
             //retrieve from firestore
             Log.e("debug", "checking username")

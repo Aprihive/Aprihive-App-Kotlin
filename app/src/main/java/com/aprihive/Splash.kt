@@ -150,8 +150,7 @@ class Splash : AppCompatActivity() {
         analytics = FirebaseAnalytics.getInstance(this)
         window.navigationBarColor = resources.getColor(R.color.color_theme_blue_600)
         window.statusBarColor = resources.getColor(R.color.color_theme_blue_600)
-        val intent: Intent
-        intent = if (sharedPrefs!!.shownOnboard) {
+        val intent: Intent = if (sharedPrefs!!.shownOnboard) {
             Intent(this@Splash, MainActivity::class.java)
         } else {
             Intent(this@Splash, OnboardingActivity::class.java)

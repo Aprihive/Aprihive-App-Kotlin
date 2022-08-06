@@ -208,14 +208,14 @@ class UserProfileActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeButtonEnabled(true)
-        sendMsgBtn.setOnClickListener(View.OnClickListener {
+        sendMsgBtn!!.setOnClickListener(View.OnClickListener {
             val intent = Intent(this@UserProfileActivity, MessagingActivity::class.java)
             intent.putExtra("getEmail", getUserEmail)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         })
-        toolbar.setNavigationOnClickListener(View.OnClickListener { super@UserProfileActivity.onBackPressed() })
-        connectButton.setOnClickListener(View.OnClickListener {
+        toolbar!!.setNavigationOnClickListener(View.OnClickListener { super@UserProfileActivity.onBackPressed() })
+        connectButton!!.setOnClickListener(View.OnClickListener {
             val fileRef = db!!.collection("users").document(getUserEmail!!).collection("lists").document("following")
             val processFollow = arrayOf(true)
             fileRef.addSnapshotListener { value, error ->
@@ -234,23 +234,23 @@ class UserProfileActivity : AppCompatActivity() {
                 }
             }
         })
-        callButton.setOnClickListener(View.OnClickListener {
+        callButton!!.setOnClickListener(View.OnClickListener {
             val bottomSheet = ContactMethodModal()
             bottomSheet.arguments = bundle
             bottomSheet.show(supportFragmentManager, "TAG")
         })
 
         //set viewpager
-        viewPager.setAdapter(adapter)
-        viewPager.setTag(getUserEmail) //pass data to viewpager
+        viewPager!!.setAdapter(adapter)
+        viewPager!!.setTag(getUserEmail) //pass data to viewpager
 
         //set listener to viewpager from tabLayout
-        viewPager.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
-        tabLayout.setupWithViewPager(viewPager)
+        viewPager!!.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+        tabLayout!!.setupWithViewPager(viewPager)
 
         // get tabs from adapter
-        val feedTab = tabLayout.getTabAt(0)
-        val catalogueTab = tabLayout.getTabAt(1)
+        val feedTab = tabLayout!!.getTabAt(0)
+        val catalogueTab = tabLayout!!.getTabAt(1)
         feedTab!!.setIcon(R.drawable.ic_feed)
         catalogueTab!!.setIcon(R.drawable.ic_shopping_cart)
         Log.e(TAG, "onCreate: $getUsername")

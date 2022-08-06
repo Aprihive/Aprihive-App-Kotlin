@@ -75,19 +75,18 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="25dp"
             android:background="@drawable/white_button"
-            android:paddingVertical="8dp"
-            android:layout_marginVertical="5dp"
+            android:visibility="gone"
             android:src="@drawable/ic_love"
-            android:tint="@color/color_error_red_200"
             app:layout_constraintBottom_toBottomOf="@+id/actionButton"
             app:layout_constraintEnd_toStartOf="@+id/actionButton"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/actionButton" />
+            app:layout_constraintTop_toTopOf="@+id/actionButton"
+            app:tint="@color/color_error_red_200" />
 
         <TextView
             android:id="@+id/actionButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:background="@drawable/blue_button"
             android:gravity="center"
             android:layout_marginHorizontal="10dp"

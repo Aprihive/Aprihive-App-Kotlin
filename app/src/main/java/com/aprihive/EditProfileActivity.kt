@@ -4,134 +4,46 @@
 // All Rights Reserved
 package com.aprihive
 
-import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import android.annotation.SuppressLint
-import com.aprihive.R
-import com.aprihive.methods.SharedPrefs
-import androidx.appcompat.app.AppCompatDelegate
-import com.aprihive.methods.SetBarsColor
 import android.content.Intent
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
-import android.view.animation.Animation
-import com.aprihive.ImageViewActivity
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.aprihive.methods.MyActionDialog
-import com.google.android.gms.tasks.OnSuccessListener
-import com.aprihive.fragments.ContactMethodModal
-import com.google.firebase.storage.StorageTask
-import com.google.firebase.storage.StorageReference
-import androidx.cardview.widget.CardView
-import com.aprihive.methods.NetworkListener
-import com.rilixtech.CountryCodePicker
-import com.google.firebase.storage.FirebaseStorage
-import com.theartofdev.edmodo.cropper.CropImage
-import com.aprihive.auth.SetUsername
-import android.text.TextWatcher
-import android.text.Editable
-import com.aprihive.methods.MySnackBar
-import com.google.android.material.snackbar.Snackbar
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import android.app.Activity
-import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.android.gms.tasks.OnFailureListener
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import com.aprihive.PersonalProfileActivity
-import com.google.android.gms.tasks.OnCompleteListener
-import com.aprihive.Home
-import com.aprihive.UserProfileActivity
-import com.aprihive.RequestDetails
-import com.google.android.material.navigation.NavigationView
-import androidx.viewpager.widget.ViewPager
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import android.content.SharedPreferences
-import com.aprihive.adapters.HomeViewPagerAdapter
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.airbnb.lottie.LottieAnimationView
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.firebase.auth.FirebaseAuth.AuthStateListener
-import com.aprihive.MainActivity
-import com.aprihive.pages.Discover
-import com.aprihive.fragments.AddPostModal
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import androidx.core.content.ContextCompat
-import android.graphics.BitmapFactory
-import android.app.PendingIntent
-import com.aprihive.EditProfileActivity
-import androidx.core.app.NotificationManagerCompat
-import android.app.NotificationManager
-import android.app.NotificationChannel
-import android.content.res.Resources.NotFoundException
-import com.aprihive.auth.Login
-import androidx.core.app.ActivityCompat
-import android.content.pm.PackageManager
-import com.aprihive.SettingsActivity
-import com.aprihive.PaymentActivity
-import androidx.core.view.GravityCompat
-import com.github.chrisbanes.photoview.PhotoView
-import com.bumptech.glide.request.target.CustomTarget
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
-import android.media.MediaScannerConnection
-import com.aprihive.auth.SignUp
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.AuthResult
-import com.aprihive.adapters.MessagingRecyclerAdapter
-import com.aprihive.models.MessageModel
-import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Retrofit
-import com.aprihive.backend.RetrofitInterface
-import retrofit2.converter.gson.GsonConverterFactory
-import com.aprihive.MessagingActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.aprihive.fragments.ReportModal
-import kotlin.Throws
-import org.ocpsoft.prettytime.PrettyTime
-import com.aprihive.fragments.OptionsDialogModal
-import android.content.ClipData
-import com.google.android.material.tabs.TabLayout
-import com.aprihive.adapters.OnboardingViewAdapter
-import com.aprihive.models.OnboardingModel
-import com.aprihive.adapters.ProfileViewPagerAdapter
-import com.aprihive.pages.Feed
-import com.aprihive.fragments.AddCatalogueItemModal
-import com.aprihive.pages.Catalogue
-import com.google.firebase.messaging.FirebaseMessagingService
-import com.aprihive.PushNotificationService
-import com.google.firebase.messaging.RemoteMessage
-import com.aprihive.FetchDetails
-import android.graphics.RectF
-import android.graphics.PorterDuffXfermode
-import android.graphics.PorterDuff
 import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.*
-import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import com.aprihive.AboutApp
-import com.aprihive.fragments.SetThemeModal
-import com.aprihive.OnboardingActivity
-import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
-import com.google.firebase.firestore.*
-import java.util.HashMap
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.aprihive.auth.SetUsername
+import com.aprihive.methods.MySnackBar
+import com.aprihive.methods.NetworkListener
+import com.aprihive.methods.SetBarsColor
+import com.aprihive.methods.SharedPrefs
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.StorageTask
+import com.rilixtech.CountryCodePicker
+import com.theartofdev.edmodo.cropper.CropImage
 
-abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class EditProfileActivity : AppCompatActivity() {
 
     private var auth: FirebaseAuth? = null
     private var firestore: FirebaseFirestore? = null
@@ -156,10 +68,8 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
     private var getPhone: String? = null
     private var getBio: String? = null
     private var getSchool: String? = null
-    private var getUserProfilePic //fetch from firebase into
-            : String? = null
-    private var getVerified //fetch from firebase into
-            : Boolean? = null
+    private var getUserProfilePic : String? = null
+    private var getVerified : Boolean? = null
     private var saveTo: String? = null
     private var imageType: String? = null
     private var profilePic: ImageView? = null
@@ -187,11 +97,14 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
+
         val sharedPrefs = SharedPrefs(this)
         val getTheme = sharedPrefs.themeSettings
         AppCompatDelegate.setDefaultNightMode(getTheme)
-        val setBarsColor = SetBarsColor(this, window)
+
+        SetBarsColor(this, window)
         networkListener = NetworkListener(this, page, window)
+
         universitiesList = arrayOf(
                 "",
                 "Obafemi Awolowo University, Ife",
@@ -237,55 +150,72 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
         loading = findViewById(R.id.loading)
         page = findViewById(R.id.page)
         ccp = findViewById(R.id.ccp)
-        editSchool.setOnItemSelectedListener(this)
-        val adapter: ArrayAdapter<*> = ArrayAdapter<Any?>(this, android.R.layout.simple_spinner_item, universitiesList)
+
+        editSchool?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                editSchoolText = universitiesList?.get(position)
+                textChangeListener.onTextChanged("charSequence", 0, 1, 2)
+            }
+
+        }
+
+        val adapter: ArrayAdapter<*> = ArrayAdapter<Any?>(this, android.R.layout.simple_spinner_item, universitiesList!!)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        editSchool.setAdapter(adapter)
+        editSchool?.adapter = adapter
         statusLoadBar = findViewById(R.id.statusLoadBar)
         statusProgressText = findViewById(R.id.statusProgressText)
+
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setTitle("")
+        supportActionBar!!.title = ""
         supportActionBar!!.setHomeButtonEnabled(true)
-        toolbar.setNavigationOnClickListener(View.OnClickListener { super@EditProfileActivity.onBackPressed() })
+        toolbar?.setNavigationOnClickListener { super@EditProfileActivity.onBackPressed() }
         editSchoolText = ""
-        profileImage
+
+        getProfileImage()
+
         retrieveDetailsFromFirestore()
-        editName.addTextChangedListener(textChangeListener)
-        editPhone.addTextChangedListener(textChangeListener)
-        editTwitterName.addTextChangedListener(textChangeListener)
-        editInstagramName.addTextChangedListener(textChangeListener)
-        editBio.addTextChangedListener(textChangeListener)
+
+        editName?.addTextChangedListener(textChangeListener)
+        editPhone?.addTextChangedListener(textChangeListener)
+        editTwitterName?.addTextChangedListener(textChangeListener)
+        editInstagramName?.addTextChangedListener(textChangeListener)
+        editBio?.addTextChangedListener(textChangeListener)
 
 
         //handle profile image change
-        profilePic.setOnClickListener(View.OnClickListener { CropImage.activity().setAspectRatio(1, 1).setFixAspectRatio(true).start(this@EditProfileActivity) })
-        usernameChangeClick.setOnClickListener(View.OnClickListener {
+        profilePic?.setOnClickListener(View.OnClickListener { CropImage.activity().setAspectRatio(1, 1).setFixAspectRatio(true).start(this@EditProfileActivity) })
+        usernameChangeClick?.setOnClickListener(View.OnClickListener {
             val i = Intent(this@EditProfileActivity, SetUsername::class.java)
             startActivity(i)
         })
-        ccp.registerPhoneNumberTextView(editPhone)
-        ccp.enablePhoneAutoFormatter(true)
-        ccp.enableSetCountryByTimeZone(true)
+
+        ccp!!.registerPhoneNumberTextView(editPhone)
+        ccp!!.enablePhoneAutoFormatter(true)
+        ccp!!.enableSetCountryByTimeZone(true)
     }
 
     private val textChangeListener: TextWatcher = object : TextWatcher {
         override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+        @SuppressLint("UseCompatLoadingForDrawables")
         override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-            if (editName!!.text.toString().trim { it <= ' ' } != getFullname ||
+            if (editName!!.text.toString().trim() != getFullname ||
                     editSchoolText != getSchool ||
-                    editPhone!!.text.toString().trim { it <= ' ' } != getPhone ||
-                    editTwitterName!!.text.toString().trim { it <= ' ' } != getTwitterName ||
-                    editInstagramName!!.text.toString().trim { it <= ' ' } != getInstagramName ||
-                    editBio!!.text.toString().trim { it <= ' ' } != getBio) {
-                saveButton!!.background = resources.getDrawable(R.drawable.blue_button)
+                    editPhone!!.text.toString().trim() != getPhone ||
+                    editTwitterName!!.text.toString().trim() != getTwitterName ||
+                    editInstagramName!!.text.toString().trim() != getInstagramName ||
+                    editBio!!.text.toString().trim() != getBio) {
+                saveButton!!.background = getDrawable(R.drawable.blue_button)
                 saveButton!!.setOnClickListener { checkInputs() }
             } else {
-                saveButton!!.background = resources.getDrawable(R.drawable.disabled_button)
+                saveButton!!.background = getDrawable(R.drawable.disabled_button)
                 saveButton!!.setOnClickListener { }
             }
         }
-
         override fun afterTextChanged(editable: Editable) {}
     }
 
@@ -293,12 +223,12 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
 
 
         //get values from input
-        setName = editName!!.text.toString().trim { it <= ' ' }
+        setName = editName!!.text.toString().trim()
         setSchool = editSchoolText
-        setBio = editBio!!.text.toString().trim { it <= ' ' }
-        setInstagram = editInstagramName!!.text.toString().trim { it <= ' ' }
-        setTwitter = editTwitterName!!.text.toString().trim { it <= ' ' }
-        val checkPhone = editPhone!!.text.toString().trim { it <= ' ' }
+        setBio = editBio!!.text.toString().trim()
+        setInstagram = editInstagramName!!.text.toString().trim()
+        setTwitter = editTwitterName!!.text.toString().trim()
+        val checkPhone = editPhone!!.text.toString().trim()
         val countryCode = ccp!!.selectedCountryCode
         setPhone = if (!checkPhone.isEmpty()) {
             if (!checkPhone.startsWith(countryCode)) {
@@ -318,7 +248,7 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
         } else if (setName!!.isEmpty()) {
             errorFeedback!!.visibility = View.VISIBLE
             errorFeedback!!.text = "Name cannot be empty"
-        } else if (!setName!!.matches("[a-zA-Z0-9 ]*")) {
+        } else if (!setName!!.matches(Regex("[a-zA-Z0-9 ]*"))) {
             errorFeedback!!.visibility = View.VISIBLE
             errorFeedback!!.text = "Name can only contain alphabets"
         } else if (setSchool!!.isEmpty()) {
@@ -345,7 +275,7 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
         details["twitter"] = setTwitter
         reference = firestore!!.collection("users").document(user!!.email!!)
         reference!!.update(details).addOnSuccessListener {
-            val snackBar = MySnackBar(this@EditProfileActivity, page, "Saved!", R.color.color_success_green_300, Snackbar.LENGTH_LONG)
+            MySnackBar(this@EditProfileActivity, page, "Saved!", R.color.color_success_green_300, Snackbar.LENGTH_LONG)
             loading!!.visibility = View.GONE
             saveButton!!.visibility = View.VISIBLE
             val handler = Handler()
@@ -362,8 +292,7 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
     //4
     //7
     //8
-    private val profileImage: Unit
-        private get() {
+    private fun getProfileImage() {
             val userProfilePic = user!!.photoUrl
             Glide.with(this) //2
                     .load(userProfilePic) //3
@@ -462,7 +391,7 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
                             .setPhotoUri(uri).build()
                     val userEmail = auth!!.currentUser!!.email
                     val reference = firestore!!.collection("users").document(userEmail!!)
-                    reference.update("profileImageLink", uri.toString()).addOnSuccessListener { val snackBar = MySnackBar(this@EditProfileActivity, window.decorView.findViewById(R.id.page), "Profile Image updated!", R.color.color_theme_blue, Snackbar.LENGTH_LONG) }
+                    reference.update("profileImageLink", uri.toString()).addOnSuccessListener { MySnackBar(this@EditProfileActivity, window.decorView.findViewById(R.id.page), "Profile Image updated!", R.color.color_theme_blue, Snackbar.LENGTH_LONG) }
                     Log.e("here", "it even stored it")
                     user!!.updateProfile(profileUpdates)
                     Log.e("here", "it even stored it")
@@ -474,7 +403,7 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
             }
         }.addOnFailureListener {
             canGoBack = true
-            val snackBar = MySnackBar(this@EditProfileActivity, window.decorView, "Updating profile image failed, please try again.", R.color.color_error_red_200, Snackbar.LENGTH_LONG)
+            MySnackBar(this@EditProfileActivity, window.decorView, "Updating profile image failed, please try again.", R.color.color_error_red_200, Snackbar.LENGTH_LONG)
         }
     }
 
@@ -498,10 +427,4 @@ abstract class EditProfileActivity : AppCompatActivity(), AdapterView.OnItemSele
         }
     }
 
-    override fun onItemSelected(adapterView: AdapterView<*>?, view: View, position: Int, id: Long) {
-        editSchoolText = universitiesList[position]
-        textChangeListener.onTextChanged("charSequence", 0, 1, 2)
-    }
-
-    override fun onNothingSelected(adapterView: AdapterView<*>?) {}
 }

@@ -173,9 +173,11 @@ class PersonalProfileActivity : AppCompatActivity() {
     private var upvoteReference: DocumentReference? = null
     private var upvoteRegisterQuery: ListenerRegistration? = null
     private var upvoteText: TextView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_personal_profile)
+
         val sharedPrefs = SharedPrefs(this)
         val getTheme = sharedPrefs.themeSettings
         AppCompatDelegate.setDefaultNightMode(getTheme)
@@ -210,37 +212,37 @@ class PersonalProfileActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setTitle("My Profile")
-        addPostFab.setOnClickListener(View.OnClickListener {
+        addPostFab!!.setOnClickListener(View.OnClickListener {
             val bottomSheet = AddPostModal(Feed.refreshPostsRunnable)
             bottomSheet.arguments = bundle
             bottomSheet.show(supportFragmentManager, "TAG")
         })
-        addCatalogueItemFab.setOnClickListener(View.OnClickListener {
+        addCatalogueItemFab!!.setOnClickListener(View.OnClickListener {
             val bottomSheet = AddCatalogueItemModal(Catalogue.refreshItemsRunnable)
             bottomSheet.arguments = bundle
             bottomSheet.show(supportFragmentManager, "TAG")
         })
-        toolbar.setNavigationOnClickListener(View.OnClickListener { super@PersonalProfileActivity.onBackPressed() })
-        viewPager.setAdapter(adapter)
-        viewPager.setTag(mAuth!!.currentUser!!.email)
-        tabLayout.setupWithViewPager(viewPager)
+        toolbar!!.setNavigationOnClickListener(View.OnClickListener { super@PersonalProfileActivity.onBackPressed() })
+        viewPager!!.setAdapter(adapter)
+        viewPager!!.setTag(mAuth!!.currentUser!!.email)
+        tabLayout!!.setupWithViewPager(viewPager)
 
         // get tabs from adapter
-        val feedTab = tabLayout.getTabAt(0)
-        val catalogueTab = tabLayout.getTabAt(1)
+        val feedTab = tabLayout!!.getTabAt(0)
+        val catalogueTab = tabLayout!!.getTabAt(1)
         feedTab!!.setIcon(R.drawable.ic_feed).text = "My Feed"
         catalogueTab!!.setIcon(R.drawable.ic_shopping_cart).text = "My Catalogue"
-        viewPager.addOnPageChangeListener(object : OnPageChangeListener {
+        viewPager!!.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        addCatalogueItemFab.hide()
-                        addPostFab.show()
+                        addCatalogueItemFab!!.hide()
+                        addPostFab!!.show()
                     }
                     1 -> {
-                        addPostFab.hide()
-                        addCatalogueItemFab.show()
+                        addPostFab!!.hide()
+                        addCatalogueItemFab!!.show()
                     }
                 }
             }
@@ -249,7 +251,7 @@ class PersonalProfileActivity : AppCompatActivity() {
         })
         backendCodes()
         checkUpvotes()
-        editProfilebutton.setOnClickListener(View.OnClickListener {
+        editProfilebutton!!.setOnClickListener(View.OnClickListener {
             val i = Intent(this@PersonalProfileActivity, EditProfileActivity::class.java)
             i.putExtra("name", getFullname)
             i.putExtra("bio", getBio)

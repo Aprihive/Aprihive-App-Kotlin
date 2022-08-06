@@ -179,24 +179,24 @@ class OnboardingActivity : AppCompatActivity() {
         //setup viewpager
         pager = findViewById(R.id.viewPager)
         adapter = OnboardingViewAdapter(this, list)
-        pager.setAdapter(adapter)
+        pager!!.setAdapter(adapter)
 
         //setup tablayout with viewpager
-        tabIndicator.setupWithViewPager(pager)
-        pager.addOnPageChangeListener(object : OnPageChangeListener {
+        tabIndicator!!.setupWithViewPager(pager)
+        pager!!.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 if (position == 0 || position == 1 || position == 2) {
-                    nextBtn.setVisibility(View.VISIBLE)
-                    skipBtn.setVisibility(View.VISIBLE)
-                    tabIndicator.setVisibility(View.VISIBLE)
+                    nextBtn!!.setVisibility(View.VISIBLE)
+                    skipBtn!!.setVisibility(View.VISIBLE)
+                    tabIndicator!!.setVisibility(View.VISIBLE)
                 } else {
                     val fadeAnim = AnimationUtils.loadAnimation(this@OnboardingActivity, R.anim.fade_down_animation)
-                    nextBtn.setAnimation(fadeAnim)
-                    nextBtn.setVisibility(View.INVISIBLE)
-                    skipBtn.setAnimation(fadeAnim)
-                    skipBtn.setVisibility(View.INVISIBLE)
-                    tabIndicator.setAnimation(fadeAnim)
-                    tabIndicator.setVisibility(View.INVISIBLE)
+                    nextBtn!!.setAnimation(fadeAnim)
+                    nextBtn!!.setVisibility(View.INVISIBLE)
+                    skipBtn!!.setAnimation(fadeAnim)
+                    skipBtn!!.setVisibility(View.INVISIBLE)
+                    tabIndicator!!.setAnimation(fadeAnim)
+                    tabIndicator!!.setVisibility(View.INVISIBLE)
                 }
             }
 
@@ -205,21 +205,21 @@ class OnboardingActivity : AppCompatActivity() {
         })
 
         //set btn listener
-        nextBtn.setOnClickListener(View.OnClickListener { //set position
-            position = pager.getCurrentItem()
+        nextBtn!!.setOnClickListener(View.OnClickListener { //set position
+            position = pager!!.getCurrentItem()
             if (position < list.size) {
                 position++
-                pager.setCurrentItem(position)
+                pager!!.setCurrentItem(position)
             }
 
             //hide nxt btn
             if (position == list.size - 1) {
-                nextBtn.setVisibility(View.INVISIBLE)
+                nextBtn!!.setVisibility(View.INVISIBLE)
                 position++
-                pager.setCurrentItem(position)
+                pager!!.setCurrentItem(position)
             }
         })
-        skipBtn.setOnClickListener(View.OnClickListener {
+        skipBtn!!.setOnClickListener(View.OnClickListener {
             val intent = Intent(this@OnboardingActivity, MainActivity::class.java)
             startActivity(intent)
         })

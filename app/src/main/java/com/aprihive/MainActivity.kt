@@ -199,9 +199,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        create.setOnClickListener(activeListeners)
-        login.setOnClickListener(activeListeners)
-        withGoogle.setOnClickListener(activeListeners)
+        create?.setOnClickListener(activeListeners)
+        login?.setOnClickListener(activeListeners)
+        withGoogle?.setOnClickListener(activeListeners)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channelId = getString(R.string.notification_channel_id)
@@ -306,7 +306,7 @@ class MainActivity : AppCompatActivity() {
                         profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(name).build()
                         user!!.updateProfile(profileUpdates!!)
                     }
-                    if (imageLink != user!!.photoUrl) {
+                    if (!imageLink!!.equals(user?.photoUrl) ) {
                         profileUpdates = UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(imageLink)).build()
                         user!!.updateProfile(profileUpdates!!)
                     }
@@ -326,6 +326,8 @@ class MainActivity : AppCompatActivity() {
         user!!.updateProfile(profileUpdates!!)
         ////
         val details: MutableMap<String, Any?> = HashMap()
+
+
         details["name"] = user!!.displayName
         details["email"] = user!!.email
         details["uid"] = user!!.uid

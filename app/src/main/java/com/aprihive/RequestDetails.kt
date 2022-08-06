@@ -231,7 +231,7 @@ class RequestDetails : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
-        toolbar.setNavigationOnClickListener(View.OnClickListener { super@RequestDetails.onBackPressed() })
+        toolbar!!.setNavigationOnClickListener(View.OnClickListener { super@RequestDetails.onBackPressed() })
         setUpActionButton(getType)
 
 
@@ -241,27 +241,27 @@ class RequestDetails : AppCompatActivity() {
                     .load(getPostImageLink)
                     .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(postImage)
+                    .into(postImage!!)
         } else {
-            postImage.setVisibility(View.GONE)
+            postImage!!.setVisibility(View.GONE)
         }
-        postText.setText(getPostText)
+        postText!!.setText(getPostText)
         //
 
         //load request text
-        requestText.setText(getRequestText)
+        requestText!!.setText(getRequestText)
         bundle!!.putString("requestText", getRequestText)
 
 
         //load deadline date
         try {
-            deadline.setText("Deadline: " + deadlineOn(getDeadline))
+            deadline!!.setText("Deadline: " + deadlineOn(getDeadline))
         } catch (e: ParseException) {
             e.printStackTrace()
         }
 
         //load request date
-        requestedDate.setText("Sent: $getRequestedOn")
+        requestedDate!!.setText("Sent: $getRequestedOn")
     }
 
     private fun setUpActionButton(getType: String?) {

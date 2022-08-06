@@ -145,7 +145,7 @@ class CatalogueItemDetails : AppCompatActivity() {
     private var getProfilePic: String? = null
     private var getVerified = false
     private val refreshNotifications: Runnable? = null
-    private val toolbar: Toolbar? = null
+    //private val toolbar: Toolbar? = null
     private var getItemId: String? = null
     private var getItemImageLink: String? = null
     private var getItemName: String? = null
@@ -153,11 +153,11 @@ class CatalogueItemDetails : AppCompatActivity() {
     private val getRequestedOn: String? = null
     private var getSellerEmail: String? = null
     private val getReceiverEmail: String? = null
-    private val itemImage: ImageView? = null
-    private var itemName: TextView? = null
-    private var itemDescription: TextView? = null
-    private var actionButton: TextView? = null
-    private var itemPrice: TextView? = null
+    //private val itemImage: ImageView? = null
+    //private var itemName: TextView? = null
+    //private var itemDescription: TextView? = null
+    //private var actionButton: TextView? = null
+    //private var itemPrice: TextView? = null
     private var registerQuery: ListenerRegistration? = null
     private var bundle: Bundle? = null
     private var getTwitterName: String? = null
@@ -196,7 +196,7 @@ class CatalogueItemDetails : AppCompatActivity() {
         getSellerEmail = i.getStringExtra("getSellerEmail")
 
         setSupportActionBar(toolbar)
-        supportActionBar!!.setTitle(getItemName)
+        supportActionBar!!.setTitle(getItemName!!)
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 

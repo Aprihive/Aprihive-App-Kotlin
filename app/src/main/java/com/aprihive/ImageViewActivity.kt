@@ -169,18 +169,18 @@ class ImageViewActivity : AppCompatActivity() {
         Glide.with(this)
                 .load(intent.getStringExtra("imageUri"))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(image)
-        toolbar.setNavigationOnClickListener(View.OnClickListener { super@ImageViewActivity.onBackPressed() })
-        image.setOnClickListener(View.OnClickListener {
+                .into(image!!)
+        toolbar?.setNavigationOnClickListener(View.OnClickListener { super@ImageViewActivity.onBackPressed() })
+        image?.setOnClickListener(View.OnClickListener {
             fullScreen = if (fullScreen) {
                 setBarsColor.disableFullscreen()
-                toolbar.setBackgroundColor(resources.getColor(R.color.bg_color))
+                toolbar?.setBackgroundColor(resources.getColor(R.color.bg_color))
                 supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                 supportActionBar!!.setHomeButtonEnabled(true)
                 false
             } else {
                 setBarsColor.enableFullscreen()
-                toolbar.setBackgroundColor(resources.getColor(R.color.transparent))
+                toolbar?.setBackgroundColor(resources.getColor(R.color.transparent))
                 supportActionBar!!.setDisplayHomeAsUpEnabled(false)
                 supportActionBar!!.setHomeButtonEnabled(false)
                 true
@@ -199,11 +199,12 @@ class ImageViewActivity : AppCompatActivity() {
                     .asBitmap()
                     .load(intent.getStringExtra("imageUri"))
                     .into(object : CustomTarget<Bitmap?>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
                             saveImage(resource)
                         }
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
+
                     })
             return true
         }

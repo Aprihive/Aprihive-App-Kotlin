@@ -202,7 +202,7 @@ class PushNotificationService : FirebaseMessagingService() {
                         .error(R.drawable.user_image_placeholder)
                         .fallback(R.drawable.user_image_placeholder)
                         .into(object : CustomTarget<Bitmap?>() {
-                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap?>?) {
                                 userImage = resource
                                 sendMessageNotification(remoteMessage.notification!!.title, remoteMessage.notification!!.body, userImage!!, remoteMessage.data["senderEmail"], remoteMessage.data["receiverName"], 1)
                             }

@@ -150,30 +150,30 @@
                 app:layout_constraintTop_toTopOf="@+id/addPrice">
 
                 <ImageView
-                    android:id="@+id/dollarSign"
+                    android:id="@+id/dollarImage"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="@drawable/bg_left_rounded"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/nairaSign"
+                    app:layout_constraintEnd_toStartOf="@+id/nairaImage"
                     android:src="@drawable/ic_dollar"
                     android:padding="10dp"
-                    android:tint="@color/grey_color_100"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/grey_color_100" />
 
                 <ImageView
-                    android:id="@+id/nairaSign"
+                    android:id="@+id/nairaImage"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:background="@color/text_box_bg"
                     android:src="@drawable/ic_naira"
                     android:padding="13dp"
-                    android:tint="@color/grey_color_100"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/dollarSign"
-                    app:layout_constraintTop_toTopOf="@+id/dollarSign" />
+                    app:layout_constraintStart_toEndOf="@+id/dollarImage"
+                    app:layout_constraintTop_toTopOf="@+id/dollarImage"
+                    app:tint="@color/grey_color_100" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

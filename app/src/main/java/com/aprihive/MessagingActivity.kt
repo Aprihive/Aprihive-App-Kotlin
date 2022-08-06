@@ -187,7 +187,7 @@ class MessagingActivity : AppCompatActivity(), MessagingRecyclerAdapter.MyClickL
                 .baseUrl(resources.getString(R.string.API_URL))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-        retrofitInterface = retrofit.create(RetrofitInterface::class.java)
+        retrofitInterface = retrofit!!.create(RetrofitInterface::class.java)
         random = Random()
         val setBarsColor = SetBarsColor(this, window)
         messagesList = ArrayList()
@@ -200,13 +200,13 @@ class MessagingActivity : AppCompatActivity(), MessagingRecyclerAdapter.MyClickL
         recyclerView = findViewById(R.id.recyclerView)
         addMessage = findViewById(R.id.editText)
         sendButton = findViewById(R.id.sendButton)
-        sendButton.setOnClickListener(View.OnClickListener { checkInputs() })
+        sendButton!!.setOnClickListener(View.OnClickListener { checkInputs() })
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         supportActionBar!!.setHomeButtonEnabled(true)
         userDetails
         messages
-        backButton.setOnClickListener(View.OnClickListener { super@MessagingActivity.onBackPressed() })
+        backButton!!.setOnClickListener(View.OnClickListener { super@MessagingActivity.onBackPressed() })
     }
 
     private fun checkInputs() {
@@ -307,7 +307,7 @@ class MessagingActivity : AppCompatActivity(), MessagingRecyclerAdapter.MyClickL
 
                     //sendPushNotification();
                     reference = db!!.collection("users").document(intent.getStringExtra("getEmail")!!).collection("messages").document(user!!.email!!)
-                    val addTimeReference: DocumentReference = reference
+                    val addTimeReference: DocumentReference = reference!!
                     addTimeReference.set(timeAndRead).addOnSuccessListener { sendMessagePushNotification() }
                     Log.e("debug", "sent to receiver")
                 }

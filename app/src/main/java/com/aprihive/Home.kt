@@ -211,7 +211,7 @@ class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         altBundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image")
         analytics!!.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, altBundle)
         sharedPreferences = getSharedPreferences("aprihive", MODE_PRIVATE)
-        editor = sharedPreferences.edit()
+        editor = sharedPreferences?.edit()
 
         //firebase
         //init firebase
@@ -241,30 +241,33 @@ class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         val setBarsColor = SetBarsColor(this, window)
         adapter = HomeViewPagerAdapter(supportFragmentManager)
         bundle = Bundle()
+
+
         viewPager = findViewById(R.id.pager)
         tabLayout = findViewById(R.id.bar)
         page = findViewById(R.id.page)
         navigView = findViewById(R.id.nav_view)
-        signOut = navigView.findViewById(R.id.logout)
-        support = navigView.findViewById(R.id.support)
-        faq = navigView.findViewById(R.id.faqs)
+        signOut = navigView?.findViewById(R.id.logout)
+        support = navigView?.findViewById(R.id.support)
+        faq = navigView?.findViewById(R.id.faqs)
         drawer = findViewById(R.id.drawer)
         toolbar = findViewById(R.id.toolbar)
         fab = findViewById(R.id.fabAddPost)
         feedbackBar = findViewById(R.id.feedbackBar)
         feedbackBarText = findViewById(R.id.textFeedback)
         feedbackBarAnimation = findViewById(R.id.animationView)
-        feedbackBarAnimation.setMinFrame(56)
-        feedbackBarAnimation.setMaxFrame(156)
-        feedbackBarAnimation.addAnimatorListener(object : Animator.AnimatorListener {
+
+        feedbackBarAnimation?.setMinFrame(56)
+        feedbackBarAnimation?.setMaxFrame(156)
+        feedbackBarAnimation?.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animator: Animator) {}
             override fun onAnimationEnd(animator: Animator) {
-                feedbackBarAnimation.setFrame(156)
+                feedbackBarAnimation?.setFrame(156)
                 Handler().postDelayed({
                     val fadeDown = AnimationUtils.loadAnimation(this@Home, R.anim.fade_down_animation)
-                    feedbackBar.setAnimation(fadeDown)
-                    feedbackBar.setVisibility(View.GONE)
-                    fab.show()
+                    feedbackBar?.setAnimation(fadeDown)
+                    feedbackBar?.setVisibility(View.GONE)
+                    fab?.show()
                 }, 2000)
             }
 
@@ -272,19 +275,19 @@ class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             override fun onAnimationRepeat(animator: Animator) {}
         })
         logo = findViewById(R.id.logoImageView)
-        navName = navigView.getHeaderView(0).findViewById(R.id.nav_profile_name)
-        navUsername = navigView.getHeaderView(0).findViewById(R.id.nav_profile_username)
-        navImage = navigView.getHeaderView(0).findViewById(R.id.nav_profile_pic)
-        verificationIcon = navigView.getHeaderView(0).findViewById(R.id.verifiedIcon)
-        threatIcon = navigView.getHeaderView(0).findViewById(R.id.warningIcon)
+        navName = navigView?.getHeaderView(0)?.findViewById(R.id.nav_profile_name)
+        navUsername = navigView?.getHeaderView(0)?.findViewById(R.id.nav_profile_username)
+        navImage = navigView?.getHeaderView(0)?.findViewById(R.id.nav_profile_pic)
+        verificationIcon = navigView?.getHeaderView(0)?.findViewById(R.id.verifiedIcon)
+        threatIcon = navigView?.getHeaderView(0)?.findViewById(R.id.warningIcon)
         setSupportActionBar(toolbar)
         supportActionBar!!.setHomeButtonEnabled(true)
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        navImage.setOnClickListener(View.OnClickListener {
+        navImage?.setOnClickListener(View.OnClickListener {
             val i = Intent(this@Home, PersonalProfileActivity::class.java)
             startActivity(i)
         })
-        navName.setOnClickListener(View.OnClickListener {
+        navName?.setOnClickListener(View.OnClickListener {
             val i = Intent(this@Home, PersonalProfileActivity::class.java)
             startActivity(i)
         })
@@ -317,19 +320,19 @@ class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             startActivity(intent)
             finish()
         }
-        signOut.setOnClickListener(View.OnClickListener {
+        signOut?.setOnClickListener(View.OnClickListener {
             val dialog = MyActionDialog(this@Home, "Sign Out?", "Are you sure you want to sign out?", R.drawable.ic_exit, R.color.color_error_red_200, action, "Yes, Sign out", "No, Just kidding.")
             dialog.show()
         })
-        support.setOnClickListener(View.OnClickListener {
+        support?.setOnClickListener(View.OnClickListener {
             val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/support"))
             startActivity(i)
         })
-        faq.setOnClickListener(View.OnClickListener {
+        faq?.setOnClickListener(View.OnClickListener {
             val i = Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/faqs"))
             startActivity(i)
         })
-        fab.setOnClickListener(View.OnClickListener {
+        fab?.setOnClickListener(View.OnClickListener {
             val bottomSheet = AddPostModal(Discover.refreshPostsRunnable)
             bottomSheet.arguments = bundle
             bottomSheet.show(supportFragmentManager, "TAG")
@@ -337,10 +340,10 @@ class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
 
         //init action bar drawer toggle
         toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.open, R.string.close)
-        drawer.addDrawerListener(toggle!!)
+        drawer?.addDrawerListener(toggle!!)
         toggle!!.isDrawerIndicatorEnabled = true
         toggle!!.syncState()
-        navigView.setNavigationItemSelectedListener(this)
+        navigView?.setNavigationItemSelectedListener(this)
         auth!!.addAuthStateListener {
             if (user == null) {
                 auth!!.signOut()
@@ -359,46 +362,46 @@ class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         registerReceiver(networkListener!!.networkListenerReceiver, networkIntentFilter)
 
         //viewPager.setAdapter(adapter);
-        tabLayout.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        tabLayout?.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.home -> viewPager.setCurrentItem(0)
-                R.id.find -> viewPager.setCurrentItem(1)
-                R.id.requests -> viewPager.setCurrentItem(2)
-                R.id.messages -> viewPager.setCurrentItem(3)
+                R.id.home -> viewPager?.setCurrentItem(0)
+                R.id.find -> viewPager?.setCurrentItem(1)
+                R.id.requests -> viewPager?.setCurrentItem(2)
+                R.id.messages -> viewPager?.setCurrentItem(3)
             }
             true
         })
-        viewPager.addOnPageChangeListener(object : OnPageChangeListener {
+        viewPager?.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        tabLayout.getMenu().findItem(R.id.home).isChecked = true
-                        if (viewPager.getCurrentItem() != 0) {
+                        tabLayout?.menu?.findItem(R.id.home)?.isChecked = true
+                        if (viewPager?.getCurrentItem() != 0) {
                             showHamburger()
                             findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
                         }
-                        fab.show()
+                        fab?.show()
                     }
                     1 -> {
-                        tabLayout.getMenu().findItem(R.id.find).isChecked = true
-                        if (viewPager.getCurrentItem() != 1) {
+                        tabLayout?.menu?.findItem(R.id.find)?.isChecked = true
+                        if (viewPager?.currentItem != 1) {
                             showHamburger()
                             findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
                         }
-                        fab.hide()
+                        fab?.hide()
                     }
                     2 -> {
-                        tabLayout.getMenu().findItem(R.id.requests).isChecked = true
+                        tabLayout?.menu?.findItem(R.id.requests)?.isChecked = true
                         showHamburger()
                         findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
-                        fab.hide()
+                        fab?.hide()
                     }
                     3 -> {
-                        tabLayout.getMenu().findItem(R.id.messages).isChecked = true
+                        tabLayout?.menu?.findItem(R.id.messages)?.isChecked = true
                         showHamburger()
                         findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
-                        fab.hide()
+                        fab?.hide()
                     }
                 }
             }

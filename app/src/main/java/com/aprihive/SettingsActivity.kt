@@ -173,23 +173,23 @@ class SettingsActivity : AppCompatActivity() {
         supportActionBar!!.setTitle("")
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeButtonEnabled(true)
-        toolbar.setNavigationOnClickListener(View.OnClickListener { super@SettingsActivity.onBackPressed() })
-        aboutClick.setOnClickListener(View.OnClickListener {
+        toolbar!!.setNavigationOnClickListener(View.OnClickListener { super@SettingsActivity.onBackPressed() })
+        aboutClick!!.setOnClickListener(View.OnClickListener {
             val i = Intent(this@SettingsActivity, AboutApp::class.java)
             startActivity(i)
         })
-        themeSelect.setOnClickListener(View.OnClickListener {
+        themeSelect!!.setOnClickListener(View.OnClickListener {
             val bottomSheet = SetThemeModal()
             bottomSheet.show(supportFragmentManager, "TAG")
         })
-        shareApp.setOnClickListener(View.OnClickListener {
+        shareApp!!.setOnClickListener(View.OnClickListener {
             val sendIntent = Intent()
             sendIntent.action = Intent.ACTION_SEND
             sendIntent.putExtra(Intent.EXTRA_TEXT, R.string.share_app_message)
             sendIntent.type = "text/plain"
             startActivity(sendIntent)
         })
-        reportBug.setOnClickListener(View.OnClickListener {
+        reportBug!!.setOnClickListener(View.OnClickListener {
             val intent = Intent(Intent.ACTION_SENDTO)
             intent.data = Uri.parse("mailto:") // only email apps should handle this
             intent.putExtra(Intent.EXTRA_EMAIL, "aprihive@jesulonimii.me")
@@ -198,28 +198,28 @@ class SettingsActivity : AppCompatActivity() {
                 startActivity(intent)
             }
         })
-        termsPolicies.setOnClickListener(View.OnClickListener {
+        termsPolicies!!.setOnClickListener(View.OnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.com/eula"))
             startActivity(intent)
         })
         if (sharedPrefs!!.pushSelection) {
-            pushNotifySwitch.setChecked(true)
+            pushNotifySwitch!!.setChecked(true)
         } else {
-            pushNotifySwitch.setChecked(false)
+            pushNotifySwitch!!.setChecked(false)
         }
-        pushNotifySwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
+        pushNotifySwitch!!.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, isChecked ->
             if (isChecked) {
-                pushNotifySwitch.setChecked(true)
+                pushNotifySwitch!!.setChecked(true)
 
                 //PackageManager pm  = getApplicationContext().getPackageManager();
                 //ComponentName componentName = new ComponentName(SettingsActivity.this, PushNotificationService.class);
                 //pm.setComponentEnabledSetting(componentName,PackageManager.COMPONENT_ENABLED_STATE_ENABLED,PackageManager.DONT_KILL_APP);
             } else {
-                pushNotifySwitch.setChecked(false)
+                pushNotifySwitch!!.setChecked(false)
             }
-            sharedPrefs!!.savePushSelection(pushNotifySwitch.isChecked())
+            sharedPrefs!!.savePushSelection(pushNotifySwitch!!.isChecked())
         })
-        versionName.setOnClickListener(View.OnClickListener {
+        versionName!!.setOnClickListener(View.OnClickListener {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             val uri = Uri.fromParts("package", packageName, null)
             intent.data = uri
