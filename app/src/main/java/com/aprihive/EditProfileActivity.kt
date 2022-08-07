@@ -256,7 +256,7 @@ class EditProfileActivity : AppCompatActivity() {
             errorFeedback!!.text = "Location cannot be empty"
         } else {
             errorFeedback!!.visibility = View.GONE
-            if (networkListener!!.connected) {
+            if (networkListener!!.connected == true) {
                 updateInfo()
                 saveButton!!.visibility = View.INVISIBLE
                 loading!!.visibility = View.VISIBLE

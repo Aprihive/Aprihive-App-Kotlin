@@ -321,7 +321,7 @@ class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             finish()
         }
         signOut?.setOnClickListener(View.OnClickListener {
-            val dialog = MyActionDialog(this@Home, "Sign Out?", "Are you sure you want to sign out?", R.drawable.ic_exit, R.color.color_error_red_200, action, "Yes, Sign out", "No, Just kidding.")
+            val dialog = MyActionDialog(this@Home, "Sign Out?", "Are you sure you want to sign out?", R.drawable.ic_exit, R.color.color_error_red_200, action!!, "Yes, Sign out", "No, Just kidding.")
             dialog.show()
         })
         support?.setOnClickListener(View.OnClickListener {
@@ -333,7 +333,7 @@ class Home : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             startActivity(i)
         })
         fab?.setOnClickListener(View.OnClickListener {
-            val bottomSheet = AddPostModal(Discover.refreshPostsRunnable)
+            val bottomSheet = AddPostModal(Discover.refreshPostsRunnable!!)
             bottomSheet.arguments = bundle
             bottomSheet.show(supportFragmentManager, "TAG")
         })

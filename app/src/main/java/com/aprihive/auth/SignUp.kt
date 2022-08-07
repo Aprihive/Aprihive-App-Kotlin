@@ -1,361 +1,256 @@
-package com.aprihive.auth;
+package com.aprihive.auth
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
+import android.widget.EditText
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.aprihive.methods.NetworkListener
+import android.os.Bundle
+import com.aprihive.R
+import com.aprihive.methods.SetBarsColor
+import android.content.Intent
+import com.aprihive.fragments.ForgotPassword
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.Uri
+import android.util.Log
+import android.util.Patterns
+import android.view.View
+import android.widget.Button
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.AuthResult
+import com.aprihive.Home
+import com.aprihive.auth.VerifyEmail
+import com.google.android.gms.tasks.OnFailureListener
+import com.aprihive.auth.Login
+import com.aprihive.methods.MySnackBar
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.android.gms.tasks.OnSuccessListener
+import com.aprihive.auth.SetUsername
+import com.aprihive.EditProfileActivity
+import com.aprihive.auth.SignUp
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.*
+import java.util.*
 
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.util.Patterns;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import com.aprihive.R;
-import com.aprihive.methods.MySnackBar;
-import com.aprihive.methods.NetworkListener;
-import com.aprihive.methods.SetBarsColor;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-public class SignUp extends AppCompatActivity {
-
-    private Toolbar toolbar;
-    private TextView errorFeedback;
-    private Button submitBtn;
-    private EditText emailInput, nameInput, passwordInput;
-    private ConstraintLayout loading, page;
-
-    private String email, password, name;
-
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-    private DocumentReference reference;
-    private FirebaseUser user;
-    private UserProfileChangeRequest profileUpdates;
-
-    private static final String TAG = "ok" ;
-
-    private NetworkListener networkListener;
-    private String token;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTheme(R.style.AppTheme);
-        setContentView(R.layout.activity_signup);
+class SignUp : AppCompatActivity() {
+    private var toolbar: Toolbar? = null
+    private var errorFeedback: TextView? = null
+    private var submitBtn: Button? = null
+    private var emailInput: EditText? = null
+    private var nameInput: EditText? = null
+    private var passwordInput: EditText? = null
+    private var loading: ConstraintLayout? = null
+    private var page: ConstraintLayout? = null
+    private var email: String? = null
+    private var password: String? = null
+    private var name: String? = null
+    private var auth: FirebaseAuth? = null
+    private var db: FirebaseFirestore? = null
+    private var reference: DocumentReference? = null
+    private var user: FirebaseUser? = null
+    private var profileUpdates: UserProfileChangeRequest? = null
+    private var networkListener: NetworkListener? = null
+    private var token: String? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
+        setContentView(R.layout.activity_signup)
 
 
         //firebase
         //init firebase
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-
-        SetBarsColor setBarsColor = new SetBarsColor(this, getWindow());
-        networkListener = new NetworkListener(this, page, getWindow());
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        val setBarsColor = SetBarsColor(this, window)
+        networkListener = NetworkListener(this, page, window)
 
 
         ///declare
-        toolbar = findViewById(R.id.toolbar);
-        submitBtn = findViewById(R.id.submitBtn);
-        emailInput = findViewById(R.id.email);
-        nameInput = findViewById(R.id.fullName);
-        passwordInput = findViewById(R.id.password);
-        errorFeedback = findViewById(R.id.errorFeedback);
-        loading = findViewById(R.id.loading);
-        page = findViewById(R.id.page);
-
+        toolbar = findViewById(R.id.toolbar)
+        submitBtn = findViewById(R.id.submitBtn)
+        emailInput = findViewById(R.id.email)
+        nameInput = findViewById(R.id.fullName)
+        passwordInput = findViewById(R.id.password)
+        errorFeedback = findViewById(R.id.errorFeedback)
+        loading = findViewById(R.id.loading)
+        page = findViewById(R.id.page)
 
 
         //
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SignUp.super.onBackPressed();
-            }
-        });
-
-
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkInputs();
-            }
-        });
-
-
-        TextView privacy = findViewById(R.id.privacy);
-        privacy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.jesulonimii.me/privacy"));
-                startActivity(intent);
-            }
-        });
-
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setTitle("")
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
+        toolbar!!.setNavigationOnClickListener(View.OnClickListener { super@SignUp.onBackPressed() })
+        submitBtn!!.setOnClickListener(View.OnClickListener { checkInputs() })
+        val privacy = findViewById<TextView>(R.id.privacy)
+        privacy.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.jesulonimii.me/privacy"))
+            startActivity(intent)
+        }
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(networkListener.networkListenerReceiver, networkIntentFilter);
+    override fun onStart() {
+        super.onStart()
+        val networkIntentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkListener!!.networkListenerReceiver, networkIntentFilter)
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(networkListener.networkListenerReceiver);
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(networkListener!!.networkListenerReceiver)
     }
 
-    private void checkInputs() {
+    private fun checkInputs() {
 
         //get values from input
-        email = emailInput.getText().toString().trim();
-        password = passwordInput.getText().toString().trim();
-        name = nameInput.getText().toString().trim();
+        email = emailInput!!.text.toString().trim { it <= ' ' }
+        password = passwordInput!!.text.toString().trim { it <= ' ' }
+        name = nameInput!!.text.toString().trim { it <= ' ' }
 
         //check email
-        if (email.isEmpty()) {
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Email field cannot be empty");
-        }
-        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Please input a valid email address");
-        }
-
-        //check name
-        else if (name.isEmpty()) {
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Name cannot be empty");
-        }
-        else if (!name.matches("[a-zA-Z0-9 ]*")){
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Name can only contain alphabets");
-        }
-
-        //check password
-        else if (password.isEmpty()) {
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Password cannot be empty");
-        }
-        else if (password.length() < 8 || password.matches("[\\d]*")){
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Your password must be at least 8 characters and must contain at least one number ");
-        }
-
-        else {
-            errorFeedback.setVisibility(View.GONE);
-            if (networkListener.connected){
-                createUser();
-                disableButton();
-                loading.setVisibility(View.VISIBLE);
+        if (email!!.isEmpty()) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Email field cannot be empty"
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Please input a valid email address"
+        } else if (name!!.isEmpty()) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Name cannot be empty"
+        } else if (!name!!.matches(Regex("[a-zA-Z0-9 ]*"))) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Name can only contain alphabets"
+        } else if (password!!.isEmpty()) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Password cannot be empty"
+        } else if (password!!.length < 8 || password!!.matches(Regex("[\\d]*"))) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Your password must be at least 8 characters and must contain at least one number "
+        } else {
+            errorFeedback!!.visibility = View.GONE
+            if (networkListener!!.connected!!) {
+                createUser()
+                disableButton()
+                loading!!.visibility = View.VISIBLE
             }
         }
-
-
     }
 
-    private void createUser(){
+    private fun createUser() {
 
         //get values from input
-        email = emailInput.getText().toString().trim();
-        password = passwordInput.getText().toString().trim();
-        name = nameInput.getText().toString().trim();
+        email = emailInput!!.text.toString().trim { it <= ' ' }
+        password = passwordInput!!.text.toString().trim { it <= ' ' }
+        name = nameInput!!.text.toString().trim { it <= ' ' }
+        auth!!.createUserWithEmailAndPassword(email!!, password!!).addOnSuccessListener { authResult ->
+            user = authResult.user
+            fCMToken
+            assert(user != null)
 
-
-        auth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-
-                user = authResult.getUser();
-
-                getFCMToken();
-                assert user != null;
-
-                //set display name
-                profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
-                user.updateProfile(profileUpdates);
-                ////
-
-                Map <String, Object> details = new HashMap<>();
-                details.put("name", name);
-                details.put("email", email);
-                details.put("uid", user.getUid());
-                details.put("admin-level", 0);
-                details.put("username", user.getUid().substring(0, 7));
-                details.put("username-lower", user.getUid().toLowerCase().substring(0, 7));
-                details.put("bio", "This is what I do!");
-                details.put("school", "");
-                details.put("isAdmin", false);
-                details.put("newAccount", true);
-                details.put("phone", "");
-                details.put("profileImageLink", "-");
-                details.put("verified", false);
-                details.put("threat", false);
-                details.put("fcm-token", token);
-                details.put("registered on", new Timestamp(new Date()));
-
-
-
-
-                reference = db.collection("users").document(email);
-                reference.set(details).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: user details stored");
-
-                        createUserListsDb();
-                        //waiting to send email b4 redirect
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                        Log.e(TAG, "Failed");
-
-                        MySnackBar snackBar = new MySnackBar(SignUp.this, page, "An error occurred while saving profile.", R.color.color_error_red_200, Snackbar.LENGTH_LONG);
-                        enableButton();
-                        Log.e(TAG, "Saving user details failed: " + e.getLocalizedMessage());
-                        loading.setVisibility(View.GONE);
-                    }
-                });
-
-
-                user.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                        Log.d(TAG, "email link sent");
-
-                        //redirect to set username
-                        Intent i = new Intent(SignUp.this, SetUsername.class);
-                        i.putExtra("newlyCreated", true);
-                        startActivity(i);
-                        finish();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "email link not sent");
-                        MySnackBar snackBar = new MySnackBar(SignUp.this, page, "Email verification failed", R.color.color_error_red_200, Snackbar.LENGTH_LONG);
-
-                    }
-                });
-
-
-
+            //set display name
+            profileUpdates = UserProfileChangeRequest.Builder().setDisplayName(name).build()
+            user!!.updateProfile(profileUpdates!!)
+            ////
+            val details: MutableMap<String, Any?> = HashMap()
+            details["name"] = name
+            details["email"] = email
+            details["uid"] = user!!.uid
+            details["admin-level"] = 0
+            details["username"] = user!!.uid.substring(0, 7)
+            details["username-lower"] = user!!.uid.lowercase(Locale.getDefault()).substring(0, 7)
+            details["bio"] = "This is what I do!"
+            details["school"] = ""
+            details["isAdmin"] = false
+            details["newAccount"] = true
+            details["phone"] = ""
+            details["profileImageLink"] = "-"
+            details["verified"] = false
+            details["threat"] = false
+            details["fcm-token"] = token
+            details["registered on"] = Timestamp(Date())
+            reference = db!!.collection("users").document(email!!)
+            reference!!.set(details).addOnSuccessListener {
+                Log.d(TAG, "onSuccess: user details stored")
+                createUserListsDb()
+                //waiting to send email b4 redirect
+            }.addOnFailureListener { e ->
+                Log.e(TAG, "Failed")
+                val snackBar = MySnackBar(this@SignUp, page, "An error occurred while saving profile.", R.color.color_error_red_200, Snackbar.LENGTH_LONG)
+                enableButton()
+                Log.e(TAG, "Saving user details failed: " + e.localizedMessage)
+                loading!!.visibility = View.GONE
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+            user!!.sendEmailVerification().addOnSuccessListener {
+                Log.d(TAG, "email link sent")
 
-                Log.e(TAG, "Creating account failed: " + e.getLocalizedMessage() );
-
-                String errorMessage = "We could not sign you up at this time.\nPlease try again later.";
-
-                if (e.getLocalizedMessage().contains("email address is already in use")){
-                    errorMessage = "The email address entered is not available.\nPlease use another.";
-                }
-
-                MySnackBar snackBar = new MySnackBar(SignUp.this, page, errorMessage, R.color.color_error_red_200, Snackbar.LENGTH_LONG);
-
-                enableButton();
-                loading.setVisibility(View.GONE);
-
+                //redirect to set username
+                val i = Intent(this@SignUp, SetUsername::class.java)
+                i.putExtra("newlyCreated", true)
+                startActivity(i)
+                finish()
+            }.addOnFailureListener {
+                Log.d(TAG, "email link not sent")
+                val snackBar = MySnackBar(this@SignUp, page, "Email verification failed", R.color.color_error_red_200, Snackbar.LENGTH_LONG)
             }
-        });
-
+        }.addOnFailureListener { e ->
+            Log.e(TAG, "Creating account failed: " + e.localizedMessage)
+            var errorMessage = "We could not sign you up at this time.\nPlease try again later."
+            if (e.localizedMessage.contains("email address is already in use")) {
+                errorMessage = "The email address entered is not available.\nPlease use another."
+            }
+            val snackBar = MySnackBar(this@SignUp, page, errorMessage, R.color.color_error_red_200, Snackbar.LENGTH_LONG)
+            enableButton()
+            loading!!.visibility = View.GONE
+        }
     }
 
-    private void getFCMToken() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
+    // Get new FCM registration token
+    private val fCMToken: Unit
+        private get() {
+            FirebaseMessaging.getInstance().token
+                    .addOnCompleteListener(OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            Log.e(TAG, "Fetching FCM registration token failed", task.exception)
+                            return@OnCompleteListener
                         }
 
                         // Get new FCM registration token
-                        token = task.getResult();
+                        token = task.result
+                    })
+        }
 
-                    }
-                });
+    private fun createUserListsDb() {
+        val listsRef = db!!.collection("users").document(email!!).collection("lists").document("following")
+        val setDefault: Map<String, Any> = HashMap()
+        listsRef.set(setDefault).addOnSuccessListener { Log.d("Debug", "success creating lists db for user") }.addOnFailureListener { e ->
+            e.printStackTrace()
+            Log.d("Debug", "failed$e")
+        }
     }
 
-
-    private void createUserListsDb() {
-        DocumentReference listsRef = db.collection("users").document(email).collection("lists").document("following");
-        Map<String, Object> setDefault = new HashMap<>();
-        listsRef.set(setDefault).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-
-                Log.d("Debug", "success creating lists db for user");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                e.printStackTrace();
-                Log.d("Debug", "failed" + e);
-            }
-        });
+    private fun enableButton() {
+        submitBtn!!.visibility = View.VISIBLE
+        submitBtn!!.background = resources.getDrawable(R.drawable.blue_button)
+        submitBtn!!.setOnClickListener { checkInputs() }
     }
 
-    private void enableButton(){
-        submitBtn.setVisibility(View.VISIBLE);
-        submitBtn.setBackground(getResources().getDrawable(R.drawable.blue_button));
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkInputs();
-            }
-        });
+    private fun disableButton() {
+        submitBtn!!.visibility = View.INVISIBLE
+        submitBtn!!.background = resources.getDrawable(R.drawable.disabled_button)
+        submitBtn!!.setOnClickListener {
+            //nothing;
+        }
     }
 
-    private void disableButton(){
-        submitBtn.setVisibility(View.INVISIBLE);
-        submitBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button));
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //nothing;
-            }
-        });
+    companion object {
+        private const val TAG = "ok"
     }
-
-
-
-
 }

@@ -2,28 +2,24 @@
 // Copyright (c) Erlite 2021.
 // Copyright (c) Aprihive 2021.
 // All Rights Reserved
+package com.aprihive.backend
 
-package com.aprihive.backend;
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.POST
+import java.util.HashMap
 
-import java.util.HashMap;
-
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
-
-public interface RetrofitInterface {
+interface RetrofitInterface {
 
     @POST("request-notify")
-    Call<Void> executeRequestNotification(@Body HashMap<String, String> map);
+    fun executeRequestNotification(@Body map: HashMap<String?, String?>?): Call<Void?>?
 
     @POST("requests-push-notify")
-    Call<Void> executeRequestPushNotification(@Body HashMap<String, String> map);
+    fun executeRequestPushNotification(@Body map: HashMap<String?, String?>?): Call<Void?>?
 
     @POST("post-removal-notify")
-    Call<Void> executePostRemovalNotification(@Body HashMap<String, String> map);
+    fun executePostRemovalNotification(@Body map: HashMap<String?, String?>?): Call<Void?>?
 
     @POST("message-push-notify")
-    Call<Void> executeMessagePushNotification(@Body HashMap<String, String> map);
-
-
+    fun executeMessagePushNotification(@Body map: HashMap<String?, String?>?): Call<Void?>?
 }

@@ -197,7 +197,7 @@ class SendRequestModal : BottomSheetDialogFragment() {
     }
 
     private fun sendNotifications() {
-        val map = HashMap<String, String?>()
+        val map = HashMap<String?, String?>()
         map["token"] = requireArguments().getString("token")
         map["senderEmail"] = user!!.email
         map["receiverEmail"] = requireArguments().getString("postAuthorEmail")
@@ -208,7 +208,7 @@ class SendRequestModal : BottomSheetDialogFragment() {
         map["deadline"] = deadlineText
         map["requestId"] = "requestTo:-$sendTo-for:-$postId"
         val call = retrofitInterface!!.executeRequestNotification(map)
-        call.enqueue(object : Callback<Void?> {
+        call!!.enqueue(object : Callback<Void?> {
             override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
                 if (response.code() == 200) {
                     Log.e("request-push-status", "sent")
@@ -225,7 +225,7 @@ class SendRequestModal : BottomSheetDialogFragment() {
         })
         val callPushNotifications = retrofitInterface!!.executeRequestPushNotification(map)
         Log.e("debug", "sendNotifications: about to send request notification")
-        callPushNotifications.enqueue(object : Callback<Void?> {
+        callPushNotifications!!.enqueue(object : Callback<Void?> {
             override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
                 if (response.code() == 200) {
                     Log.e("request-notify-status", "sent request notification")

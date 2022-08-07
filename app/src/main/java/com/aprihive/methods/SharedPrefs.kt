@@ -2,66 +2,56 @@
 // Copyright (c) Erlite 2021.
 // Copyright (c) Aprihive 2021.
 // All Rights Reserved
+package com.aprihive.methods
 
-package com.aprihive.methods;
+import com.aprihive.R
+import android.view.ViewGroup
+import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
+import com.aprihive.methods.MySnackBar
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
+import android.content.SharedPreferences
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.appcompat.app.AppCompatDelegate;
-
-public class SharedPrefs {
-
-
-    public boolean shownOnboard = false;
-    public boolean pushEnabled = true;
-    public SharedPreferences sharedPreferences;
-    public SharedPreferences.Editor editor;
-    public int themeSettings;
-
-    public SharedPrefs(Context context){
-
-        sharedPreferences = context.getSharedPreferences("aprihive", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-
-        themeSettings = sharedPreferences.getInt("theme", 1);
-        shownOnboard= sharedPreferences.getBoolean("shownIntro", false);
-
-
+class SharedPrefs(context: Context) {
+    var shownOnboard = false
+    var pushNotificationEnabled = true
+    var sharedPreferences: SharedPreferences
+    var editor: SharedPreferences.Editor
+    var themeSettings: Int
+    fun saveTheme(context: Context) {
+        themeSettings = AppCompatDelegate.getDefaultNightMode()
+        sharedPreferences = context.getSharedPreferences("aprihive", Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+        editor.putInt("theme", themeSettings)
+        editor.apply()
     }
 
-
-    public void saveTheme(Context context){
-
-        themeSettings = AppCompatDelegate.getDefaultNightMode();
-
-        sharedPreferences = context.getSharedPreferences("aprihive", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-
-        editor.putInt("theme", themeSettings);
-        editor.apply();
-
+    fun savePrefs(context: Context?) {
+        editor.putBoolean("shownIntro", shownOnboard)
+        editor.apply()
     }
 
-    public void savePrefs(Context context){
-
-        editor.putBoolean("shownIntro", shownOnboard);
-        editor.apply();
-
+    fun savePushSelection(value: Boolean?) {
+        editor.putBoolean("enabledPush", value!!)
+        editor.apply()
     }
 
-    public void savePushSelection(Boolean value){
+    val pushSelection: Boolean
+        get() {
+            pushNotificationEnabled = sharedPreferences.getBoolean("enabledPush", true)
+            return pushNotificationEnabled
+        }
 
-        editor.putBoolean("enabledPush", value);
-        editor.apply();
-
+    init {
+        sharedPreferences = context.getSharedPreferences("aprihive", Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+        themeSettings = sharedPreferences.getInt("theme", 1)
+        shownOnboard = sharedPreferences.getBoolean("shownIntro", false)
     }
-
-    public boolean getPushSelection(){
-        pushEnabled = sharedPreferences.getBoolean("enabledPush", true);
-
-        return pushEnabled;
-    }
-
-
 }

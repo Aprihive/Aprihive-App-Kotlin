@@ -191,7 +191,7 @@ class MessagingActivity : AppCompatActivity(), MessagingRecyclerAdapter.MyClickL
         random = Random()
         val setBarsColor = SetBarsColor(this, window)
         messagesList = ArrayList()
-        adapter = MessagingRecyclerAdapter(this, messagesList, this)
+        adapter = MessagingRecyclerAdapter(this, messagesList!!, this)
         toolbar = findViewById(R.id.toolbar)
         backButton = findViewById(R.id.backButton)
         receiverName = findViewById(R.id.receiverName)
@@ -341,7 +341,7 @@ class MessagingActivity : AppCompatActivity(), MessagingRecyclerAdapter.MyClickL
         }
 
     private fun sendMessagePushNotification() {
-        val map = HashMap<String, String?>()
+        val map = HashMap<String?, String?>()
         map["senderName"] = user!!.displayName
         map["receiverName"] = receiverUserName
         map["receiverToken"] = token
@@ -355,7 +355,7 @@ class MessagingActivity : AppCompatActivity(), MessagingRecyclerAdapter.MyClickL
             map["time"] = "Today"
         }
         val call = retrofitInterface!!.executeMessagePushNotification(map)
-        call.enqueue(object : Callback<Void?> {
+        call!!.enqueue(object : Callback<Void?> {
             override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
                 if (response.code() == 200) {
                     Log.e("message-push-status", "message push notification sent")
@@ -484,17 +484,6 @@ class MessagingActivity : AppCompatActivity(), MessagingRecyclerAdapter.MyClickL
         return time
     }
 
-    override fun onMessageHold(position: Int, messageId: String, messageText: String, messageEmail: String, type: String) {
-        val copyMessageAction = Runnable { copyMessage(messageText) }
-        val deleteForMeAction = Runnable { deleteMessageForMe(messageEmail, messageId) }
-        val unsendMessageAction = Runnable { unsendMessage(messageEmail, messageId) }
-        val shareAction = Runnable { shareMessage(messageText) }
-        if (type == "to") {
-            val optionsDialogModal = OptionsDialogModal(this, "Share", shareAction, "Copy message", copyMessageAction, "Unsend message", unsendMessageAction, "Delete for me", deleteForMeAction)
-        } else {
-            val optionsDialogModal = OptionsDialogModal(this, "Share", shareAction, "Copy message", copyMessageAction, "Delete for me", deleteForMeAction)
-        }
-    }
 
     private fun unsendMessage(participant: String, messageId: String) {
         val myMsgRef = db!!.collection("users").document(user!!.email!!).collection("messages").document(participant).collection("messageBox").document(messageId)
@@ -529,4 +518,18 @@ class MessagingActivity : AppCompatActivity(), MessagingRecyclerAdapter.MyClickL
     companion object {
         private const val TAG = "debug"
     }
+
+    override fun onMessageHold(position: Int, messageId: String?, messageText: String?, messageEmail: String?, type: String?) {
+        val copyMessageAction = Runnable { copyMessage(messageText!!) }
+        val deleteForMeAction = Runnable { deleteMessageForMe(messageEmail!!, messageId!!) }
+        val unsendMessageAction = Runnable { unsendMessage(messageEmail!!, messageId!!) }
+        val shareAction = Runnable { shareMessage(messageText!!) }
+        if (type == "to") {
+            val optionsDialogModal = OptionsDialogModal(this, "Share", shareAction, "Copy message", copyMessageAction, "Unsend message", unsendMessageAction, "Delete for me", deleteForMeAction)
+        } else {
+            val optionsDialogModal = OptionsDialogModal(this, "Share", shareAction, "Copy message", copyMessageAction, "Delete for me", deleteForMeAction)
+        }
+    }
+
+
 }

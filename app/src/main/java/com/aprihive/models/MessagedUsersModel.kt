@@ -2,28 +2,13 @@
 // Copyright (c) Erlite 2022.
 // Copyright (c) Aprihive 2022.
 // All Rights Reserved
+package com.aprihive.models
 
-package com.aprihive.models;
+class MessagedUsersModel {
+    var receiverEmail: String? = null
 
-import java.util.HashMap;
-
-public class MessagedUsersModel {
-    private String receiverEmail;
-
-
-    public MessagedUsersModel() {
+    constructor() {}
+    constructor(receiverEmail: String?) {
+        this.receiverEmail = receiverEmail
     }
-
-    public MessagedUsersModel(String receiverEmail) {
-        this.receiverEmail = receiverEmail;
-    }
-
-    public String getReceiverEmail() {
-        return receiverEmail;
-    }
-
-    public void setReceiverEmail(String receiverEmail) {
-        this.receiverEmail = receiverEmail;
-    }
-
 }

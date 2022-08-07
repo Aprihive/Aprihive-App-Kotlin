@@ -1,207 +1,130 @@
-package com.aprihive.pages;
+package com.aprihive.pages
 
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.aprihive.MessagingActivity
+import com.aprihive.R
+import com.aprihive.adapters.MessagedUsersRecyclerAdapter
+import com.aprihive.models.MessagedUsersModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-
-import com.aprihive.MessagingActivity;
-import com.aprihive.R;
-import com.aprihive.adapters.MessagedUsersRecyclerAdapter;
-import com.aprihive.models.FindModel;
-import com.aprihive.models.MessagedUsersModel;
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-
-public class Messages extends Fragment   implements MessagedUsersRecyclerAdapter.MyClickListener {
-
-    
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-    private DocumentReference reference;
-    private FirebaseUser user;
-
-
-    private String getEmail;
-    private HashMap<String, Object> getMessageDetails;
-
-    private RecyclerView recyclerView;
-    private List<MessagedUsersModel> usersList;
-    private SwipeRefreshLayout swipeRefresh;
-    private ConstraintLayout nothingImage;
-    private MessagedUsersRecyclerAdapter adapter;
-    private String getLastMessage;
-    private ListenerRegistration registerQuery;
-
-    public Messages() {
-        // Required empty public constructor
+class Messages : Fragment(), MessagedUsersRecyclerAdapter.MyClickListener {
+    private var auth: FirebaseAuth? = null
+    private var db: FirebaseFirestore? = null
+    private val reference: DocumentReference? = null
+    private var user: FirebaseUser? = null
+    private var getEmail: String? = null
+    private val getMessageDetails: HashMap<String, Any>? = null
+    private var recyclerView: RecyclerView? = null
+    private var usersList: MutableList<MessagedUsersModel>? = null
+    private var swipeRefresh: SwipeRefreshLayout? = null
+    private var nothingImage: ConstraintLayout? = null
+    private var adapter: MessagedUsersRecyclerAdapter? = null
+    private val getLastMessage: String? = null
+    private var registerQuery: ListenerRegistration? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_messages, container, false);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_messages, container, false)
 
         //firebase
         //init firebase
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        user = auth.getCurrentUser();
-
-        usersList = new ArrayList<>();
-        recyclerView = view.findViewById(R.id.messagedRecyclerView);
-        swipeRefresh = view.findViewById(R.id.messaged_swipeRefresh);
-        nothingImage = view.findViewById(R.id.notFoundImage);
-
-        swipeRefresh.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.bg_color));
-        swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.color_theme_green_100), getResources().getColor(R.color.color_theme_green_300));
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getMessagedUsersFromFirebase();
-            }
-        });
-
-        adapter = new MessagedUsersRecyclerAdapter(getContext(), usersList, this);
-        swipeRefresh.setRefreshing(true);
-        getMessagedUsersFromFirebase();
-
-        return view;
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        user = auth!!.currentUser
+        usersList = ArrayList()
+        recyclerView = view.findViewById(R.id.messagedRecyclerView)
+        swipeRefresh = view.findViewById(R.id.messaged_swipeRefresh)
+        nothingImage = view.findViewById(R.id.notFoundImage)
+        swipeRefresh!!.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.bg_color))
+        swipeRefresh!!.setColorSchemeColors(resources.getColor(R.color.colorPrimary), resources.getColor(R.color.color_theme_green_100), resources.getColor(R.color.color_theme_green_300))
+        swipeRefresh!!.setOnRefreshListener(OnRefreshListener { messagedUsersFromFirebase })
+        adapter = MessagedUsersRecyclerAdapter(requireContext(), usersList!!, this)
+        swipeRefresh!!.setRefreshing(true)
+        messagedUsersFromFirebase
+        return view
     }
 
-
-    private void setupRecyclerView() {
-
+    private fun setupRecyclerView() {
         try {
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+            val linearLayoutManager = LinearLayoutManager(requireActivity().applicationContext)
 
 
             //set items to arrange from bottom
             //linearLayoutManager.setReverseLayout(true);
             //linearLayoutManager.setStackFromEnd(true);
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
+            recyclerView!!.layoutManager = linearLayoutManager
+            recyclerView!!.setHasFixedSize(true)
+            recyclerView!!.adapter = adapter
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-
-    private void getMessagedUsersFromFirebase() {
-
-        assert user != null;
-        Query messagesQuery = db.collection("users").document(user.getEmail()).collection("messages").orderBy("time", Query.Direction.DESCENDING);
-
-        registerQuery = messagesQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot result, @Nullable FirebaseFirestoreException error) {
-
-                usersList.clear();
+    private val messagedUsersFromFirebase: Unit
+        private get() {
+            assert(user != null)
+            val messagesQuery = db!!.collection("users").document(user!!.email!!).collection("messages").orderBy("time", Query.Direction.DESCENDING)
+            registerQuery = messagesQuery.addSnapshotListener { result, error ->
+                usersList!!.clear()
                 try {
-                    for (DocumentSnapshot value : result){
-
-                        getEmail = value.getId();
-
-
-                        MessagedUsersModel messagedUsersModel = new MessagedUsersModel();
-                        messagedUsersModel.setReceiverEmail(getEmail);
-
-
-                        usersList.add(messagedUsersModel);
-
+                    for (value in result!!) {
+                        getEmail = value.id
+                        val messagedUsersModel = MessagedUsersModel()
+                        messagedUsersModel.receiverEmail = getEmail
+                        usersList!!.add(messagedUsersModel)
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
-
-                setupRecyclerView();
-                swipeRefresh.setRefreshing(false);
-
+                setupRecyclerView()
+                swipeRefresh!!.isRefreshing = false
             }
-        });
+        }
 
+    override fun onOpen(position: Int, getEmail: String?) {
+        val intent = Intent(context, MessagingActivity::class.java)
+        intent.putExtra("getEmail", getEmail)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
-
-
-    @Override
-    public void onOpen(int position, String getEmail) {
-        Intent intent = new Intent(getContext(), MessagingActivity.class);
-        intent.putExtra("getEmail", getEmail);
-        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
+    override fun onStop() {
+        super.onStop()
         try {
-            registerQuery.remove();
-        } catch (Exception e) {
-            e.printStackTrace();
+            registerQuery!!.remove()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    override fun onDestroy() {
+        super.onDestroy()
         try {
-            registerQuery.remove();
-        } catch (Exception e) {
-            e.printStackTrace();
+            registerQuery!!.remove()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getMessagedUsersFromFirebase();
+    override fun onResume() {
+        super.onResume()
+        messagedUsersFromFirebase
     }
 }

@@ -126,15 +126,15 @@ class PostOptionsModal(private val postsRefresh: Runnable) : BottomSheetDialogFr
         deletePostClick!!.setOnClickListener(View.OnClickListener {
             assert(arguments != null)
             if (requireArguments().getString("postAuthorEmail") == user!!.email) {
-                val dialog = MyActionDialog(getContext(), "Delete Post?", "Are you sure you want to delete this post?", R.drawable.vg_delete, action)
+                val dialog = MyActionDialog(context, "Delete Post?", "Are you sure you want to delete this post?", R.drawable.vg_delete, action!!)
                 dialog.show()
             } else if (requireArguments().getBoolean("isAdmin")) {
-                val dialog = MyActionDialog(getContext(), "Delete this Post?", "Are you sure you want to delete this post for violation of guidelines?", R.drawable.vg_delete, action)
+                val dialog = MyActionDialog(context, "Delete this Post?", "Are you sure you want to delete this post for violation of guidelines?", R.drawable.vg_delete, action!!)
                 dialog.show()
             }
         })
         removeImageClick!!.setOnClickListener(View.OnClickListener {
-            val dialog = MyActionDialog(getContext(), "Remove Image?", "Are you sure you want to remove this post's image for containing graphic violence or explicit content? \n (This action cannot be undone!)", R.drawable.vg_delete, removeImageAction, "Yes, remove.", "No, cancel.")
+            val dialog = MyActionDialog(context, "Remove Image?", "Are you sure you want to remove this post's image for containing graphic violence or explicit content? \n (This action cannot be undone!)", R.drawable.vg_delete, removeImageAction!!, "Yes, remove.", "No, cancel.")
             dialog.show()
         })
         return view
@@ -168,12 +168,12 @@ class PostOptionsModal(private val postsRefresh: Runnable) : BottomSheetDialogFr
     }
 
     private fun sendDeleteNotification() {
-        val map = HashMap<String, String?>()
+        val map = HashMap<String?, String?>()
         map["receiverEmail"] = requireArguments().getString("postAuthorEmail")
         map["postId"] = fetchPostId
         map["postText"] = requireArguments().getString("postText")
         val call = retrofitInterface!!.executePostRemovalNotification(map)
-        call.enqueue(object : Callback<Void?> {
+        call!!.enqueue(object : Callback<Void?> {
             override fun onResponse(call: Call<Void?>, response: Response<Void?>) {
                 if (response.code() == 200) {
                     Log.d("email-status", "email sent")

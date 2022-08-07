@@ -2,260 +2,204 @@
 // Copyright (c) Erlite 2022.
 // Copyright (c) Aprihive 2022.
 // All Rights Reserved
+package com.aprihive.adapters
 
-package com.aprihive.adapters;
+import android.content.Context
+import com.aprihive.models.CatalogueModel
+import androidx.recyclerview.widget.RecyclerView
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import com.aprihive.R
+import android.content.Intent
+import com.aprihive.CatalogueItemDetails
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import androidx.cardview.widget.CardView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.aprihive.models.DiscoverPostsModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.leocardz.link.preview.library.TextCrawler
+import android.content.res.Resources.NotFoundException
+import com.bumptech.glide.request.RequestListener
+import android.graphics.drawable.Drawable
+import android.view.View
+import com.bumptech.glide.load.engine.GlideException
+import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.card.MaterialCardView
+import com.aprihive.models.FindModel
+import com.aprihive.UserProfileActivity
+import androidx.fragment.app.FragmentPagerAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.aprihive.pages.Discover
+import com.aprihive.pages.Find
+import com.aprihive.pages.Requests
+import com.aprihive.models.MessagedUsersModel
+import kotlin.Throws
+import org.ocpsoft.prettytime.PrettyTime
+import com.aprihive.models.MessageModel
+import com.aprihive.adapters.MessagingRecyclerAdapter.Viewholder
+import com.aprihive.adapters.MessagingRecyclerAdapter
+import android.view.View.OnLongClickListener
+import android.widget.ImageView
+import com.aprihive.models.NotificationModel
+import com.aprihive.models.OnboardingModel
+import androidx.viewpager.widget.PagerAdapter
+import com.aprihive.MainActivity
+import com.aprihive.pages.Feed
+import com.aprihive.pages.Catalogue
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.*
+import java.lang.Exception
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.aprihive.MessagingActivity;
-import com.aprihive.R;
-import com.aprihive.UserProfileActivity;
-import com.aprihive.models.MessagedUsersModel;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-public class MessagedUsersRecyclerAdapter extends RecyclerView.Adapter<MessagedUsersRecyclerAdapter.ViewHolder> {
-
-    Context context;
-    List<MessagedUsersModel> userList;
-    MyClickListener listener;
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-    private FirebaseUser user;
-    private String usersName;
-    private String usersImageLink;
-    private String usersBio;
-    private boolean threat, verified;
-    private ListenerRegistration registerQuery;
-    private ListenerRegistration lastMessageRegQuery;
-
-    public MessagedUsersRecyclerAdapter(Context context, List<MessagedUsersModel> userList, MyClickListener listener) {
-        this.context = context;
-        this.userList = userList;
-        this.listener = listener;
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+class MessagedUsersRecyclerAdapter(var context: Context, var userList: List<MessagedUsersModel>, var listener: MyClickListener) : RecyclerView.Adapter<MessagedUsersRecyclerAdapter.ViewHolder>() {
+    private var auth: FirebaseAuth? = null
+    private var db: FirebaseFirestore? = null
+    private var user: FirebaseUser? = null
+    private var usersName: String? = null
+    private var usersImageLink: String? = null
+    private var usersBio: String? = null
+    private var threat = false
+    private var verified = false
+    private var registerQuery: ListenerRegistration? = null
+    private var lastMessageRegQuery: ListenerRegistration? = null
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
 
         //inflate layout(find_users_item)
-        View view;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        view = inflater.inflate(R.layout.messaged_users_item, viewGroup, false);
-
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        user = auth.getCurrentUser();
-
-        final MessagedUsersRecyclerAdapter.ViewHolder viewHolder = new MessagedUsersRecyclerAdapter.ViewHolder(view);
-
-        viewHolder.userItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                listener.onOpen(viewHolder.getAbsoluteAdapterPosition(), userList.get(viewHolder.getAbsoluteAdapterPosition()).getReceiverEmail());
-            }
-        });
-
-        return viewHolder;
+        val view: View
+        val inflater = LayoutInflater.from(context)
+        view = inflater.inflate(R.layout.messaged_users_item, viewGroup, false)
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        user = auth!!.currentUser
+        val viewHolder: ViewHolder = ViewHolder(view)
+        viewHolder.userItem.setOnClickListener { listener.onOpen(viewHolder.absoluteAdapterPosition, userList[viewHolder.absoluteAdapterPosition].receiverEmail) }
+        return viewHolder
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
+        val documentReference = db!!.collection("users").document(userList[i].receiverEmail!!)
+        registerQuery = documentReference.addSnapshotListener { value, error ->
+            usersName = value!!.getString("name")
+            usersImageLink = value.getString("profileImageLink")
+            usersBio = value.getString("bio")
+            threat = value.getBoolean("threat")!!
+            verified = value.getBoolean("verified")!!
+            viewHolder.fullName.text = usersName
 
+            //profile dp
+            Glide.with(context)
+                    .load(usersImageLink)
+                    .centerCrop()
+                    .error(R.drawable.user_image_placeholder)
+                    .fallback(R.drawable.user_image_placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(viewHolder.profileImage)
 
-        DocumentReference documentReference = db.collection("users").document(userList.get(i).getReceiverEmail());
-        registerQuery = documentReference.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-
-                usersName = value.getString("name");
-                usersImageLink = value.getString("profileImageLink");
-                usersBio = value.getString("bio");
-                threat = value.getBoolean("threat");
-                verified = value.getBoolean("verified");
-
-                viewHolder.fullName.setText(usersName);
-
-                //profile dp
-                Glide.with(context)
-                        .load(usersImageLink)
-                        .centerCrop()
-                        .error(R.drawable.user_image_placeholder)
-                        .fallback(R.drawable.user_image_placeholder)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(viewHolder.profileImage);
-
-                //verification icon
-                try {
-                    if (verified){
-                        viewHolder.verifiedIcon.setVisibility(View.VISIBLE);
-                    } else {
-                        viewHolder.verifiedIcon.setVisibility(View.GONE);
-                    }
-                } catch (Exception e){
-                    //nothing
+            //verification icon
+            try {
+                if (verified) {
+                    viewHolder.verifiedIcon.visibility = View.VISIBLE
+                } else {
+                    viewHolder.verifiedIcon.visibility = View.GONE
                 }
-
-                //threat icon
-                try {
-                    if (threat){
-                        viewHolder.threatIcon.setVisibility(View.VISIBLE);
-                    } else {
-                        viewHolder.threatIcon.setVisibility(View.GONE);
-                    }
-                } catch (Exception e){
-                    //nothing
-                }
-
+            } catch (e: Exception) {
+                //nothing
             }
-        });
 
-        Query lastMessageQuery = db.collection("users").document(user.getEmail()).collection("messages").document(userList.get(i).getReceiverEmail()).collection("messageBox").orderBy("time", Query.Direction.DESCENDING).limit(1);
-
-        lastMessageRegQuery = lastMessageQuery.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                try {
-                    for (DocumentSnapshot details : value.getDocuments()){
-                        viewHolder.lastMessage.setText(details.getString("messageText"));
-                        try {
-                            viewHolder.lastMessageTime.setText(lastMessageTime(details.getTimestamp("time")));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            //threat icon
+            try {
+                if (threat) {
+                    viewHolder.threatIcon.visibility = View.VISIBLE
+                } else {
+                    viewHolder.threatIcon.visibility = View.GONE
                 }
-
-
+            } catch (e: Exception) {
+                //nothing
             }
-        });
-
-
-
-
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return userList.size();
-    }
-
-    private String lastMessageTime(Timestamp timestamp) throws ParseException {
-
-        String time = "";
-
-        Date date = timestamp.toDate();
-        PrettyTime prettyTime = new PrettyTime(Locale.getDefault());
-        String ago = prettyTime.format(date);
-
-        SimpleDateFormat sdfToday = new SimpleDateFormat("hh:mm aaa");
-        SimpleDateFormat sdfDate = new SimpleDateFormat("dd/MM/yy");
-
-
-        Calendar c1 = Calendar.getInstance(); // today
-        c1.add(Calendar.DAY_OF_YEAR, -1); // yesterday
-
-        Calendar c2 = Calendar.getInstance();
-        c2.setTime(date); // your date
-
-
-        if (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR)){
-            time = "yesterday";
         }
-
-        else if(ago.contains("day")){
-            time = sdfDate.format(date);
+        val lastMessageQuery = db!!.collection("users").document(user!!.email!!).collection("messages").document(userList[i].receiverEmail!!).collection("messageBox").orderBy("time", Query.Direction.DESCENDING).limit(1)
+        lastMessageRegQuery = lastMessageQuery.addSnapshotListener { value, error ->
+            try {
+                for (details in value!!.documents) {
+                    viewHolder.lastMessage.text = details.getString("messageText")
+                    try {
+                        viewHolder.lastMessageTime.text = lastMessageTime(details.getTimestamp("time"))
+                    } catch (e: ParseException) {
+                        e.printStackTrace()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
+    }
 
-        else if (ago.contains("month") || ago.contains("week")){
+    override fun getItemCount(): Int {
+        return userList.size
+    }
+
+    @Throws(ParseException::class)
+    private fun lastMessageTime(timestamp: Timestamp?): String {
+        var time = ""
+        val date = timestamp!!.toDate()
+        val prettyTime = PrettyTime(Locale.getDefault())
+        val ago = prettyTime.format(date)
+        val sdfToday = SimpleDateFormat("hh:mm aaa")
+        val sdfDate = SimpleDateFormat("dd/MM/yy")
+        val c1 = Calendar.getInstance() // today
+        c1.add(Calendar.DAY_OF_YEAR, -1) // yesterday
+        val c2 = Calendar.getInstance()
+        c2.time = date // your date
+        time = if (c1[Calendar.YEAR] == c2[Calendar.YEAR] && c1[Calendar.DAY_OF_YEAR] == c2[Calendar.DAY_OF_YEAR]) {
+            "yesterday"
+        } else if (ago.contains("day")) {
+            sdfDate.format(date)
+        } else if (ago.contains("month") || ago.contains("week")) {
             //time = String.valueOf(sdf.parse(String.valueOf(date)));
-            time = sdfDate.format(date);
+            sdfDate.format(date)
+        } else {
+            sdfToday.format(date)
         }
-
-        else {
-            time = sdfToday.format(date);
-        }
-        return time;
-
+        return time
     }
 
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var profileImage: ImageView
+        var verifiedIcon: ImageView
+        var threatIcon: ImageView
+        var fullName: TextView
+        var lastMessage: TextView
+        var lastMessageTime: TextView
+        var userItem: ConstraintLayout
 
-    public class ViewHolder extends  RecyclerView.ViewHolder {
-
-        ImageView profileImage, verifiedIcon, threatIcon;
-        TextView fullName, lastMessage, lastMessageTime;
-        ConstraintLayout userItem;
-        
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            fullName = itemView.findViewById(R.id.messaged_fullName);
-            profileImage = itemView.findViewById(R.id.messaged_profileImage);
-            verifiedIcon = itemView.findViewById(R.id.messaged_verifiedIcon);
-            threatIcon = itemView.findViewById(R.id.messaged_warningIcon);
-            lastMessage = itemView.findViewById(R.id.messaged_recent);
-            lastMessageTime = itemView.findViewById(R.id.messaged_recentTime);
-            userItem = itemView.findViewById(R.id.userItem);
-
+        init {
+            fullName = itemView.findViewById(R.id.messaged_fullName)
+            profileImage = itemView.findViewById(R.id.messaged_profileImage)
+            verifiedIcon = itemView.findViewById(R.id.messaged_verifiedIcon)
+            threatIcon = itemView.findViewById(R.id.messaged_warningIcon)
+            lastMessage = itemView.findViewById(R.id.messaged_recent)
+            lastMessageTime = itemView.findViewById(R.id.messaged_recentTime)
+            userItem = itemView.findViewById(R.id.userItem)
         }
     }
 
-    public interface MyClickListener {
-        void onOpen(int position, String getEmail);
+    interface MyClickListener {
+        fun onOpen(position: Int, getEmail: String?)
     }
 
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
         try {
-            registerQuery.remove();
-            lastMessageRegQuery.remove();
-        } catch (Exception e) {
-            e.printStackTrace();
+            registerQuery!!.remove()
+            lastMessageRegQuery!!.remove()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-
     }
-
 }

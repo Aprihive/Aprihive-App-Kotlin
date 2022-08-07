@@ -1,141 +1,103 @@
-package com.aprihive.auth;
+package com.aprihive.auth
 
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.util.Patterns;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
+import android.widget.EditText
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.aprihive.methods.NetworkListener
+import android.os.Bundle
+import com.aprihive.R
+import com.aprihive.methods.SetBarsColor
+import android.content.Intent
+import com.aprihive.fragments.ForgotPassword
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.Uri
+import android.util.Log
+import android.util.Patterns
+import android.view.View
+import android.widget.Button
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.AuthResult
+import com.aprihive.Home
+import com.aprihive.auth.VerifyEmail
+import com.google.android.gms.tasks.OnFailureListener
+import com.aprihive.auth.Login
+import com.aprihive.methods.MySnackBar
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.android.gms.tasks.OnSuccessListener
+import com.aprihive.auth.SetUsername
+import com.aprihive.EditProfileActivity
+import com.aprihive.auth.SignUp
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import com.google.firebase.firestore.*
+import java.util.HashMap
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.aprihive.Home;
-import com.aprihive.R;
-import com.aprihive.fragments.ForgotPassword;
-import com.aprihive.methods.MySnackBar;
-import com.aprihive.methods.NetworkListener;
-import com.aprihive.methods.SetBarsColor;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import java.util.HashMap;
-import java.util.Map;
-
-public class Login extends AppCompatActivity {
-
-    private Toolbar toolbar;
-    private TextView forgotPassword;
-    private TextView errorFeedback;
-
-    private Button submitBtn;
-    private EditText emailInput, passwordInput;
-    private ConstraintLayout loading, page;
-
-    private String email, password;
-
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-    private DocumentReference reference;
-    private FirebaseUser user;
-    private UserProfileChangeRequest profileUpdates;
-    private NetworkListener networkListener;
-
-    private static final String TAG = "ok" ;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTheme(R.style.AppTheme);
-        setContentView(R.layout.activity_login);
+class Login : AppCompatActivity() {
+    private var toolbar: Toolbar? = null
+    private var forgotPassword: TextView? = null
+    private var errorFeedback: TextView? = null
+    private var submitBtn: Button? = null
+    private var emailInput: EditText? = null
+    private var passwordInput: EditText? = null
+    private var loading: ConstraintLayout? = null
+    private var page: ConstraintLayout? = null
+    private var email: String? = null
+    private var password: String? = null
+    private var auth: FirebaseAuth? = null
+    private var db: FirebaseFirestore? = null
+    private var reference: DocumentReference? = null
+    private var user: FirebaseUser? = null
+    private val profileUpdates: UserProfileChangeRequest? = null
+    private var networkListener: NetworkListener? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
+        setContentView(R.layout.activity_login)
 
         //firebase
         //init firebase
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-
-        SetBarsColor setBarsColor = new SetBarsColor(this, getWindow());
-        networkListener = new NetworkListener(this, page, getWindow());
-
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        val setBarsColor = SetBarsColor(this, window)
+        networkListener = NetworkListener(this, page, window)
 
 
         ///declare
-        toolbar = findViewById(R.id.toolbar);
-        submitBtn = findViewById(R.id.submitBtn);
-        emailInput = findViewById(R.id.email);
-        passwordInput = findViewById(R.id.password);
-        errorFeedback = findViewById(R.id.errorFeedback);
-        loading = findViewById(R.id.loading);
-        page = findViewById(R.id.page);
-        toolbar = findViewById(R.id.toolbar);
-        forgotPassword = findViewById(R.id.forgotPassword);
-
-
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Login.super.onBackPressed();
-
-            }
-        });
-
-        TextView privacy = findViewById(R.id.privacy);
-        privacy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.jesulonimii.me/privacy"));
-                startActivity(intent);
-            }
-        });
-
-
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ForgotPassword bottomSheet = new ForgotPassword();
-                bottomSheet.show(getSupportFragmentManager(), "TAG");
-            }
-        });
-
-
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkInputs();
-            }
-        });
-
-
-        IntentFilter networkIntentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(networkListener.networkListenerReceiver, networkIntentFilter);
-
-
+        toolbar = findViewById(R.id.toolbar)
+        submitBtn = findViewById(R.id.submitBtn)
+        emailInput = findViewById(R.id.email)
+        passwordInput = findViewById(R.id.password)
+        errorFeedback = findViewById(R.id.errorFeedback)
+        loading = findViewById(R.id.loading)
+        page = findViewById(R.id.page)
+        toolbar = findViewById(R.id.toolbar)
+        forgotPassword = findViewById(R.id.forgotPassword)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setTitle("")
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setHomeButtonEnabled(true)
+        toolbar!!.setNavigationOnClickListener(View.OnClickListener { super@Login.onBackPressed() })
+        val privacy = findViewById<TextView>(R.id.privacy)
+        privacy.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://aprihive.jesulonimii.me/privacy"))
+            startActivity(intent)
+        }
+        forgotPassword!!.setOnClickListener(View.OnClickListener {
+            val bottomSheet = ForgotPassword()
+            bottomSheet.show(supportFragmentManager, "TAG")
+        })
+        submitBtn!!.setOnClickListener(View.OnClickListener { checkInputs() })
+        val networkIntentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkListener!!.networkListenerReceiver, networkIntentFilter)
     }
 
-   /* @Override
+    /* @Override
     protected void onStart() {
         super.onStart();
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -148,155 +110,100 @@ public class Login extends AppCompatActivity {
         super.onStop();
         unregisterReceiver();
     }*/
-
-    private void checkInputs() {
+    private fun checkInputs() {
         //get values from input
-        email = emailInput.getText().toString().trim();
-        password = passwordInput.getText().toString().trim();
+        email = emailInput!!.text.toString().trim { it <= ' ' }
+        password = passwordInput!!.text.toString().trim { it <= ' ' }
 
         //check email
-        if (email.isEmpty()) {
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Email field cannot be empty");
-        }
-        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Please input a valid email address");
-        }
-
-        //check password
-        else if (password.isEmpty()) {
-            errorFeedback.setVisibility(View.VISIBLE);
-            errorFeedback.setText("Password cannot be empty");
-        }
-
-        else {
-            errorFeedback.setVisibility(View.GONE);
-
-            if (networkListener.connected){
-                checkUser();
-                disableButton();
-                loading.setVisibility(View.VISIBLE);
+        if (email!!.isEmpty()) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Email field cannot be empty"
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Please input a valid email address"
+        } else if (password!!.isEmpty()) {
+            errorFeedback!!.visibility = View.VISIBLE
+            errorFeedback!!.text = "Password cannot be empty"
+        } else {
+            errorFeedback!!.visibility = View.GONE
+            if (networkListener!!.connected!!) {
+                checkUser()
+                disableButton()
+                loading!!.visibility = View.VISIBLE
             }
-
         }
-
     }
 
-    private void checkUser() {
-
-
-            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-
-                    if (task.isSuccessful()){
-
-                        user = auth.getCurrentUser();
-
-                        getFCMToken();
-
-                        assert user != null;
-                        if (user.isEmailVerified()){
-                            //redirect to home
-                            Intent i = new Intent(Login.this, Home.class);
-                            startActivity(i);
-                            finish();
-                        }
-                        else {
-                            //redirect to email verification
-                            Intent i = new Intent(Login.this, VerifyEmail.class);
-                            startActivity(i);
-                            finish();
-                        }
-
-                    }
-
+    private fun checkUser() {
+        auth!!.signInWithEmailAndPassword(email!!, password!!).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                user = auth!!.currentUser
+                fCMToken
+                assert(user != null)
+                if (user!!.isEmailVerified) {
+                    //redirect to home
+                    val i = Intent(this@Login, Home::class.java)
+                    startActivity(i)
+                    finish()
+                } else {
+                    //redirect to email verification
+                    val i = Intent(this@Login, VerifyEmail::class.java)
+                    startActivity(i)
+                    finish()
                 }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "could not login");
-                    enableButton();
-                    loading.setVisibility(View.GONE);
-
-                    String errorMsg = "We could not log you in at this time.\nPlease try again later.";
-
-                    if (e.getLocalizedMessage().contains("The user account has been disabled")){
-                        errorMsg = "This account has been disabled.\nPlease contact an administrator.";
-                    }
-                    else if (e.getLocalizedMessage().contains("The password is invalid")){
-                        errorMsg = "The Email/Password combination you have entered is invalid";
-                    }
-                    else if (e.getLocalizedMessage().contains("There is no user record corresponding to this identifier")){
-                        errorMsg = "We could not find any account matching the details you provided";
-                    }
-
-                    Log.e(TAG, "Error Logging in: " + e.getLocalizedMessage());
-                    MySnackBar snackBar = new MySnackBar(Login.this, page, errorMsg, R.color.color_error_red_200, Snackbar.LENGTH_LONG);
-                }
-            });
-
-
-
-
+            }
+        }.addOnFailureListener { e ->
+            Log.d(TAG, "could not login")
+            enableButton()
+            loading!!.visibility = View.GONE
+            var errorMsg = "We could not log you in at this time.\nPlease try again later."
+            if (e.localizedMessage.contains("The user account has been disabled")) {
+                errorMsg = "This account has been disabled.\nPlease contact an administrator."
+            } else if (e.localizedMessage.contains("The password is invalid")) {
+                errorMsg = "The Email/Password combination you have entered is invalid"
+            } else if (e.localizedMessage.contains("There is no user record corresponding to this identifier")) {
+                errorMsg = "We could not find any account matching the details you provided"
+            }
+            Log.e(TAG, "Error Logging in: " + e.localizedMessage)
+            val snackBar = MySnackBar(this@Login, page, errorMsg, R.color.color_error_red_200, Snackbar.LENGTH_LONG)
+        }
     }
 
-    private void getFCMToken() {
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.e(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
+    // Get new FCM registration token
+    private val fCMToken: Unit
+        private get() {
+            FirebaseMessaging.getInstance().token
+                    .addOnCompleteListener(OnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            Log.e(TAG, "Fetching FCM registration token failed", task.exception)
+                            return@OnCompleteListener
                         }
 
                         // Get new FCM registration token
-                        String token = task.getResult();
+                        val token = task.result
+                        val details: MutableMap<String, Any?> = HashMap()
+                        details["fcm-token"] = token
+                        reference = db!!.collection("users").document(auth!!.currentUser!!.email!!)
+                        reference!!.update(details).addOnSuccessListener { Log.e(TAG, "onSuccess: Stored new token") }.addOnFailureListener { e -> Log.e(TAG, "onFailed: failed to store new token$e") }
+                    })
+        }
 
-                        Map<String, Object> details = new HashMap<>();
-                        details.put("fcm-token", token);
-
-
-                        reference = db.collection("users").document(auth.getCurrentUser().getEmail());
-                        reference.update(details).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.e(TAG, "onSuccess: Stored new token");
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e(TAG, "onFailed: failed to store new token" + e);
-
-                            }
-                        });
-                    }
-                });
+    private fun enableButton() {
+        submitBtn!!.visibility = View.VISIBLE
+        submitBtn!!.background = resources.getDrawable(R.drawable.blue_button)
+        submitBtn!!.setOnClickListener { checkInputs() }
     }
 
-    private void enableButton(){
-        submitBtn.setVisibility(View.VISIBLE);
-        submitBtn.setBackground(getResources().getDrawable(R.drawable.blue_button));
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                checkInputs();
-            }
-        });
+    private fun disableButton() {
+        submitBtn!!.visibility = View.INVISIBLE
+        submitBtn!!.background = resources.getDrawable(R.drawable.disabled_button)
+        submitBtn!!.setOnClickListener {
+            //nothing;
+        }
     }
 
-    private void disableButton(){
-        submitBtn.setVisibility(View.INVISIBLE);
-        submitBtn.setBackground(getResources().getDrawable(R.drawable.disabled_button));
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //nothing;
-            }
-        });
+    companion object {
+        private const val TAG = "ok"
     }
-
-
 }

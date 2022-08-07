@@ -1,426 +1,299 @@
-package com.aprihive.pages;
+package com.aprihive.pages
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.net.Uri;
-import android.os.Bundle;
+import android.content.Context
+import android.content.Intent
+import android.content.res.Resources.NotFoundException
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.airbnb.lottie.LottieAnimationView
+import com.aprihive.ImageViewActivity
+import com.aprihive.R
+import com.aprihive.adapters.DiscoverRecyclerAdapter
+import com.aprihive.fragments.PostOptionsModal
+import com.aprihive.fragments.SendRequestModal
+import com.aprihive.models.DiscoverPostsModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import org.ocpsoft.prettytime.PrettyTime
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
-import android.util.Patterns;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.airbnb.lottie.LottieAnimationView;
-import com.aprihive.ImageViewActivity;
-import com.aprihive.R;
-import com.aprihive.adapters.DiscoverRecyclerAdapter;
-import com.aprihive.fragments.PostOptionsModal;
-import com.aprihive.fragments.SendRequestModal;
-import com.aprihive.models.DiscoverPostsModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Matcher;
-
-
-public class Feed extends Fragment implements DiscoverRecyclerAdapter.MyClickListener {
-    
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-    private DocumentReference reference;
-    private FirebaseUser user;
-
-    private RecyclerView recyclerView;
-    private List<DiscoverPostsModel> postList;
-
-    private DiscoverRecyclerAdapter adapter;
-    private Context context;
-
-    private String  getPostId, getLocation, getPostText, getPostImageLink; //fetch from firebase into
-    private Boolean getVerified; //fetch from firebase into
-    private SwipeRefreshLayout swipeRefresh;
-    private FloatingActionButton fab;
-    private ListenerRegistration registerQuery;
-    private DiscoverPostsModel discoverModel;
-    private String getPostUserEmail;
-    private List<DiscoverPostsModel> postAuthorList;
-
-    private String TAG = "debug";
-    public static Runnable refreshPostsRunnable;
-
-    private TextView nothingText;
-    private String profileEmail;
-    private String getTags;
-    private Timestamp getTime;
-    private String fetchLink;
-    private HashMap<String, String> getLinkData;
-    private int getPositionId;
-
-    public Feed() {
-
+class Feed : Fragment(), DiscoverRecyclerAdapter.MyClickListener {
+    private var auth: FirebaseAuth? = null
+    private var db: FirebaseFirestore? = null
+    private val reference: DocumentReference? = null
+    private val user: FirebaseUser? = null
+    private var recyclerView: RecyclerView? = null
+    private var postList: MutableList<DiscoverPostsModel>? = null
+    private var adapter: DiscoverRecyclerAdapter? = null
+    private var mContext: Context? = null
+    private var getPostId: String? = null
+    private var getLocation: String? = null
+    private var getPostText: String? = null
+    private var getPostImageLink //fetch from firebase into
+            : String? = null
+    private val getVerified //fetch from firebase into
+            : Boolean? = null
+    private var swipeRefresh: SwipeRefreshLayout? = null
+    private val fab: FloatingActionButton? = null
+    private val registerQuery: ListenerRegistration? = null
+    private var discoverModel: DiscoverPostsModel? = null
+    private var getPostUserEmail: String? = null
+    private val postAuthorList: List<DiscoverPostsModel>? = null
+    private val TAG = "debug"
+    private var nothingText: TextView? = null
+    private var profileEmail: String? = null
+    private var getTags: String? = null
+    private var getTime: Timestamp? = null
+    private val fetchLink: String? = null
+    private var getLinkData: HashMap<String, String>? = null
+    private var getPositionId = 0
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_feed, container, false);
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_feed, container, false)
 
         //firebase
         //init firebase
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        recyclerView = view.findViewById(R.id.findRecyclerView);
-        swipeRefresh = view.findViewById(R.id.find_swipeRefresh);
-        context = getActivity().getApplicationContext();
-        nothingText = view.findViewById(R.id.nothingText);
-
-
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+        recyclerView = view.findViewById(R.id.findRecyclerView)
+        swipeRefresh = view.findViewById(R.id.find_swipeRefresh)
+        mContext = requireActivity().applicationContext
+        nothingText = view.findViewById(R.id.nothingText)
 
 
         //to refresh posts after posting or deleting
-        refreshPostsRunnable = new Runnable() {
-            @Override
-            public void run() {
-                getPostsFromBackend();
-            }
-        };
-
-
-
-
-        swipeRefresh.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.bg_color));
-        swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.color_theme_green_100),  getResources().getColor(R.color.color_theme_green_300));
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getPostsFromBackend();
-            }
-        });
-
-        postList = new ArrayList<>();
-        adapter = new DiscoverRecyclerAdapter(getContext(), postList, this);
-        Log.d(TAG, "attached adapter");
-
-
-
-        profileEmail = container.getTag().toString();
-
-
-        swipeRefresh.setRefreshing(true);
-        getPostsFromBackend();
-
-
-
-        return view;
+        refreshPostsRunnable = Runnable { fetchPostsFromBackend() }
+        swipeRefresh!!.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.bg_color))
+        swipeRefresh!!.setColorSchemeColors(resources.getColor(R.color.colorPrimary), resources.getColor(R.color.color_theme_green_100), resources.getColor(R.color.color_theme_green_300))
+        swipeRefresh!!.setOnRefreshListener(OnRefreshListener { fetchPostsFromBackend() })
+        postList = ArrayList()
+        adapter = DiscoverRecyclerAdapter(requireContext(), postList!!, this)
+        Log.d(TAG, "attached adapter")
+        profileEmail = container!!.tag.toString()
+        swipeRefresh!!.setRefreshing(true)
+        fetchPostsFromBackend()
+        return view
     }
 
-    private void setupRecyclerView() {
-
-        assert getActivity() != null;
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+    private fun setupRecyclerView() {
+        assert(activity != null)
+        val linearLayoutManager = LinearLayoutManager(requireActivity().applicationContext)
         //set items to arrange from bottom
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-
+        linearLayoutManager.reverseLayout = true
+        linearLayoutManager.stackFromEnd = true
+        recyclerView!!.layoutManager = linearLayoutManager
+        recyclerView!!.setHasFixedSize(true)
+        recyclerView!!.adapter = adapter
     }
 
-    public void getPostsFromBackend(){
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Log.d("checking posts", "ok talk");
-
-
-        Query discoverQuery = db.collection("posts").orderBy("created on");
-
-        discoverQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                if (task.isSuccessful()){
-
-
-                    postList.clear();
-                    for (DocumentSnapshot value : task.getResult()){
-
-
-                        getLocation = value.getString("location");
-                        getTime = value.getTimestamp("created on");
-                        getPostText = value.getString("postText");
-                        getPostImageLink = value.getString("imageLink");
-                        getPostUserEmail = value.getString("userEmail");
-                        getPostId = value.getString("postId");
-
-                        getPositionId = postList.size() + 1;
-
-
-
-                        discoverModel = new DiscoverPostsModel();
-                        discoverModel.setAuthorEmail(getPostUserEmail);
-                        discoverModel.setLocation(getLocation);
+    fun fetchPostsFromBackend() {
+            val auth = FirebaseAuth.getInstance()
+            val db = FirebaseFirestore.getInstance()
+            Log.d("checking posts", "ok talk")
+            val discoverQuery = db.collection("posts").orderBy("created on")
+            discoverQuery.get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    postList!!.clear()
+                    for (value in task.result) {
+                        getLocation = value.getString("location")
+                        getTime = value.getTimestamp("created on")
+                        getPostText = value.getString("postText")
+                        getPostImageLink = value.getString("imageLink")
+                        getPostUserEmail = value.getString("userEmail")
+                        getPostId = value.getString("postId")
+                        getPositionId = postList!!.size + 1
+                        discoverModel = DiscoverPostsModel()
+                        discoverModel!!.authorEmail = getPostUserEmail
+                        discoverModel!!.location = getLocation
                         try {
-                            discoverModel.setTimePosted(postTime(getTime));
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                            discoverModel!!.timePosted = postTime(getTime)
+                        } catch (e: ParseException) {
+                            e.printStackTrace()
                         }
-                        discoverModel.setPostText(getPostText);
-                        discoverModel.setPostImageLink(getPostImageLink);
-                        discoverModel.setPostId(getPostId);
-
+                        discoverModel!!.postText = getPostText
+                        discoverModel!!.postImageLink = getPostImageLink
+                        discoverModel!!.postId = getPostId
                         try {
-                            getLinkData = (HashMap<String, String>) value.get("linkPreviewData");
-                            discoverModel.setLinkData(getLinkData);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            getLinkData = value["linkPreviewData"] as HashMap<String, String>?
+                            discoverModel!!.linkData = getLinkData
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-
                         try {
-                            getTags = value.getString("tags");
-                            discoverModel.setPostTags(getTags);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            getTags = value.getString("tags")
+                            discoverModel!!.postTags = getTags
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-
-                        discoverModel.setPositionId(getPositionId);
-
-
-                        postList.add(discoverModel);
-
-
-
+                        discoverModel!!.positionId = getPositionId
+                        postList!!.add(discoverModel!!)
                     }
-
-                    setupRecyclerView();
-                    swipeRefresh.setRefreshing(false);
-
-
+                    setupRecyclerView()
+                    swipeRefresh!!.isRefreshing = false
                 }
-
-                filter(profileEmail);
-
+                filter(profileEmail)
             }
-        });
+        }
 
-
-
+    override fun onResume() {
+        super.onResume()
+        fetchPostsFromBackend()
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPostsFromBackend();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
+    override fun onStop() {
+        super.onStop()
         try {
-            adapter.registerQuery.remove();
-            adapter.likeRegisterQuery.remove();
-        } catch (Exception e) {
-            e.printStackTrace();
+            adapter!!.registerQuery!!.remove()
+            adapter!!.likeRegisterQuery!!.remove()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    override fun onDestroy() {
+        super.onDestroy()
         try {
-            adapter.registerQuery.remove();
-            adapter.likeRegisterQuery.remove();
-        } catch (Exception e) {
-            e.printStackTrace();
+            adapter!!.registerQuery!!.remove()
+            adapter!!.likeRegisterQuery!!.remove()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    @Override
-    public void onVote(int position, String postId, LottieAnimationView icon) {
-        final Boolean[] processLike = {true};
-        final DocumentReference fileRef = db.collection("upvotes").document(postId);
-        fileRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                try {
-                    if (processLike[0]){
-
-                        if (value.contains(auth.getCurrentUser().getUid())){
-                            fileRef.update(auth.getCurrentUser().getUid(), FieldValue.delete());
-                            icon.playAnimation();
-                            processLike[0] =false;
-                        }
-                        else {
-                            fileRef.update(auth.getCurrentUser().getUid(), auth.getCurrentUser().getEmail());
-                            icon.playAnimation();
-                            processLike[0] =false;
-                        }
-
-
+    override fun onVote(position: Int, postId: String?, icon: LottieAnimationView?) {
+        val processLike = arrayOf(true)
+        val fileRef = db!!.collection("upvotes").document(postId!!)
+        fileRef.addSnapshotListener { value, error ->
+            try {
+                if (processLike[0]) {
+                    if (value!!.contains(auth!!.currentUser!!.uid)) {
+                        fileRef.update(auth!!.currentUser!!.uid, FieldValue.delete())
+                        icon!!.playAnimation()
+                        processLike[0] = false
+                    } else {
+                        fileRef.update(auth!!.currentUser!!.uid, auth!!.currentUser!!.email)
+                        icon!!.playAnimation()
+                        processLike[0] = false
                     }
-                } catch (Resources.NotFoundException e) {
-                    e.printStackTrace();
                 }
-
-
+            } catch (e: NotFoundException) {
+                e.printStackTrace()
             }
-        });
+        }
     }
 
-    @Override
-    public void onSendRequest(int position, String postId, String postAuthorEmail, String postText, String postImage, String token, String postAuthor){
-        SendRequestModal bottomSheet = new SendRequestModal();
-        Bundle bundle = new Bundle();
-        bundle.putString("postAuthorEmail", postAuthorEmail);
-        bundle.putString("postAuthor", postAuthor);
-        bundle.putString("postText", postText);
-        bundle.putString("postImage", postImage);
-        bundle.putString("postId", postId);
-        bundle.putString("token", token);
-        bottomSheet.setArguments(bundle);
-        bottomSheet.show(getActivity().getSupportFragmentManager(), "TAG");
+    override fun onSendRequest(position: Int, postId: String?, postAuthorEmail: String?, postText: String?, postImage: String?, token: String?, postAuthor: String?) {
+        val bottomSheet = SendRequestModal()
+        val bundle = Bundle()
+        bundle.putString("postAuthorEmail", postAuthorEmail)
+        bundle.putString("postAuthor", postAuthor)
+        bundle.putString("postText", postText)
+        bundle.putString("postImage", postImage)
+        bundle.putString("postId", postId)
+        bundle.putString("token", token)
+        bottomSheet.arguments = bundle
+        bottomSheet.show(requireActivity().supportFragmentManager, "TAG")
     }
 
-    @Override
-    public void onPostMenuClick(int position, String postId, String postAuthorEmail, String postText, String postImage){
-        PostOptionsModal bottomSheet = new PostOptionsModal(refreshPostsRunnable);
-        Bundle bundle = new Bundle();
-        bundle.putString("postAuthorEmail", postAuthorEmail);
-        bundle.putString("postText", postText);
-        bundle.putString("postId", postId);
-        bundle.putString("postImage", postImage);
-        bottomSheet.setArguments(bundle);
-        bottomSheet.show(getActivity().getSupportFragmentManager(), "TAG");
+    override fun onPostMenuClick(position: Int, postId: String?, postAuthorEmail: String?, postText: String?, postImage: String?) {
+        val bottomSheet = PostOptionsModal(refreshPostsRunnable!!)
+        val bundle = Bundle()
+        bundle.putString("postAuthorEmail", postAuthorEmail)
+        bundle.putString("postText", postText)
+        bundle.putString("postId", postId)
+        bundle.putString("postImage", postImage)
+        bottomSheet.arguments = bundle
+        bottomSheet.show(requireActivity().supportFragmentManager, "TAG")
     }
 
-    @Override
-    public void onTextExpandClick(int position, TextView textView){
-
-        if (textView.getMaxLines() < 4){
-            textView.setMaxLines(Integer.MAX_VALUE);
+    override fun onTextExpandClick(position: Int, textView: TextView?) {
+        if (textView!!.maxLines < 4) {
+            textView.maxLines = Int.MAX_VALUE
         } else {
-            textView.setMaxLines(3);
+            textView.maxLines = 3
         }
     }
 
-    @Override
-    public void onProfileOpen(int position, String postAuthor){
+    override fun onProfileOpen(position: Int, postAuthor: String?, postAuthorUsername: String?) {
         //nothing
     }
 
-    @Override
-    public void onImageClick(int position, String postImage){
-        Intent i = new Intent(context, ImageViewActivity.class);
-        i.putExtra("imageUri", postImage);
-        startActivity(i);
+    override fun onImageClick(position: Int, postImage: String?) {
+        val i = Intent(mContext, ImageViewActivity::class.java)
+        i.putExtra("imageUri", postImage)
+        startActivity(i)
     }
 
-    @Override
-    public void onLinkOpen(int position, String link){
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-        startActivity(intent);
+    override fun onLinkOpen(position: Int, link: String?) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        startActivity(intent)
     }
 
-    private void filter(String text){
+    private fun filter(text: String?) {
         // creating a new array list to filter our data.
-        List<DiscoverPostsModel> filteredList = new ArrayList<>();
-
-        String query = text.toLowerCase();
+        val filteredList: MutableList<DiscoverPostsModel> = ArrayList()
+        val query = text!!.lowercase(Locale.getDefault())
 
 
         // running a for loop to compare elements.
-        for (DiscoverPostsModel item : postList) {
-
+        for (item in postList!!) {
 
 
             // checking if the entered string matched with any item of our recycler view.
-           if (item.getAuthorEmail().toLowerCase().contains(query)){
-               filteredList.add(item);
-           }
-
+            if (item.authorEmail!!.lowercase(Locale.getDefault()).contains(query)) {
+                filteredList.add(item)
+            }
         }
         if (filteredList.isEmpty()) {
-            adapter.filterList((ArrayList<DiscoverPostsModel>) filteredList);
-            nothingText.setVisibility(View.VISIBLE);
-        }
-        else {
-
-            nothingText.setVisibility(View.GONE);
+            adapter!!.filterList((filteredList as ArrayList<DiscoverPostsModel>))
+            nothingText!!.visibility = View.VISIBLE
+        } else {
+            nothingText!!.visibility = View.GONE
             //at last we are passing that filtered list to our adapter class.
-            adapter.filterList((ArrayList<DiscoverPostsModel>) filteredList);
-
+            adapter!!.filterList((filteredList as ArrayList<DiscoverPostsModel>))
         }
-
     }
 
-    private String postTime(Timestamp timestamp) throws ParseException {
-
-        String time = "";
-
-        Date date = timestamp.toDate();
-        PrettyTime prettyTime = new PrettyTime(Locale.getDefault());
-        String ago = prettyTime.format(date);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM, yyyy");
-
-
-        if (ago.contains("1 day ago")){
-            time = "yesterday";
-        }
-        else if (ago.contains("month")){
+    @Throws(ParseException::class)
+    private fun postTime(timestamp: Timestamp?): String {
+        var time = ""
+        val date = timestamp!!.toDate()
+        val prettyTime = PrettyTime(Locale.getDefault())
+        val ago = prettyTime.format(date)
+        val sdf = SimpleDateFormat("dd MMM, yyyy")
+        time = if (ago.contains("1 day ago")) {
+            "yesterday"
+        } else if (ago.contains("month")) {
             //time = String.valueOf(sdf.parse(String.valueOf(date)));
-            time = sdf.format(date);
+            sdf.format(date)
+        } else {
+            ago
         }
-        else {
-            time = ago;
-        }
-        return time;
+        return time
+    }
 
+    companion object {
+        var refreshPostsRunnable: Runnable? = null
     }
 }
-
-

@@ -1,357 +1,244 @@
-package com.aprihive.pages;
+package com.aprihive.pages
 
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.aprihive.R
+import com.aprihive.RequestDetails
+import com.aprihive.adapters.NotificationsRecyclerViewAdapter
+import com.aprihive.models.NotificationModel
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import org.ocpsoft.prettytime.PrettyTime
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.aprihive.R;
-import com.aprihive.RequestDetails;
-import com.aprihive.adapters.NotificationsRecyclerViewAdapter;
-import com.aprihive.models.NotificationModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.ocpsoft.prettytime.PrettyTime;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-
-public class Requests extends Fragment implements NotificationsRecyclerViewAdapter.MyClickListener{
-
-    private static final Object TAG = "ok";
-    private RecyclerView recyclerView;
-    public List<NotificationModel> notificationList;
-    private NotificationsRecyclerViewAdapter adapter;
-
-    private String getType;
-    private String getAuthorEmail;
-    private String getDeadline;
-    private String getPostId;
-    private String getPostImageLink;
-    private String getPostText;
-    private String getSenderEmail;
-    private String getRequestText;
-    private Timestamp getRequestedOn;
-    
-    private SwipeRefreshLayout swipeRefresh;
-    private String getTitle;
-    private String getAuthorUsername;
-    private String getReceiverUsername;
-    private String getSenderUsername;
-    public Runnable refreshRequestsRunnable;
-    private Context context;
-    private TextView nothingText;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
+class Requests : Fragment(), NotificationsRecyclerViewAdapter.MyClickListener {
+    private var recyclerView: RecyclerView? = null
+    var notificationList: MutableList<NotificationModel>? = null
+    private var adapter: NotificationsRecyclerViewAdapter? = null
+    private var getType: String? = null
+    private var getAuthorEmail: String? = null
+    private var getDeadline: String? = null
+    private var getPostId: String? = null
+    private var getPostImageLink: String? = null
+    private var getPostText: String? = null
+    private var getSenderEmail: String? = null
+    private var getRequestText: String? = null
+    private var getRequestedOn: Timestamp? = null
+    private var swipeRefresh: SwipeRefreshLayout? = null
+    private val getTitle: String? = null
+    private val getAuthorUsername: String? = null
+    private var getReceiverUsername: String? = null
+    private var getSenderUsername: String? = null
+    var refreshRequestsRunnable: Runnable? = null
+    private var mContext: Context? = null
+    private var nothingText: TextView? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_requests, container, false);
-        context = getActivity().getApplicationContext();
+        val view = inflater.inflate(R.layout.fragment_requests, container, false)
+        mContext = requireActivity().applicationContext
+        notificationList = ArrayList()
+        recyclerView = view.findViewById(R.id.notificationRecyclerView)
+        swipeRefresh = view.findViewById(R.id.notification_swipeRefresh)
+        nothingText = view.findViewById(R.id.nothingText)
 
-
-        notificationList= new ArrayList<>();
-        recyclerView = view.findViewById(R.id.notificationRecyclerView);
-        swipeRefresh = view.findViewById(R.id.notification_swipeRefresh);
-        nothingText = view.findViewById(R.id.nothingText);
-
-      // //to refresh posts after posting or deleting
-      // refreshRequestsRunnable = new Runnable() {
-      //     @Override
-      //     public void run() {
-      //         getRequestsNotifications();
-      //     }
-      // };
-
-        swipeRefresh.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.bg_color));
-        swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.color_theme_green_100), getResources().getColor(R.color.color_theme_green_300));
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getRequestsNotifications();
-            }
-        });
-
-
-        adapter = new NotificationsRecyclerViewAdapter(getContext(), notificationList, this);
-        swipeRefresh.setRefreshing(true);
-        getRequestsNotifications();
-
-
-        return view;
+        // //to refresh posts after posting or deleting
+        // refreshRequestsRunnable = new Runnable() {
+        //     @Override
+        //     public void run() {
+        //         getRequestsNotifications();
+        //     }
+        // };
+        swipeRefresh!!.setProgressBackgroundColorSchemeColor(resources.getColor(R.color.bg_color))
+        swipeRefresh!!.setColorSchemeColors(resources.getColor(R.color.colorPrimary), resources.getColor(R.color.color_theme_green_100), resources.getColor(R.color.color_theme_green_300))
+        swipeRefresh!!.setOnRefreshListener(OnRefreshListener { requestsNotifications })
+        adapter = NotificationsRecyclerViewAdapter(requireContext(), notificationList!!, this)
+        swipeRefresh!!.setRefreshing(true)
+        requestsNotifications
+        return view
     }
 
-    private void setupRecyclerView(List<NotificationModel> notificationList) {
-
-        if (notificationList.isEmpty()){
-            nothingText.setVisibility(View.VISIBLE);
+    private fun setupRecyclerView(notificationList: List<NotificationModel>?) {
+        if (notificationList!!.isEmpty()) {
+            nothingText!!.visibility = View.VISIBLE
         } else {
-            nothingText.setVisibility(View.GONE);
-
+            nothingText!!.visibility = View.GONE
         }
-
         try {
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+            val linearLayoutManager = LinearLayoutManager(activity!!.applicationContext)
             //set items to arrange from bottom
             // linearLayoutManager.setReverseLayout(true);
             //linearLayoutManager.setStackFromEnd(true);
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
+            recyclerView!!.layoutManager = linearLayoutManager
+            recyclerView!!.setHasFixedSize(true)
+            recyclerView!!.adapter = adapter
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    //.orderBy("registered on", "asc")
+    val requestsNotifications: Unit
+        get() {
+            val auth = FirebaseAuth.getInstance()
+            val user = auth.currentUser
+            val db = FirebaseFirestore.getInstance()
+            Log.d("debug", "re1 $notificationList")
+            assert(user != null)
+            val notificationsQuery = db.collection("users").document(user!!.email!!).collection("requests").orderBy("requested on", Query.Direction.DESCENDING)
+
+            //.orderBy("registered on", "asc")
+            notificationsQuery.get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    notificationList!!.clear()
+                    Log.d("debug", "re2 $notificationList")
+                    for (value in task.result) {
+                        getType = value.getString("type")
+                        getPostId = value.getString("postId")
+                        getAuthorEmail = value.getString("authorEmail")
+                        getReceiverUsername = value.getString("receiverUsername")
+                        getSenderUsername = value.getString("senderUsername")
+                        getSenderEmail = value.getString("senderEmail")
+                        getRequestText = value.getString("requestText")
+                        getPostText = value.getString("postText")
+                        getPostImageLink = value.getString("postImageLink")
+                        getRequestedOn = value.getTimestamp("requested on")
+                        getDeadline = value.getString("deadLine")
+                        val notificationModel = NotificationModel()
+                        notificationModel.type = getType
+                        notificationModel.postId = getPostId
+                        notificationModel.authorEmail = getAuthorEmail
+                        notificationModel.receiverUsername = getReceiverUsername
+                        notificationModel.senderUsername = getSenderUsername
+                        notificationModel.senderEmail = getSenderEmail
+                        notificationModel.requestText = getRequestText
+                        notificationModel.postText = getPostText
+                        notificationModel.postImageLink = getPostImageLink
+                        notificationModel.requestedOn = requestedOn(getRequestedOn)
+                        notificationModel.deadline = getDeadline
+                        notificationList!!.add(notificationModel)
+                        Log.d("debug", "re3 $notificationList")
+                    }
+                    setupRecyclerView(notificationList)
+                    swipeRefresh!!.isRefreshing = false
+                }
+            }
         }
 
-
-    }
-
-    public void getRequestsNotifications(){
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        Log.d("debug", "re1 " + notificationList);
-
-
-        assert user != null;
-
-        Query notificationsQuery = db.collection("users").document(user.getEmail()).collection("requests").orderBy("requested on", Query.Direction.DESCENDING);
-
-        //.orderBy("registered on", "asc")
-
-        notificationsQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                if (task.isSuccessful()){
-
-                    notificationList.clear();
-
-                    Log.d("debug", "re2 " + notificationList);
-
-
-                    for (DocumentSnapshot value : task.getResult()){
-
-                        getType = value.getString("type");
-                        getPostId = value.getString("postId");
-                        getAuthorEmail = value.getString("authorEmail");
-                        getReceiverUsername = value.getString("receiverUsername");
-                        getSenderUsername = value.getString("senderUsername");
-                        getSenderEmail = value.getString("senderEmail");
-                        getRequestText = value.getString("requestText");
-                        getPostText = value.getString("postText");
-                        getPostImageLink = value.getString("postImageLink");
-                        getRequestedOn = value.getTimestamp("requested on");
-                        getDeadline = value.getString("deadLine");
-
-
-
-                        NotificationModel notificationModel = new NotificationModel();
-
-                        notificationModel.setType(getType);
-                        notificationModel.setPostId(getPostId);
-                        notificationModel.setAuthorEmail(getAuthorEmail);
-                        notificationModel.setReceiverUsername(getReceiverUsername);
-                        notificationModel.setSenderUsername(getSenderUsername);
-                        notificationModel.setSenderEmail(getSenderEmail);
-                        notificationModel.setRequestText(getRequestText);
-                        notificationModel.setPostText(getPostText);
-                        notificationModel.setPostImageLink(getPostImageLink);
-                        notificationModel.setRequestedOn(requestedOn(getRequestedOn));
-                        notificationModel.setDeadline(getDeadline);
-
-
-
-
-
-                        notificationList.add(notificationModel);
-                        Log.d("debug", "re3 " + notificationList);
-
-
-                    }
-
-
-                    setupRecyclerView(notificationList);
-                    swipeRefresh.setRefreshing(false);
-
-
-                }
-
-            }
-        });
-
-
-    }
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
         // Inflate the layout for this menu
-        inflater.inflate(R.menu.find_bar_menu, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint("Search by username or description...");
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-
-        EditText viewEditText =  searchView.findViewById(androidx.appcompat.R.id.search_src_text);
-        viewEditText.setHintTextColor(getResources().getColor(R.color.grey_color_100));
-        viewEditText.setTextColor(getResources().getColor(R.color.color_text_blue_500));
-
-        ImageView viewIcon =  searchView.findViewById(androidx.appcompat.R.id.search_mag_icon);
-        viewIcon.setColorFilter(getResources().getColor(R.color.color_text_blue_500));
-
-        ImageView viewCloseIcon =  searchView.findViewById(androidx.appcompat.R.id.search_mag_icon);
-        viewCloseIcon.setColorFilter(getResources().getColor(R.color.color_text_blue_500));
-
-        View viewBg =  searchView.findViewById(androidx.appcompat.R.id.search_plate);
-        viewBg.setBackground(getResources().getDrawable(R.drawable.text_box));
-
-
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().findViewById(R.id.logoImageView).setVisibility(View.GONE);
-            }
-        });
-
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                getActivity().findViewById(R.id.logoImageView).setVisibility(View.VISIBLE);
-                return false;
-            }
-        });
-
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchView.setIconified(true);
-                searchView.setIconified(true);
-                return false;
+        inflater.inflate(R.menu.find_bar_menu, menu)
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+        searchView.queryHint = "Search by username or description..."
+        searchView.maxWidth = Int.MAX_VALUE
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+        val viewEditText = searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+        viewEditText.setHintTextColor(resources.getColor(R.color.grey_color_100))
+        viewEditText.setTextColor(resources.getColor(R.color.color_text_blue_500))
+        val viewIcon = searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
+        viewIcon.setColorFilter(resources.getColor(R.color.color_text_blue_500))
+        val viewCloseIcon = searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
+        viewCloseIcon.setColorFilter(resources.getColor(R.color.color_text_blue_500))
+        val viewBg = searchView.findViewById<View>(androidx.appcompat.R.id.search_plate)
+        viewBg.background = resources.getDrawable(R.drawable.text_box)
+        searchView.setOnSearchClickListener { activity!!.findViewById<View>(R.id.logoImageView).visibility = View.GONE }
+        searchView.setOnCloseListener {
+            activity!!.findViewById<View>(R.id.logoImageView).visibility = View.VISIBLE
+            false
+        }
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                searchView.isIconified = true
+                searchView.isIconified = true
+                return false
             }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (adapter!=null){
-
-                    filter(newText);
+            override fun onQueryTextChange(newText: String): Boolean {
+                if (adapter != null) {
+                    filter(newText)
                 }
-                return true;
+                return true
             }
-        });
-        super.onCreateOptionsMenu(menu, inflater);
-
+        })
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private void filter(String text){
+    private fun filter(text: String) {
         // creating a new array list to filter our data.
-        List<NotificationModel> filteredNotificationList = new ArrayList<>();
-
-        String query = text.toLowerCase();
+        val filteredNotificationList: MutableList<NotificationModel> = ArrayList()
+        val query = text.lowercase(Locale.getDefault())
 
         // running a for loop to compare elements.
-        for (NotificationModel item : notificationList) {
+        for (item in notificationList!!) {
 
             // checking if the entered string matched with any item of our recycler view.
-            if (item.getAuthorEmail().toLowerCase().contains(query)){
-                filteredNotificationList.add(item);
+            if (item.authorEmail!!.lowercase(Locale.getDefault()).contains(query)) {
+                filteredNotificationList.add(item)
             }
-
         }
         if (filteredNotificationList.isEmpty()) {
             // if no item is added in filtered list we are displaying a toast message as no data found.
 
             //TODO: add image to show that no notification found
-
         } else {
 
             // at last we are passing that filtered list to our adapter class.
-            adapter.filterList((ArrayList<NotificationModel>) filteredNotificationList);
-
+            adapter!!.filterList((filteredNotificationList as ArrayList<NotificationModel>))
         }
-
     }
 
-    private String requestedOn(Timestamp timestamp){
-
-        Date date = timestamp.toDate();
-        PrettyTime prettyTime = new PrettyTime(Locale.getDefault());
-        String ago = prettyTime.format(date);
-        return ago;
-
+    private fun requestedOn(timestamp: Timestamp?): String {
+        val date = timestamp!!.toDate()
+        val prettyTime = PrettyTime(Locale.getDefault())
+        return prettyTime.format(date)
     }
 
-    @Override
-    public void onOpenRequestDetails(int position, String getType, String getSenderUsername, String getReceiverUsername, String getDeadline, String getPostId, String getPostImageLink, String getPostText, String getRequestText, String getRequestedOn, String getSenderEmail, String getReceiverEmail){
-
-        Intent intent = new Intent(context, RequestDetails.class);
-        intent.putExtra("getType", getType);
-        intent.putExtra("getSenderName", getSenderUsername);
-        intent.putExtra("getReceiverName", getReceiverUsername);
-        intent.putExtra("getDeadline", getDeadline);
-        intent.putExtra("getPostId", getPostId);
-        intent.putExtra("getPostImageLink", getPostImageLink);
-        intent.putExtra("getPostText", getPostText);
-        intent.putExtra("getRequestText", getRequestText);
-        intent.putExtra("getRequestedOn", getRequestedOn);
-        intent.putExtra("getSenderEmail", getSenderEmail);
-        intent.putExtra("getReceiverEmail", getReceiverEmail);
-       // intent.putExtra("refreshAction", (Serializable) refreshRequestsRunnable);
-
-
-
-        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-
-        
+    override fun onOpenRequestDetails(position: Int, getType: String?, getSenderUsername: String?, getReceiverUsername: String?, getDeadline: String?, getPostId: String?, getPostImageLink: String?, getPostText: String?, getRequestText: String?, getRequestedOn: String?, getSenderEmail: String?, getReceiverEmail: String?) {
+        val intent = Intent(mContext, RequestDetails::class.java)
+        intent.putExtra("getType", getType)
+        intent.putExtra("getSenderName", getSenderUsername)
+        intent.putExtra("getReceiverName", getReceiverUsername)
+        intent.putExtra("getDeadline", getDeadline)
+        intent.putExtra("getPostId", getPostId)
+        intent.putExtra("getPostImageLink", getPostImageLink)
+        intent.putExtra("getPostText", getPostText)
+        intent.putExtra("getRequestText", getRequestText)
+        intent.putExtra("getRequestedOn", getRequestedOn)
+        intent.putExtra("getSenderEmail", getSenderEmail)
+        intent.putExtra("getReceiverEmail", getReceiverEmail)
+        // intent.putExtra("refreshAction", (Serializable) refreshRequestsRunnable);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        mContext!!.startActivity(intent)
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getRequestsNotifications();
+    override fun onResume() {
+        super.onResume()
+        requestsNotifications
+    }
+
+    companion object {
+        private val TAG: Any = "ok"
     }
 }
-

@@ -2,87 +2,90 @@
 // Copyright (c) Erlite 2021.
 // Copyright (c) Aprihive 2021.
 // All Rights Reserved
+package com.aprihive.adapters
 
-package com.aprihive.adapters;
+import android.content.Context
+import com.aprihive.models.CatalogueModel
+import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.ListenerRegistration
+import android.view.ViewGroup
+import android.view.LayoutInflater
+import com.aprihive.R
+import android.content.Intent
+import com.aprihive.CatalogueItemDetails
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import androidx.cardview.widget.CardView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.aprihive.models.DiscoverPostsModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
+import com.leocardz.link.preview.library.TextCrawler
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestoreException
+import android.content.res.Resources.NotFoundException
+import com.bumptech.glide.request.RequestListener
+import android.graphics.drawable.Drawable
+import android.view.View
+import com.bumptech.glide.load.engine.GlideException
+import com.airbnb.lottie.LottieAnimationView
+import com.google.android.material.card.MaterialCardView
+import com.aprihive.models.FindModel
+import com.aprihive.UserProfileActivity
+import androidx.fragment.app.FragmentPagerAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.aprihive.pages.Discover
+import com.aprihive.pages.Find
+import com.aprihive.pages.Requests
+import com.aprihive.models.MessagedUsersModel
+import com.google.firebase.firestore.QuerySnapshot
+import kotlin.Throws
+import org.ocpsoft.prettytime.PrettyTime
+import com.aprihive.models.MessageModel
+import com.aprihive.adapters.MessagingRecyclerAdapter.Viewholder
+import com.aprihive.adapters.MessagingRecyclerAdapter
+import android.view.View.OnLongClickListener
+import android.widget.ImageView
+import com.aprihive.models.NotificationModel
+import com.aprihive.models.OnboardingModel
+import androidx.viewpager.widget.PagerAdapter
+import com.aprihive.MainActivity
+import com.aprihive.pages.Feed
+import com.aprihive.pages.Catalogue
 
-import android.content.Context;
-import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-
-import com.aprihive.MainActivity;
-import com.aprihive.R;
-import com.aprihive.Splash;
-import com.aprihive.models.OnboardingModel;
-import com.aprihive.pages.Catalogue;
-import com.aprihive.pages.Feed;
-
-import java.util.List;
-
-public class OnboardingViewAdapter extends PagerAdapter {
-
-    Context context;
-    List<OnboardingModel> list;
-
-    public OnboardingViewAdapter(Context context, List<OnboardingModel> list) {
-        this.context = context;
-        this.list = list;
+class OnboardingViewAdapter(var context: Context, var list: List<OnboardingModel>) : PagerAdapter() {
+    override fun getCount(): Int {
+        return list.size
     }
 
-    @Override
-    public int getCount() {
-        return list.size();
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout = inflater.inflate(R.layout.onboarding_item, null)
+        val imgSlide = layout.findViewById<ImageView>(R.id.imageView)
+        val title = layout.findViewById<TextView>(R.id.title)
+        val description = layout.findViewById<TextView>(R.id.description)
+
+        val button = layout.findViewById<TextView>(R.id.continueBtn)
+        title.text = list[position].title
+        description.text = list[position].description
+        imgSlide.setImageResource(list[position].imageUri)
+        button.visibility = list[position].buttonDisplay
+        button.setOnClickListener {
+            val intent = Intent(context, MainActivity::class.java)
+            context.startActivity(intent)
+        }
+        container.addView(layout)
+        return layout
     }
 
-    @NonNull
-    @Override
-    public Object instantiateItem(@NonNull ViewGroup container, int position) {
-
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.onboarding_item, null);
-
-        ImageView imgSlide = layout.findViewById(R.id.imageView);
-        TextView title = layout.findViewById(R.id.title);
-        TextView description = layout.findViewById(R.id.description);
-        TextView button = layout.findViewById(R.id.continueBtn);
-
-
-        title.setText(list.get(position).getTitle());
-        description.setText(list.get(position).getDescription());
-        imgSlide.setImageResource(list.get(position).getImageUri());
-        button.setVisibility(list.get(position).getButtonDisplay());
-
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
-            }
-        });
-
-        container.addView(layout);
-
-        return layout;
-        
+    override fun isViewFromObject(view: View, `object`: Any): Boolean {
+        return view === `object`
     }
 
-    @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view == object;
-    }
-
-    @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View)object);
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        container.removeView(`object` as View)
     }
 }

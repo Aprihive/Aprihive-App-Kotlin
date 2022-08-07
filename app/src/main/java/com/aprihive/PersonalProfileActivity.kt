@@ -213,12 +213,12 @@ class PersonalProfileActivity : AppCompatActivity() {
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setTitle("My Profile")
         addPostFab!!.setOnClickListener(View.OnClickListener {
-            val bottomSheet = AddPostModal(Feed.refreshPostsRunnable)
+            val bottomSheet = AddPostModal(Feed.refreshPostsRunnable!!)
             bottomSheet.arguments = bundle
             bottomSheet.show(supportFragmentManager, "TAG")
         })
         addCatalogueItemFab!!.setOnClickListener(View.OnClickListener {
-            val bottomSheet = AddCatalogueItemModal(Catalogue.refreshItemsRunnable)
+            val bottomSheet = AddCatalogueItemModal(Catalogue.refreshItemsRunnable!!)
             bottomSheet.arguments = bundle
             bottomSheet.show(supportFragmentManager, "TAG")
         })
